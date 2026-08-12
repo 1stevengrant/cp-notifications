@@ -216,3 +216,9 @@ Todo: Order notices by explicit priority override, then severity (`critical`, `w
 Done: Added deterministic active-stack ordering with explicit lower-number priorities first, followed by critical, warning, and info severity, then oldest start time. Also hardened an existing parent-directory creation race exposed by repeated concurrency tests.
 Tests: vendor/bin/phpunit (three consecutive runs); composer validate --strict; git diff --check
 Notes: Any explicit numeric priority sorts ahead of the unprioritized severity queue. Exact null and full-tie precedence is verified by the following dedicated todo.
+
+2026-08-12 16:54:52 NZST
+Todo: Define and test the exact precedence/direction for nullable and tied priorities.
+Done: Defined and verified the complete sort key: explicit priorities before null/blank, lower numbers first, then critical/warning/info, oldest start time, and notification ID as the deterministic final tie-breaker.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Equal-priority notices still use severity and start time; unprioritized notices never outrank an explicitly prioritized notice regardless of severity.

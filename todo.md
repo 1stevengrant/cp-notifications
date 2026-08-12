@@ -48,7 +48,7 @@
 - [x] Filter notices with a currently active snooze from the active stack.
 - [x] Keep bypass users in audience/inbox results while excluding them only from gating.
 - [x] Order notices by explicit priority override, then severity (`critical`, `warning`, `info`), then oldest `start_date`.
-- [ ] Define and test the exact precedence/direction for nullable and tied priorities.
+- [x] Define and test the exact precedence/direction for nullable and tied priorities.
 
 ## 5. Locking and supersession
 
