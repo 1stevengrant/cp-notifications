@@ -72,3 +72,9 @@ Todo: Add validation requiring at least one effective audience target before pub
 Done: Added server-side EntrySaving validation that permits incomplete drafts but requires all-users targeting or at least one non-empty role, group, or explicit-user selector for published notifications.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: The rule validates configured targets at publication; live membership expansion and de-duplication are handled by the audience resolver todos.
+
+2026-08-12 16:42:00 NZST
+Todo: Force or treat `snoozeable` as false whenever `blocking` is true.
+Done: Added an EntrySaving normalizer ahead of validation that forcibly stores blocking notifications as non-snoozeable while preserving advisory snooze settings.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Server-side normalization protects every save path, including custom clients that bypass control-panel field visibility.

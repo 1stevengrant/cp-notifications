@@ -4,6 +4,7 @@ namespace Ghijk\CpNotifications;
 
 use Ghijk\CpNotifications\Console\Commands\InstallCommand;
 use Ghijk\CpNotifications\Listeners\ValidateNotificationAudience;
+use Ghijk\CpNotifications\Listeners\NormalizeNotificationBehavior;
 use Statamic\CP\Navigation\Nav as Navigation;
 use Statamic\Events\EntrySaving;
 use Statamic\Facades\CP\Nav;
@@ -14,6 +15,7 @@ class ServiceProvider extends AddonServiceProvider
 {
     protected $listen = [
         EntrySaving::class => [
+            NormalizeNotificationBehavior::class,
             ValidateNotificationAudience::class,
         ],
     ];
