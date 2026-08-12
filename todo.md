@@ -43,7 +43,7 @@
 - [x] Resolve audience membership from `all`, roles, groups, and explicit user IDs.
 - [x] De-duplicate users targeted through multiple audience rules.
 - [x] Resolve the targeted user set at query/view time.
-- [ ] Implement active-window checks using published status, `start_date`, optional `end_date`, and the site timezone.
+- [x] Implement active-window checks using published status, `start_date`, optional `end_date`, and the site timezone.
 - [ ] Filter acknowledged notices from the active stack.
 - [ ] Filter notices with a currently active snooze from the active stack.
 - [ ] Keep bypass users in audience/inbox results while excluding them only from gating.
