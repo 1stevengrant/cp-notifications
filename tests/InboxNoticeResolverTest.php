@@ -135,6 +135,38 @@ class InboxNoticeResolverTest extends TestCase
         );
     }
 
+    public function test_expired_unacknowledged_advisory_is_history_not_active(): void
+    {
+        config()->set('app.timezone', 'Pacific/Auckland');
+        config()->set('cp-notifications.retention.inbox_days', null);
+        CarbonImmutable::setTestNow('2026-08-12 12:00:00 Pacific/Auckland');
+        Collection::make('notifications')->sites([Site::default()->handle()])->save();
+        $this->notice('expired-advisory', true, ['all' => true])
+            ->set('blocking', false)
+            ->set('end_date', '2026-08-12 11:59:59')
+            ->save();
+        $user = Mockery::mock(User::class);
+        $user->allows('id')->andReturn('user-1');
+        $user->allows('hasRole')->andReturnFalse();
+        $user->allows('isInGroup')->andReturnFalse();
+        $acknowledgements = Mockery::mock(AcknowledgementRepository::class);
+        $acknowledgements->allows('find')->with('expired-advisory', 'user-1')->andReturnNull();
+        $snoozes = Mockery::mock(SnoozeRepository::class);
+        $snoozes->allows('find')->with('expired-advisory', 'user-1')->andReturnNull();
+
+        $items = (new InboxNoticeResolver(
+            new AudienceMatcher,
+            new ActiveWindow,
+            $acknowledgements,
+            $snoozes,
+        ))->resolve($user);
+
+        $this->assertCount(1, $items);
+        $this->assertSame('expired-advisory', $items->first()['notification']->id());
+        $this->assertFalse($items->first()['active']);
+        $this->assertNull($items->first()['acknowledgement']);
+    }
+
     private function notice(string $id, bool $published, array $audience)
     {
         return Entry::make()

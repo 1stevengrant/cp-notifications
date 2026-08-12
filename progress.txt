@@ -360,3 +360,9 @@ Todo: Apply retention.inbox_days; treat null as indefinite retention.
 Done: Filtered expired Inbox history against the configured retention window with an inclusive cutoff, while preserving notices without an end date and treating null retention as unlimited.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Retention is evaluated in the application timezone and affects Inbox visibility only; the active window and acknowledgement records remain unchanged.
+
+2026-08-12 17:17:51 NZST
+Todo: Ensure expired, unacknowledged advisories stop appearing as active but remain reportable.
+Done: Verified with an end-to-end Inbox resolver test that an unacknowledged advisory immediately becomes inactive at expiry while remaining in retained history.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Active state derives from the exclusive end boundary, while reportable history is governed separately by Inbox retention and does not require an acknowledgement.
