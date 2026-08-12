@@ -438,3 +438,9 @@ Todo: Create the nudge mailable using the configured sender or the app mail fall
 Done: Verified the reminder mailable uses the optional addon sender override, otherwise defers to Laravel mail configuration, and links recipients directly to the CP Inbox.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Email contains the notice title as context but never the notice body, keeping the actual notification available only inside the authenticated control panel.
+
+2026-08-12 17:33:10 NZST
+Todo: Create a shared job/service for scheduled and manual reminders.
+Done: Verified manual and scheduled modes share the same unique queue job, which delegates all audience, acknowledgement, eligibility, delivery-state, and mail behavior to one service.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: The mode flag changes timing eligibility only; recipient selection and delivery recording cannot diverge between report-triggered and scheduler-triggered reminders.
