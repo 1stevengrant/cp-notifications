@@ -72,4 +72,14 @@ class DocumentationTest extends TestCase
         $this->assertStringContainsString('stops gating users', $readme);
         $this->assertStringContainsString('never acknowledged it', $readme);
     }
+
+    public function test_locked_notice_and_superseding_correction_workflow_is_documented(): void
+    {
+        $readme = file_get_contents(__DIR__.'/../README.md');
+
+        $this->assertStringContainsString('first acknowledgement locks a notice', $readme);
+        $this->assertStringContainsString('read-only', $readme);
+        $this->assertStringContainsString('superseding notice', $readme);
+        $this->assertStringContainsString('historical evidence', $readme);
+    }
 }

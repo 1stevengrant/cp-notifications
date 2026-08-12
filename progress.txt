@@ -654,3 +654,9 @@ Todo: Warn that blocking notices with an end_date are unusual and can expire wit
 Done: Added a prominent blocking-expiry warning explaining exact-time gating removal without acknowledgement and recommending no end date when confirmation must remain mandatory.
 Tests: vendor/bin/phpunit --filter 'DocumentationTest::test_blocking|ActiveWindowTest::test_published' --testdox; composer validate --no-check-publish; git diff --check
 Notes: Documentation language matches the inclusive-start/exclusive-end implementation rather than implying blocking status overrides scheduling.
+
+2026-08-12 18:00:31 NZST
+Todo: Document locked notices and the superseding-notice correction workflow.
+Done: Documented first-ack immutability across read-only form, save rejection, and deletion protection, plus creating a corrected superseding notice while retaining original evidence/reports.
+Tests: vendor/bin/phpunit --filter 'DocumentationTest::test_locked|PreventLockedNotificationEditsTest|RenderLockedNotificationReadOnlyTest|PreventAcknowledgedNotificationDeletionTest' --testdox; composer validate --no-check-publish; git diff --check
+Notes: Eight focused tests align the documented correction path with actual UI and server enforcement.

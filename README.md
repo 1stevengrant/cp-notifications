@@ -128,6 +128,18 @@ acknowledgement timestamps, and snooze state. Export CSV downloads those same
 rows. “Remind non-ackers” queues the shared reminder workflow immediately;
 scheduled reminders use the per-notice threshold and optional cadence.
 
+### Locked notices and corrections
+
+The first acknowledgement locks a notice. Its publish form becomes read-only,
+server-side saves are rejected, and the notice cannot be deleted. This preserves
+the exact content associated with every recorded acknowledgement.
+
+To correct a locked notice, create and publish a new superseding notice. Give it
+the corrected content and audience, and make the relationship clear in its
+title/body. If the original is still active and has no suitable end date, keep
+it as historical evidence; do not edit or delete it. Reports retain the original
+acknowledgements independently from the superseding notice.
+
 Notifications → Manage previews clear-out candidates for administrators with
 `purge notifications`. The confirmed action permanently removes only eligible
 old, expired, unacknowledged notices and writes a structured audit log. See
