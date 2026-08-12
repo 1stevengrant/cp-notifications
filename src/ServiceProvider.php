@@ -21,6 +21,7 @@ use Ghijk\CpNotifications\Repositories\FileNudgeDeliveryRepository;
 use Ghijk\CpNotifications\Repositories\EloquentNudgeDeliveryRepository;
 use Ghijk\CpNotifications\Repositories\RepositoryDriverResolver;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Console\Scheduling\Schedule;
 use Statamic\CP\Navigation\Nav as Navigation;
 use Statamic\Events\EntrySaving;
 use Statamic\Events\EntryBlueprintFound;
@@ -98,6 +99,11 @@ class ServiceProvider extends AddonServiceProvider
 
         $this->registerNavigation();
         $this->registerPermissions();
+        $this->callAfterResolving(Schedule::class, function (Schedule $schedule): void {
+            $schedule->command('cp-notifications:nudge')
+                ->hourly()
+                ->withoutOverlapping();
+        });
 
         Collection::computed(
             'notifications',

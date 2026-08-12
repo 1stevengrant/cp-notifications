@@ -450,3 +450,9 @@ Todo: Add the cp-notifications:nudge command.
 Done: Registered an Artisan command that scans canonical notifications, filters by active scheduled eligibility, and queues the shared nudge job for each eligible notice.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Notice-level filtering avoids needless queue work, while the job service performs the authoritative per-recipient acknowledgement, cadence, and delivery-state checks.
+
+2026-08-12 17:34:52 NZST
+Todo: Register/document the command's Laravel scheduler integration.
+Done: Registered the nudge command hourly with overlap prevention and documented production cron, local scheduler work, and queue worker requirements.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: The scheduler registration ships with the addon; host applications only need Laravel's standard scheduler runner and an asynchronous worker when not using the sync queue.
