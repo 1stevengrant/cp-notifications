@@ -600,3 +600,9 @@ Todo: Test bypass users are not gated but can still see notices in their inbox.
 Done: Added a composed bypass-user test proving the same targeted notice remains in Inbox resolution while its gating stack is empty, alongside middleware early-return coverage.
 Tests: vendor/bin/phpunit --filter 'InboxNoticeResolverTest::test_bypass|GatingStackTest|EnforceBlockingNotificationsTest::test_bypass' --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Bypass is strictly an enforcement permission; it does not alter audience targeting, active/history visibility, or acknowledgement access.
+
+2026-08-12 17:53:58 NZST
+Todo: Test report authorization, live status, and CSV contents.
+Done: Added a live Pending-to-Acknowledged report transition and audited permission denial, canonical notice scope, former recipients, download metadata, and all six CSV grid columns/row values.
+Tests: vendor/bin/phpunit --filter 'ReportControllerTest|NotificationReportResolverTest' --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Report rows are rebuilt from repositories on every request; HTML and CSV share the same resolver, preventing stale or divergent status calculations.
