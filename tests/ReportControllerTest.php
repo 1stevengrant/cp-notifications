@@ -12,6 +12,8 @@ use Ghijk\CpNotifications\Http\Controllers\ReportController;
 use Ghijk\CpNotifications\Reports\NotificationReportResolver;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Bus;
+use Ghijk\CpNotifications\Jobs\SendNotificationNudges;
 use Mockery;
 use Statamic\Contracts\Auth\User as UserContract;
 use Statamic\Contracts\Auth\UserRepository;
@@ -116,5 +118,24 @@ class ReportControllerTest extends TestCase
         $this->expectExceptionCode(0);
 
         (new ReportController)->index($request);
+    }
+
+    public function test_authorized_manual_reminder_dispatches_the_shared_nudge_job(): void
+    {
+        Bus::fake();
+        $user = Mockery::mock(UserContract::class);
+        $user->allows('can')->with('view notification reports')->andReturnTrue();
+        $request = Request::create('/');
+        $request->headers->set('referer', '/cp/cp-notifications/reports/notice-1');
+        $request->setUserResolver(fn () => $user);
+        Collection::make('notifications')->sites([Site::default()->handle()])->save();
+        Entry::make()->id('notice-1')->collection('notifications')->locale(Site::default()->handle())
+            ->data(['title' => 'Notice one', 'audience' => ['all' => true]])->save();
+
+        (new ReportController)->remind($request, 'notice-1');
+
+        Bus::assertDispatched(SendNotificationNudges::class, fn ($job): bool =>
+            $job->notificationId === 'notice-1' && $job->manual
+        );
     }
 }

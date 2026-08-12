@@ -4,6 +4,10 @@
     <a class="btn" href="{{ cp_route('cp-notifications.reports.export', $notification->id()) }}">
         {{ __('Export CSV') }}
     </a>
+    <form method="POST" action="{{ cp_route('cp-notifications.reports.remind', $notification->id()) }}">
+        @csrf
+        <button class="btn-primary" type="submit">{{ __('Remind non-ackers') }}</button>
+    </form>
 </header>
 
 <div class="card p-4" data-testid="notification-report">

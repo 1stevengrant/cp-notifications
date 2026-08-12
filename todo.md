@@ -96,7 +96,7 @@
 - [x] Display current/used snooze state.
 - [x] Preserve recorded acknowledgements in reporting even if a user later leaves the targeted role/group.
 - [x] Add an authorized CSV export matching the report grid.
-- [ ] Add a “Remind non-ackers” action that dispatches the shared nudge job.
+- [x] Add a “Remind non-ackers” action that dispatches the shared nudge job.
 
 ## 10. Nudges
 

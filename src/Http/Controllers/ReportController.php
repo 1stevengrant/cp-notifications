@@ -3,12 +3,14 @@
 namespace Ghijk\CpNotifications\Http\Controllers;
 
 use Ghijk\CpNotifications\Reports\NotificationReportResolver;
+use Ghijk\CpNotifications\Jobs\SendNotificationNudges;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Statamic\Facades\Collection;
 use Statamic\Facades\Entry;
 use Statamic\Facades\Site;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Http\RedirectResponse;
 
 final class ReportController
 {
@@ -64,6 +66,16 @@ final class ReportController
 
             fclose($stream);
         }, 'notification-'.$entry->id().'-report.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
+    }
+
+    public function remind(Request $request, string $notification): RedirectResponse
+    {
+        $this->authorize($request);
+        $entry = $this->notification($notification);
+
+        SendNotificationNudges::dispatch((string) $entry->id(), true);
+
+        return back()->with('success', __('Reminders are being sent to users who have not acknowledged this notification.'));
     }
 
     private function notification(string $id)

@@ -414,3 +414,9 @@ Todo: Add an authorized CSV export matching the report grid.
 Done: Added a permission-protected per-notice CSV download using the canonical report rows and the same user, email, audience, acknowledgement, timestamp, and snooze columns as the grid.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: The export includes former acknowledged recipients, uses deterministic timestamps, and neutralizes spreadsheet formula prefixes in user-controlled cells.
+
+2026-08-12 17:28:28 NZST
+Todo: Add a Remind non-ackers action that dispatches the shared nudge job.
+Done: Added a permission-protected report form that dispatches the queueable shared notification nudge job in manual mode for the canonical notice.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: The queued job delegates recipient delivery to a shared service, and reminder email links back to the CP Inbox without exposing notice content outside the control panel.
