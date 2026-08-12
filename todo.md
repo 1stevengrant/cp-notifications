@@ -129,7 +129,7 @@
 - [x] Test database uniqueness under concurrent acknowledgement attempts.
 - [x] Test single-use snoozing and the exact 24-hour expiry boundary.
 - [x] Test audience expansion for all users, roles, groups, explicit users, and overlaps.
-- [ ] Test that role/group removal changes current targeting but preserves an existing acknowledgement.
+- [x] Test that role/group removal changes current targeting but preserves an existing acknowledgement.
 - [ ] Test scheduling boundaries, open-ended notices, expiration, and future blocking notices.
 - [ ] Test priority, severity, and start-date ordering plus ties/null values.
 - [ ] Test locked notices reject edits after the first acknowledgement.

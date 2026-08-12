@@ -558,3 +558,9 @@ Todo: Test audience expansion for all users, roles, groups, explicit users, and 
 Done: Added resolver-level role-only, group-only, and explicit-user cases alongside existing all-user, overlap-deduplication, matcher, and live-membership tests.
 Tests: vendor/bin/phpunit --filter 'AudienceMatcherTest|AudienceResolverTest' --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Thirteen focused tests now prove both rule matching and the final deduplicated user collection returned to reports, nudges, stacks, and Inbox consumers.
+
+2026-08-12 17:49:47 NZST
+Todo: Test that role/group removal changes current targeting but preserves an existing acknowledgement.
+Done: Added a state-transition report test that removes a user's targeted role between resolutions and proves Current becomes Former while the same acknowledgement remains attached.
+Tests: vendor/bin/phpunit --filter NotificationReportResolverTest; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Audience resolution remains live while acknowledgement history is merged independently, directly exercising the compliance-history invariant rather than composing separate static cases.
