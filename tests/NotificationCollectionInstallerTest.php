@@ -35,6 +35,7 @@ class NotificationCollectionInstallerTest extends TestCase
         $this->assertNotNull($collection);
         $this->assertSame('Notifications', $collection->title());
         $this->assertNull($collection->route(Site::default()->handle()));
+        $this->assertSame([], $collection->routes()->filter()->all());
         $this->assertFalse($collection->requiresSlugs());
         $this->assertSame('start_date', $collection->sortField());
         $this->assertSame('desc', $collection->sortDirection());

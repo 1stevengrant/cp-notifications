@@ -85,6 +85,7 @@ class NotificationNudgeServiceTest extends TestCase
         Entry::make()->id('notice-1')->collection('notifications')->locale(Site::default()->handle())
             ->data([
                 'title' => 'Required reading',
+                'body' => 'Sensitive control-panel-only content',
                 'audience' => ['users' => ['pending', 'acknowledged']],
                 'start_date' => '2026-08-11 12:00',
                 'nudge' => ['enabled' => true, 'threshold_hours' => 24],
@@ -109,7 +110,11 @@ class NotificationNudgeServiceTest extends TestCase
         );
 
         $this->assertSame(1, $service->send('notice-1'));
-        Mail::assertSent(NotificationNudge::class, fn ($mail): bool => $mail->hasTo('pending@example.com'));
+        Mail::assertSent(NotificationNudge::class, fn ($mail): bool =>
+            $mail->hasTo('pending@example.com')
+            && ! str_contains($mail->render(), 'Sensitive control-panel-only content')
+            && str_contains($mail->render(), cp_route('cp-notifications.inbox'))
+        );
         Mail::assertNotSent(NotificationNudge::class, fn ($mail): bool =>
             $mail->hasTo('acknowledged@example.com') || $mail->hasTo('outside@example.com')
         );

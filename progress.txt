@@ -462,3 +462,9 @@ Todo: Email only currently targeted users who have not acknowledged the notice.
 Done: Added delivery-level coverage proving the shared service emails a pending live target while excluding both acknowledged current targets and users outside the current audience.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Audience membership is resolved immediately before each job sends, so role or group changes made after queue dispatch are honored at execution time.
+
+2026-08-12 17:36:26 NZST
+Todo: Ensure notices themselves remain available only inside the CP.
+Done: Verified notifications retain no frontend route and reminder rendering excludes stored notice body content while linking only to the authenticated CP Inbox.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Email provides the notice title for identification but never reproduces the authored Bard body, so reading and acknowledgement remain control-panel actions.
