@@ -5,6 +5,7 @@ namespace Ghijk\CpNotifications;
 use Ghijk\CpNotifications\Console\Commands\InstallCommand;
 use Statamic\CP\Navigation\Nav as Navigation;
 use Statamic\Facades\CP\Nav;
+use Statamic\Facades\Permission;
 use Statamic\Providers\AddonServiceProvider;
 
 class ServiceProvider extends AddonServiceProvider
@@ -34,6 +35,7 @@ class ServiceProvider extends AddonServiceProvider
         ], 'cp-notifications-migrations');
 
         $this->registerNavigation();
+        $this->registerPermissions();
     }
 
     public function registerNavigation(): void
@@ -42,8 +44,7 @@ class ServiceProvider extends AddonServiceProvider
             $nav->create('Inbox')
                 ->section('Notifications')
                 ->icon('inbox')
-                ->route('cp-notifications.inbox')
-                ->can('view notifications');
+                ->route('cp-notifications.inbox');
 
             $nav->create('Manage')
                 ->section('Notifications')
@@ -56,6 +57,16 @@ class ServiceProvider extends AddonServiceProvider
                 ->icon('charts')
                 ->route('cp-notifications.reports')
                 ->can('view notification reports');
+        });
+    }
+
+    public function registerPermissions(): void
+    {
+        Permission::extend(function (): void {
+            Permission::group('cp-notifications', 'CP Notifications', function (): void {
+                Permission::register('view notifications')
+                    ->label('View own notification inbox');
+            });
         });
     }
 }

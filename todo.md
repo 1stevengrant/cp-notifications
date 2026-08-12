@@ -7,7 +7,7 @@
 - [x] Add `config/cp-notifications.php` with acknowledgement driver, enforcement, retention, and nudge settings.
 - [x] Register the Inbox CP navigation item and links to management/reporting surfaces.
 - [ ] Register Statamic permissions:
-  - [ ] `view notifications` (available to all users by default).
+  - [x] `view notifications` (available to all users by default).
   - [ ] `manage notifications`.
   - [ ] `view notification reports`.
   - [ ] `bypass notifications` (granted to the creator by default).

@@ -24,3 +24,9 @@ Todo: Register the Inbox CP navigation item and links to management/reporting su
 Done: Added a Notifications navigation section with Inbox, Manage, and Reports links, registered their CP routes, and provided initial surface views for progressive enhancement by later todos.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Each navigation item declares its final permission ability; permission definitions and endpoint authorization are completed by their dedicated todos.
+
+2026-08-12 16:14:00 NZST
+Todo: Register `view notifications` (available to all users by default).
+Done: Registered the Inbox permission in a dedicated CP Notifications permission group and made the Inbox navigation available by default to authenticated CP users instead of requiring role assignment.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The permission remains registered for discoverability and future policy integration, while default Inbox availability is expressed by the absence of an additional navigation authorization gate.

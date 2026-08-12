@@ -26,6 +26,7 @@ class NavigationTest extends TestCase
         $this->assertSame(['Inbox', 'Manage', 'Reports'], $items->keys()->all());
         $this->assertSame('Notifications', $items['Inbox']->section());
         $this->assertSame(cp_route('cp-notifications.inbox'), $items['Inbox']->url());
+        $this->assertNull($items['Inbox']->authorization());
         $this->assertSame(cp_route('cp-notifications.manage'), $items['Manage']->url());
         $this->assertSame(cp_route('cp-notifications.reports'), $items['Reports']->url());
     }
