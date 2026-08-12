@@ -23,7 +23,7 @@ test('no automatic workflow can hard delete notices or acknowledgements', functi
     expect($scheduledCommands->every(
         fn (string $command): bool => ! str_contains($command, 'purge'),
     ))->toBeTrue();
-    $documentation = file_get_contents(__DIR__.'/../README.md');
+    $documentation = file_get_contents(__DIR__.'/../DOCUMENTATION.md');
     $this->assertStringContainsString('permanently removes', $documentation);
     $this->assertStringContainsString('rather than archiving', $documentation);
 });

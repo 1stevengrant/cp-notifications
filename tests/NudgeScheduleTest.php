@@ -11,6 +11,7 @@ test('the nudge command is registered hourly without overlap', function () {
     expect($event)->not->toBeNull();
     expect($event->expression)->toBe('0 * * * *');
     expect($event->withoutOverlapping)->toBeTrue();
-    $this->assertStringContainsString('schedule:run', file_get_contents(__DIR__.'/../README.md'));
-    $this->assertStringContainsString('queue:work', file_get_contents(__DIR__.'/../README.md'));
+    $documentation = file_get_contents(__DIR__.'/../DOCUMENTATION.md');
+    $this->assertStringContainsString('schedule:run', $documentation);
+    $this->assertStringContainsString('queue:work', $documentation);
 });

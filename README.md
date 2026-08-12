@@ -73,4 +73,5 @@ complete addon may be used without a license in local development.
 ## Documentation
 
 See [DOCUMENTATION.md](DOCUMENTATION.md) for installation, configuration,
-notice workflows, persistence drivers, reminders, retention, and testing.
+notice workflows, persistence drivers, reminders, retention, and testing. See
+[RELEASE_NOTES.md](RELEASE_NOTES.md) for changes and compatibility by version.

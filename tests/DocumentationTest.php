@@ -3,7 +3,7 @@
 namespace Ghijk\CpNotifications\Tests\Pest\DocumentationTest;
 
 test('installation and operations commands are documented', function () {
-    $readme = file_get_contents(__DIR__.'/../README.md');
+    $documentation = file_get_contents(__DIR__.'/../DOCUMENTATION.md');
 
     foreach ([
         'composer require ghijk/cp-notifications',
@@ -16,12 +16,12 @@ test('installation and operations commands are documented', function () {
         'schedule:run',
         'queue:work',
     ] as $command) {
-        $this->assertStringContainsString($command, $readme);
+        $this->assertStringContainsString($command, $documentation);
     }
 });
 
 test('commercial production licensing is documented', function () {
-    $readme = file_get_contents(__DIR__.'/../README.md');
+    $documentation = file_get_contents(__DIR__.'/../DOCUMENTATION.md');
 
     foreach ([
         'proprietary commercial software',
@@ -33,32 +33,32 @@ test('commercial production licensing is documented', function () {
         'STATAMIC_LICENSE_KEY',
         'does not use a separate addon license key',
     ] as $detail) {
-        $this->assertStringContainsString($detail, $readme);
+        $this->assertStringContainsString($detail, $documentation);
     }
 });
 
 test('file eloquent and auto driver behavior is documented', function () {
-    $readme = file_get_contents(__DIR__.'/../README.md');
+    $documentation = file_get_contents(__DIR__.'/../DOCUMENTATION.md');
 
-    $this->assertStringContainsString('CP_NOTIFICATIONS_DRIVER', $readme);
-    $this->assertStringContainsString('storage/statamic/cp-notifications', $readme);
-    $this->assertStringContainsString('statamic/eloquent-driver', $readme);
-    $this->assertStringContainsString('auto` — the default', $readme);
-    $this->assertStringContainsString('does not migrate existing records', $readme);
+    $this->assertStringContainsString('CP_NOTIFICATIONS_DRIVER', $documentation);
+    $this->assertStringContainsString('storage/statamic/cp-notifications', $documentation);
+    $this->assertStringContainsString('statamic/eloquent-driver', $documentation);
+    $this->assertStringContainsString('auto` — the default', $documentation);
+    $this->assertStringContainsString('does not migrate existing records', $documentation);
 });
 
 test('enforcement modes and bypass implications are documented', function () {
-    $readme = file_get_contents(__DIR__.'/../README.md');
+    $documentation = file_get_contents(__DIR__.'/../DOCUMENTATION.md');
 
-    $this->assertStringContainsString('CP_NOTIFICATIONS_ENFORCEMENT', $readme);
-    $this->assertStringContainsString('`strict` (default)', $readme);
-    $this->assertStringContainsString('`modal`', $readme);
-    $this->assertStringContainsString('bypass notifications', $readme);
-    $this->assertStringContainsString('does not hide notices', $readme);
+    $this->assertStringContainsString('CP_NOTIFICATIONS_ENFORCEMENT', $documentation);
+    $this->assertStringContainsString('`strict` (default)', $documentation);
+    $this->assertStringContainsString('`modal`', $documentation);
+    $this->assertStringContainsString('bypass notifications', $documentation);
+    $this->assertStringContainsString('does not hide notices', $documentation);
 });
 
 test('notice targeting reporting nudge and purge workflows are documented', function () {
-    $readme = file_get_contents(__DIR__.'/../README.md');
+    $documentation = file_get_contents(__DIR__.'/../DOCUMENTATION.md');
 
     foreach ([
         'Bard body',
@@ -71,35 +71,35 @@ test('notice targeting reporting nudge and purge workflows are documented', func
         '`purge notifications`',
         'structured audit log',
     ] as $detail) {
-        $this->assertStringContainsString($detail, $readme);
+        $this->assertStringContainsString($detail, $documentation);
     }
 });
 
 test('blocking end date expiry risk is documented', function () {
-    $readme = file_get_contents(__DIR__.'/../README.md');
+    $documentation = file_get_contents(__DIR__.'/../DOCUMENTATION.md');
 
-    $this->assertStringContainsString('Blocking notice expiry', $readme);
-    $this->assertStringContainsString('stops gating users', $readme);
-    $this->assertStringContainsString('never acknowledged it', $readme);
+    $this->assertStringContainsString('Blocking notice expiry', $documentation);
+    $this->assertStringContainsString('stops gating users', $documentation);
+    $this->assertStringContainsString('never acknowledged it', $documentation);
 });
 
 test('locked notice and superseding correction workflow is documented', function () {
-    $readme = file_get_contents(__DIR__.'/../README.md');
+    $documentation = file_get_contents(__DIR__.'/../DOCUMENTATION.md');
 
-    $this->assertStringContainsString('first acknowledgement locks a notice', $readme);
-    $this->assertStringContainsString('read-only', $readme);
-    $this->assertStringContainsString('superseding notice', $readme);
-    $this->assertStringContainsString('historical evidence', $readme);
+    $this->assertStringContainsString('first acknowledgement locks a notice', $documentation);
+    $this->assertStringContainsString('read-only', $documentation);
+    $this->assertStringContainsString('superseding notice', $documentation);
+    $this->assertStringContainsString('historical evidence', $documentation);
 });
 
 test('verified compatibility matrix is documented', function () {
-    $readme = file_get_contents(__DIR__.'/../README.md');
+    $documentation = file_get_contents(__DIR__.'/../DOCUMENTATION.md');
     $overlay = file_get_contents(__DIR__.'/../resources/js/components/NotificationOverlay.vue');
     $packageLock = json_decode(file_get_contents(__DIR__.'/../package-lock.json'), true, flags: JSON_THROW_ON_ERROR);
 
-    $this->assertStringContainsString('Statamic 6.27', $readme);
-    $this->assertStringContainsString('Laravel 13.25', $readme);
-    $this->assertStringContainsString('statamic/eloquent-driver` 5.11', $readme);
+    $this->assertStringContainsString('Statamic 6.27', $documentation);
+    $this->assertStringContainsString('Laravel 13.25', $documentation);
+    $this->assertStringContainsString('statamic/eloquent-driver` 5.11', $documentation);
     expect($packageLock['packages']['node_modules/vue']['version'])->toStartWith('3.');
 
     foreach (['<ui-card', '<ui-badge', '<ui-button'] as $component) {
@@ -108,33 +108,33 @@ test('verified compatibility matrix is documented', function () {
 });
 
 test('recurring notices are explicitly out of v1 scope', function () {
-    $readme = file_get_contents(__DIR__.'/../README.md');
+    $documentation = file_get_contents(__DIR__.'/../DOCUMENTATION.md');
     $installer = file_get_contents(__DIR__.'/../src/Content/NotificationCollectionInstaller.php');
 
-    $this->assertStringContainsString('Notices do not recur', $readme);
-    $this->assertStringContainsString('one `start_date`/`end_date`', $readme);
-    $this->assertStringContainsString('publication', $readme);
+    $this->assertStringContainsString('Notices do not recur', $documentation);
+    $this->assertStringContainsString('one `start_date`/`end_date`', $documentation);
+    $this->assertStringContainsString('publication', $documentation);
     $this->assertStringNotContainsString("'handle' => 'recurrence'", $installer);
     $this->assertStringNotContainsString("'handle' => 'repeat_rule'", $installer);
 });
 
 test('per user timezone scheduling is explicitly out of v1 scope', function () {
-    $readme = file_get_contents(__DIR__.'/../README.md');
+    $documentation = file_get_contents(__DIR__.'/../DOCUMENTATION.md');
     $installer = file_get_contents(__DIR__.'/../src/Content/NotificationCollectionInstaller.php');
 
-    $this->assertStringContainsString("application's configured timezone", $readme);
-    $this->assertStringContainsString('does not offer per-user timezone scheduling', $readme);
+    $this->assertStringContainsString("application's configured timezone", $documentation);
+    $this->assertStringContainsString('does not offer per-user timezone scheduling', $documentation);
     $this->assertStringNotContainsString("'handle' => 'user_timezone'", $installer);
     $this->assertStringNotContainsString("'handle' => 'timezone'", $installer);
 });
 
 test('compliance product framing is explicitly out of v1 scope', function () {
-    $readme = file_get_contents(__DIR__.'/../README.md');
+    $documentation = file_get_contents(__DIR__.'/../DOCUMENTATION.md');
     $installer = file_get_contents(__DIR__.'/../src/Content/NotificationCollectionInstaller.php');
 
-    $this->assertStringContainsString('operational record of acknowledgements', $readme);
-    $this->assertStringContainsString('not presented as a dedicated compliance or attestation product', $readme);
-    $this->assertStringContainsString('regulated evidence workflow is outside v1', $readme);
+    $this->assertStringContainsString('operational record of acknowledgements', $documentation);
+    $this->assertStringContainsString('not presented as a dedicated compliance or attestation product', $documentation);
+    $this->assertStringContainsString('regulated evidence workflow is outside v1', $documentation);
     $this->assertStringNotContainsString("'handle' => 'compliance_framework'", $installer);
     $this->assertStringNotContainsString("'handle' => 'attestation'", $installer);
 });
