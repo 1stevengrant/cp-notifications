@@ -52,9 +52,19 @@ class OverlayAssetTest extends TestCase
     {
         $component = file_get_contents(__DIR__.'/../resources/js/components/NotificationOverlay.vue');
 
-        $this->assertSame(3, substr_count($component, 'if (response.ok) {'));
-        $this->assertSame(2, substr_count($component, 'this.confirmed = false;'));
-        $this->assertSame(2, substr_count($component, 'await this.refresh();'));
+        $this->assertSame(2, substr_count($component, 'await this.handleActionResponse(response);'));
+        $this->assertStringContainsString('this.confirmed = false;', $component);
+        $this->assertStringContainsString('await this.refresh();', $component);
         $this->assertStringNotContainsString('this.notices.shift()', $component);
+    }
+
+    public function test_stale_and_concurrent_actions_reconcile_gracefully(): void
+    {
+        $component = file_get_contents(__DIR__.'/../resources/js/components/NotificationOverlay.vue');
+
+        $this->assertStringContainsString('[404, 409].includes(response.status)', $component);
+        $this->assertStringContainsString('role="alert"', $component);
+        $this->assertSame(2, substr_count($component, 'Check your connection and try again.'));
+        $this->assertStringContainsString("payload.message ?? 'This notification could not be updated", $component);
     }
 }

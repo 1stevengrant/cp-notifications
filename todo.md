@@ -68,7 +68,7 @@
 - [x] Make blocking notices confirm-only and impossible to dismiss or snooze.
 - [x] Allow eligible advisory notices to be confirmed or snoozed.
 - [x] Refresh/advance the stack after each successful action.
-- [ ] Handle expired, already-acknowledged, and concurrently updated notices gracefully.
+- [x] Handle expired, already-acknowledged, and concurrently updated notices gracefully.
 
 ## 7. Strict blocking enforcement
 

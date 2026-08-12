@@ -300,3 +300,9 @@ Todo: Refresh/advance the stack after each successful action.
 Done: Made successful confirmation and snooze actions reset attestation and re-fetch the authoritative ordered stack, allowing the server-selected next notice to advance into view.
 Tests: vendor/bin/phpunit --testdox; npm run build; composer validate --strict; git diff --check
 Notes: The client does not optimistically shift its local array, so concurrent audience, scheduling, acknowledgement, and priority changes are reflected during every advance.
+
+2026-08-12 17:08:29 NZST
+Todo: Handle expired, already-acknowledged, and concurrently updated notices gracefully.
+Done: Added centralized action reconciliation that refreshes on successful idempotent responses and stale 404/409 states, while surfacing retryable validation and network errors in an accessible alert.
+Tests: vendor/bin/phpunit --testdox; npm run build; composer validate --strict; git diff --check
+Notes: Expired, deleted, concurrently snoozed, and otherwise stale notices disappear through authoritative refresh; transport failures leave the current notice and controls available for retry.

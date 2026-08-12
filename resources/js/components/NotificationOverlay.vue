@@ -15,6 +15,7 @@
             </div>
             <h1 id="cp-notification-title">{{ current.title }}</h1>
             <div class="cp-notification-overlay__body">{{ body }}</div>
+            <p v-if="error" class="cp-notification-overlay__error" role="alert">{{ error }}</p>
             <div class="cp-notification-overlay__actions">
                 <label class="cp-notification-overlay__confirmation">
                     <input v-model="confirmed" type="checkbox" :disabled="submitting">
@@ -47,6 +48,7 @@ export default {
             loading: false,
             submitting: false,
             confirmed: false,
+            error: null,
         };
     },
 
@@ -88,6 +90,7 @@ export default {
             if (!this.canSnooze || this.submitting) return;
 
             this.submitting = true;
+            this.error = null;
 
             try {
                 const response = await fetch(cp_url(`cp-notifications/api/notifications/${this.current.id}/snooze`), {
@@ -99,10 +102,9 @@ export default {
                     },
                 });
 
-                if (response.ok) {
-                    this.confirmed = false;
-                    await this.refresh();
-                }
+                await this.handleActionResponse(response);
+            } catch (error) {
+                this.error = 'Unable to update this notification. Check your connection and try again.';
             } finally {
                 this.submitting = false;
             }
@@ -112,6 +114,7 @@ export default {
             if (!this.current || !this.confirmed || this.submitting) return;
 
             this.submitting = true;
+            this.error = null;
 
             try {
                 const response = await fetch(cp_url(`cp-notifications/api/notifications/${this.current.id}/acknowledge`), {
@@ -125,13 +128,23 @@ export default {
                     body: JSON.stringify({ confirmed: true }),
                 });
 
-                if (response.ok) {
-                    this.confirmed = false;
-                    await this.refresh();
-                }
+                await this.handleActionResponse(response);
+            } catch (error) {
+                this.error = 'Unable to update this notification. Check your connection and try again.';
             } finally {
                 this.submitting = false;
             }
+        },
+
+        async handleActionResponse(response) {
+            if (response.ok || [404, 409].includes(response.status)) {
+                this.confirmed = false;
+                await this.refresh();
+                return;
+            }
+
+            const payload = await response.json().catch(() => ({}));
+            this.error = payload.message ?? 'This notification could not be updated. Please try again.';
         },
 
         async refresh() {
@@ -194,6 +207,12 @@ export default {
 
 .cp-notification-overlay__body {
     white-space: pre-wrap;
+}
+
+.cp-notification-overlay__error {
+    margin-top: 1rem;
+    color: #dc2626;
+    font-weight: 600;
 }
 
 .cp-notification-overlay__actions {
