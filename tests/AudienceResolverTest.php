@@ -8,6 +8,7 @@ use Mockery;
 use Statamic\Auth\UserCollection;
 use Statamic\Contracts\Auth\User;
 use Statamic\Contracts\Auth\UserRepository;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class AudienceResolverTest extends TestCase
 {
@@ -40,6 +41,28 @@ class AudienceResolverTest extends TestCase
         $resolved = (new AudienceResolver($users, new AudienceMatcher))->resolve(['all' => true]);
 
         $this->assertSame(['user-1', 'user-2'], $resolved->map->id()->all());
+    }
+
+    #[DataProvider('specificAudienceCases')]
+    public function test_each_specific_selector_expands_to_only_matching_users(array $audience): void
+    {
+        $targeted = $this->user('user-1', roles: ['editor'], groups: ['operations']);
+        $other = $this->user('user-2');
+        $users = Mockery::mock(UserRepository::class);
+        $users->allows('all')->andReturn(new UserCollection([$targeted, $other]));
+
+        $resolved = (new AudienceResolver($users, new AudienceMatcher))->resolve($audience);
+
+        $this->assertSame(['user-1'], $resolved->map->id()->all());
+    }
+
+    public static function specificAudienceCases(): array
+    {
+        return [
+            'role' => [['roles' => ['editor']]],
+            'group' => [['groups' => ['operations']]],
+            'explicit user' => [['users' => ['user-1']]],
+        ];
     }
 
     public function test_audience_membership_is_resolved_live_on_each_call(): void

@@ -552,3 +552,9 @@ Todo: Test single-use snoozing and the exact 24-hour expiry boundary.
 Done: Audited and ran endpoint, file/Eloquent repository, and immutable value-object coverage for eligibility, one-shot reuse prevention, exact 24-hour creation, and boundary expiration.
 Tests: vendor/bin/phpunit --filter 'SnoozeTest|SnoozeNotificationEndpointTest|FileRepositoriesTest|EloquentRepositoriesTest' --testdox
 Notes: Twelve tests with 75 assertions prove a snooze is active one microsecond before expiry and inactive exactly at and after the stored boundary.
+
+2026-08-12 17:48:44 NZST
+Todo: Test audience expansion for all users, roles, groups, explicit users, and overlaps.
+Done: Added resolver-level role-only, group-only, and explicit-user cases alongside existing all-user, overlap-deduplication, matcher, and live-membership tests.
+Tests: vendor/bin/phpunit --filter 'AudienceMatcherTest|AudienceResolverTest' --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Thirteen focused tests now prove both rule matching and the final deduplicated user collection returned to reports, nudges, stacks, and Inbox consumers.
