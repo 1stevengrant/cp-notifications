@@ -52,7 +52,7 @@
 
 ## 5. Locking and supersession
 
-- [ ] Compute `locked` as true once the first acknowledgement exists.
+- [x] Compute `locked` as true once the first acknowledgement exists.
 - [ ] Prevent edits to locked notice content and settings on the server.
 - [ ] Render locked notices as read-only in the publish form.
 - [ ] Provide a clear validation/error message directing admins to create a superseding notice.

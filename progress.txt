@@ -222,3 +222,9 @@ Todo: Define and test the exact precedence/direction for nullable and tied prior
 Done: Defined and verified the complete sort key: explicit priorities before null/blank, lower numbers first, then critical/warning/info, oldest start time, and notification ID as the deterministic final tie-breaker.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Equal-priority notices still use severity and start time; unprioritized notices never outrank an explicitly prioritized notice regardless of severity.
+
+2026-08-12 16:55:32 NZST
+Todo: Compute `locked` as true once the first acknowledgement exists.
+Done: Added a notification lock service that derives lock state directly from the immutable acknowledgement repository and becomes true with the first record.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Lock state is derived rather than copied into entry content, preventing stale flags and keeping both persistence drivers authoritative.
