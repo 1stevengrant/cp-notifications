@@ -12,6 +12,25 @@ The planned v1 feature set includes:
 - immutable acknowledgement records; and
 - optional control-panel gating for blocking notices.
 
+## Commercial license
+
+CP Notifications is proprietary commercial software. A license costs US$75
+per production site and must be purchased through the Statamic Marketplace.
+One license is required for each production installation.
+
+You may use the complete addon without a license on local development sites.
+Before deploying to production, attach the purchased addon license to the Site
+in your Statamic account and configure that Site's key in the application:
+
+```dotenv
+STATAMIC_LICENSE_KEY=your-site-license-key
+```
+
+Statamic validates commercial addon licenses using this shared Site key; CP
+Notifications does not use a separate addon license key. See Statamic's
+[licensing documentation](https://statamic.dev/getting-started/licensing) for
+site setup, production-domain, and offline-environment guidance.
+
 ## How to Install
 
 You can install this addon via Composer:

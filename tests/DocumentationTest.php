@@ -20,6 +20,23 @@ test('installation and operations commands are documented', function () {
     }
 });
 
+test('commercial production licensing is documented', function () {
+    $readme = file_get_contents(__DIR__.'/../README.md');
+
+    foreach ([
+        'proprietary commercial software',
+        'US$75',
+        'per production site',
+        'Statamic Marketplace',
+        'One license is required for each production installation',
+        'without a license on local development sites',
+        'STATAMIC_LICENSE_KEY',
+        'does not use a separate addon license key',
+    ] as $detail) {
+        $this->assertStringContainsString($detail, $readme);
+    }
+});
+
 test('file eloquent and auto driver behavior is documented', function () {
     $readme = file_get_contents(__DIR__.'/../README.md');
 

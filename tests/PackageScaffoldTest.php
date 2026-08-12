@@ -13,6 +13,7 @@ test('it has the expected statamic addon metadata', function () {
 
     expect($composer['name'])->toBe('ghijk/cp-notifications');
     expect($composer['type'])->toBe('statamic-addon');
+    expect($composer['license'])->toBe('proprietary');
     expect($composer['require']['php'])->toBe('^8.3');
     expect($composer['require']['statamic/cms'])->toBe('^6.0');
     expect($composer['extra']['laravel']['providers'][0])->toBe(ServiceProvider::class);
