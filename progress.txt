@@ -492,3 +492,9 @@ Todo: Prevent system deletion of notices that have acknowledgements.
 Done: Added a global Statamic deletion guard for acknowledged notifications and a second repository check immediately before each purge deletion to close preview-time races.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Native collection deletion and addon purge now share the immutable-acknowledgement rule; a newly recorded acknowledgement wins even after a notice appeared in the purge preview.
+
+2026-08-12 17:41:42 NZST
+Todo: Define whether manual purge archives or removes eligible notices and document the behavior.
+Done: Documented that confirmed clear-out permanently removes eligible notification entries rather than archiving them, together with retention, expiry, and acknowledgement safeguards.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Acknowledgement records are never part of clear-out; indefinite Inbox retention still allows a deliberate admin to remove already-expired, unacknowledged notices.

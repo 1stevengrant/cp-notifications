@@ -27,5 +27,8 @@ class AutomaticDeletionSafetyTest extends TestCase
         $this->assertTrue($scheduledCommands->every(
             fn (string $command): bool => ! str_contains($command, 'purge'),
         ));
+        $documentation = file_get_contents(__DIR__.'/../README.md');
+        $this->assertStringContainsString('permanently removes', $documentation);
+        $this->assertStringContainsString('rather than archiving', $documentation);
     }
 }
