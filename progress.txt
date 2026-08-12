@@ -234,3 +234,9 @@ Todo: Prevent edits to locked notice content and settings on the server.
 Done: Registered an early EntrySaving listener that rejects every save path for locked notification entries while leaving unlocked notifications and unrelated collections untouched.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Enforcement runs before behavior normalization and audience validation, so rejected requests cannot mutate locked notice data in memory before failure.
+
+2026-08-12 16:57:36 NZST
+Todo: Render locked notices as read-only in the publish form.
+Done: Added an EntryBlueprintFound listener that projects every field in a locked notification blueprint with Statamic's native read-only visibility while leaving unlocked forms editable.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The stored blueprint remains unchanged; read-only visibility is applied only to the locked entry's runtime publish-form blueprint.

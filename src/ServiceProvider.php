@@ -8,6 +8,7 @@ use Ghijk\CpNotifications\Contracts\SnoozeRepository;
 use Ghijk\CpNotifications\Listeners\ValidateNotificationAudience;
 use Ghijk\CpNotifications\Listeners\NormalizeNotificationBehavior;
 use Ghijk\CpNotifications\Listeners\PreventLockedNotificationEdits;
+use Ghijk\CpNotifications\Listeners\RenderLockedNotificationReadOnly;
 use Ghijk\CpNotifications\Repositories\EloquentAcknowledgementRepository;
 use Ghijk\CpNotifications\Repositories\EloquentSnoozeRepository;
 use Ghijk\CpNotifications\Repositories\FileAcknowledgementRepository;
@@ -16,6 +17,7 @@ use Ghijk\CpNotifications\Repositories\RepositoryDriverResolver;
 use Illuminate\Contracts\Foundation\Application;
 use Statamic\CP\Navigation\Nav as Navigation;
 use Statamic\Events\EntrySaving;
+use Statamic\Events\EntryBlueprintFound;
 use Statamic\Facades\CP\Nav;
 use Statamic\Facades\Permission;
 use Statamic\Providers\AddonServiceProvider;
@@ -23,6 +25,9 @@ use Statamic\Providers\AddonServiceProvider;
 class ServiceProvider extends AddonServiceProvider
 {
     protected $listen = [
+        EntryBlueprintFound::class => [
+            RenderLockedNotificationReadOnly::class,
+        ],
         EntrySaving::class => [
             PreventLockedNotificationEdits::class,
             NormalizeNotificationBehavior::class,
