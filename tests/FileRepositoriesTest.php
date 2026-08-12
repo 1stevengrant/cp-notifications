@@ -80,6 +80,25 @@ class FileRepositoriesTest extends TestCase
         $this->assertSame([], $this->files->glob(dirname($path).'/.pending-*'));
     }
 
+    public function test_file_snoozes_default_to_exactly_twenty_four_hours_and_cannot_be_reused(): void
+    {
+        CarbonImmutable::setTestNow('2026-08-12T10:00:00+12:00');
+
+        try {
+            $repository = new FileSnoozeRepository($this->files, $this->storagePath);
+            $first = $repository->record('notice-1', 'user-1');
+
+            CarbonImmutable::setTestNow(CarbonImmutable::now()->addHour());
+            $second = $repository->record('notice-1', 'user-1');
+
+            $this->assertTrue($first->snoozedUntil->equalTo(CarbonImmutable::parse('2026-08-13T10:00:00+12:00')));
+            $this->assertTrue($second->snoozedUntil->equalTo($first->snoozedUntil));
+            $this->assertCount(1, $this->files->allFiles($this->storagePath.'/snoozes'));
+        } finally {
+            CarbonImmutable::setTestNow();
+        }
+    }
+
     public function test_competing_processes_leave_one_complete_acknowledgement(): void
     {
         if (! function_exists('pcntl_fork')) {

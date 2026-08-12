@@ -9,7 +9,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Symfony\Component\Yaml\Yaml;
 
-class FileSnoozeRepository implements SnoozeRepository
+final class FileSnoozeRepository implements SnoozeRepository
 {
     public function __construct(
         private readonly Filesystem $files,

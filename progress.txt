@@ -162,3 +162,9 @@ Todo: Ensure acknowledgements cannot be updated, revoked, or deleted through app
 Done: Hardened the append-only acknowledgement boundary by making both concrete drivers final and verifying their only public persistence operations are find, record, forNotification, and forUser.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Application services receive the mutation-free contract from the container, while the acknowledgement value itself remains final and readonly.
+
+2026-08-12 18:08:00 NZST
+Todo: Ensure a snooze lasts 24 hours and cannot be used a second time for the same notice/user.
+Done: Finalized both snooze drivers around create-once behavior and verified database and file defaults expire exactly 24 hours after creation while repeat attempts retain the original expiry and single record.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Snooze activity remains strict-before expiry, so the snooze is inactive at the exact 24-hour boundary while its retained record prevents reuse.

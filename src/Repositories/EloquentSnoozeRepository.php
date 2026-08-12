@@ -9,7 +9,7 @@ use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Collection;
 use RuntimeException;
 
-class EloquentSnoozeRepository implements SnoozeRepository
+final class EloquentSnoozeRepository implements SnoozeRepository
 {
     public const TABLE = 'cp_notification_snoozes';
 
