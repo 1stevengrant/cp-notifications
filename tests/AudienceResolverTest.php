@@ -42,12 +42,43 @@ class AudienceResolverTest extends TestCase
         $this->assertSame(['user-1', 'user-2'], $resolved->map->id()->all());
     }
 
+    public function test_audience_membership_is_resolved_live_on_each_call(): void
+    {
+        $membership = ['user-1' => true, 'user-2' => false];
+        $first = $this->dynamicUser('user-1', $membership);
+        $second = $this->dynamicUser('user-2', $membership);
+        $users = Mockery::mock(UserRepository::class);
+        $users->expects('all')->twice()->andReturn(new UserCollection([$first, $second]));
+        $resolver = new AudienceResolver($users, new AudienceMatcher);
+        $audience = ['roles' => ['editor']];
+
+        $this->assertSame(['user-1'], $resolver->resolve($audience)->map->id()->all());
+
+        $membership = ['user-1' => false, 'user-2' => true];
+
+        $this->assertSame(['user-2'], $resolver->resolve($audience)->map->id()->all());
+    }
+
     private function user(string $id, array $roles = [], array $groups = []): User
     {
         $user = Mockery::mock(User::class);
         $user->allows('id')->andReturn($id);
         $user->allows('hasRole')->andReturnUsing(fn (string $role): bool => in_array($role, $roles, true));
         $user->allows('isInGroup')->andReturnUsing(fn (string $group): bool => in_array($group, $groups, true));
+
+        return $user;
+    }
+
+    private function dynamicUser(string $id, array &$membership): User
+    {
+        $user = Mockery::mock(User::class);
+        $user->allows('id')->andReturn($id);
+        $user->allows('hasRole')->andReturnUsing(
+            function (string $role) use ($id, &$membership): bool {
+                return $role === 'editor' && ($membership[$id] ?? false);
+            },
+        );
+        $user->allows('isInGroup')->andReturnFalse();
 
         return $user;
     }

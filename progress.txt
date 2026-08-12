@@ -180,3 +180,9 @@ Todo: De-duplicate users targeted through multiple audience rules.
 Done: Added an audience resolver that scans the current Statamic user repository once, filters through the shared matcher, and returns one user per stable user ID even when rules or repository results overlap.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: The resolver preserves repository order while returning Statamic's native UserCollection type for downstream inbox and reporting use.
+
+2026-08-12 16:49:42 NZST
+Todo: Resolve the targeted user set at query/view time.
+Done: Kept audience expansion deliberately uncached and verified that every resolution reads the current user repository and current role/group membership.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: A user moving into or out of a targeted role is reflected on the next inbox/report query without modifying or republishing the notice.
