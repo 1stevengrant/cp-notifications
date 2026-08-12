@@ -168,3 +168,9 @@ Todo: Ensure a snooze lasts 24 hours and cannot be used a second time for the sa
 Done: Finalized both snooze drivers around create-once behavior and verified database and file defaults expire exactly 24 hours after creation while repeat attempts retain the original expiry and single record.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Snooze activity remains strict-before expiry, so the snooze is inactive at the exact 24-hour boundary while its retained record prevents reuse.
+
+2026-08-12 16:48:19 NZST
+Todo: Resolve audience membership from `all`, roles, groups, and explicit user IDs.
+Done: Added an audience matcher that evaluates notification entries or audience arrays against Statamic users using all-user, effective-role, group, and explicit-user rules.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Role matching uses Statamic's effective `hasRole` behavior, so roles inherited through groups are included in membership resolution.

@@ -40,7 +40,7 @@
 
 ## 4. Audience and active-notice resolution
 
-- [ ] Resolve audience membership from `all`, roles, groups, and explicit user IDs.
+- [x] Resolve audience membership from `all`, roles, groups, and explicit user IDs.
 - [ ] De-duplicate users targeted through multiple audience rules.
 - [ ] Resolve the targeted user set at query/view time.
 - [ ] Implement active-window checks using published status, `start_date`, optional `end_date`, and the site timezone.
