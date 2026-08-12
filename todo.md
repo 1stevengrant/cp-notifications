@@ -16,7 +16,7 @@
 ## 2. Notice content model
 
 - [x] Create a routeless, CP-only `notifications` collection.
-- [ ] Create its blueprint with title, Bard body, severity, blocking, snoozeable, priority, audience, scheduling, and nudge fields.
+- [x] Create its blueprint with title, Bard body, severity, blocking, snoozeable, priority, audience, scheduling, and nudge fields.
 - [ ] Add validation requiring at least one effective audience target before publishing.
 - [ ] Force or treat `snoozeable` as false whenever `blocking` is true.
 - [ ] Ensure notices are global across multisite installations.

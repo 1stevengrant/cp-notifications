@@ -60,3 +60,9 @@ Todo: Create a routeless, CP-only `notifications` collection.
 Done: Expanded the install command with an idempotent collection installer that creates the notifications collection without routes or required slugs and refuses to overwrite a conflicting routed collection.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: With no collection route, notification entries have no public content URL and are managed exclusively through control-panel surfaces.
+
+2026-08-12 16:34:00 NZST
+Todo: Create the notification blueprint with content, severity, behavior, audience, scheduling, and nudge fields.
+Done: Added an installer-owned Notification blueprint with required title/Bard content, independent severity and blocking controls, optional priority, structured audience selectors, time-aware start/end scheduling, and structured nudge settings.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Audience and nudge values are stored as grouped objects matching the PRD data shape; their behavioral validation is implemented in subsequent todos.
