@@ -318,3 +318,9 @@ Todo: Add CP middleware that guards routes when enforcement is `strict`.
 Done: Added and registered authenticated-CP middleware that evaluates the live blocking stack only in strict mode and redirects gated requests to the acknowledgement interstitial.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: The middleware lives after Statamic authentication and exempts the addon's interstitial/API action routes so users can fetch and clear the notice that caused gating.
+
+2026-08-12 17:11:32 NZST
+Todo: Redirect users with an active blocking notice to the interstitial.
+Done: Added a behavioral middleware test using a real published blocking entry, live audience/window filtering, empty acknowledgement/snooze state, and a non-bypass user to prove CP requests redirect to the interstitial.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The test exercises the composed production resolver rather than stubbing the redirect decision, covering canonical collection querying and gating-stack behavior together.
