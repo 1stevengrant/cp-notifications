@@ -45,7 +45,7 @@
 - [x] Resolve the targeted user set at query/view time.
 - [x] Implement active-window checks using published status, `start_date`, optional `end_date`, and the site timezone.
 - [x] Filter acknowledged notices from the active stack.
-- [ ] Filter notices with a currently active snooze from the active stack.
+- [x] Filter notices with a currently active snooze from the active stack.
 - [ ] Keep bypass users in audience/inbox results while excluding them only from gating.
 - [ ] Order notices by explicit priority override, then severity (`critical`, `warning`, `info`), then oldest `start_date`.
 - [ ] Define and test the exact precedence/direction for nullable and tied priorities.
