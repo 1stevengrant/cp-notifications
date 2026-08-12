@@ -192,3 +192,9 @@ Todo: Implement active-window checks using published status, `start_date`, optio
 Done: Added a published-notice active-window evaluator using the application/site timezone, inclusive start boundaries, exclusive end boundaries, and indefinite open-ended windows.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Drafts, future notices, expired notices, and malformed notices without the required start date are inactive; timezone-aware instants are normalized before comparison.
+
+2026-08-12 16:51:43 NZST
+Todo: Filter acknowledged notices from the active stack.
+Done: Added the active-stack resolver, filtering notices by live audience, active window, and the absence of a persisted acknowledgement for the current notification/user pair.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Audience and scheduling filters run before repository lookups, avoiding acknowledgement reads for notices that cannot enter the user's active stack.
