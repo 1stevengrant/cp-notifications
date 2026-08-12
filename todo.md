@@ -123,7 +123,7 @@
 - [x] Test addon registration, config defaults, navigation, and permissions.
 - [x] Test blueprint validation, including empty audiences and blocking/snoozeable rules.
 - [x] Contract-test both acknowledgement repository drivers.
-- [ ] Contract-test both snooze repository drivers.
+- [x] Contract-test both snooze repository drivers.
 - [ ] Test parallel file-driver acknowledgements for race safety and valid YAML output.
 - [ ] Test idempotent, once-only acknowledgements under concurrent requests.
 - [ ] Test database uniqueness under concurrent acknowledgement attempts.

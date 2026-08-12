@@ -522,3 +522,9 @@ Todo: Contract-test both acknowledgement repository drivers.
 Done: Audited and ran immutable interface/concrete API checks plus direct file and Eloquent record, idempotence, lookup, and query behavior coverage.
 Tests: vendor/bin/phpunit --filter 'AcknowledgementRepositoryContractTest|FileRepositoriesTest|EloquentRepositoriesTest' --testdox
 Notes: Ten combined repository tests with 68 assertions also exercise the file driver's competing-process behavior; dedicated concurrency checklist items remain separately audited.
+
+2026-08-12 17:44:20 NZST
+Todo: Contract-test both snooze repository drivers.
+Done: Audited and ran the single-use repository contract plus direct file and Eloquent persistence, lookup, query, reuse prevention, and default-expiry coverage.
+Tests: vendor/bin/phpunit --filter 'SnoozeRepositoryContractTest|FileRepositoriesTest|EloquentRepositoriesTest' --testdox
+Notes: Ten combined tests with 64 assertions verify both drivers through the same externally observable semantics while retaining driver-specific storage checks.
