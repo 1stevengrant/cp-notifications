@@ -588,3 +588,9 @@ Todo: Test overlay top-down behavior for mixed blocking/advisory stacks.
 Done: Added a mixed blocking/advisory active-stack case and composed its server order with the overlay's index-zero-only render path and no iteration escape.
 Tests: vendor/bin/phpunit --filter 'ActiveStackResolverTest|OverlayAssetTest' --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Explicit priority can place an advisory ahead of a blocking notice; whichever server ordering selects first is the only actionable notice until refresh advances the stack.
+
+2026-08-12 17:52:20 NZST
+Todo: Test strict middleware enforcement and modal-only mode.
+Done: Audited and ran authenticated middleware registration, live strict blocking redirect, route exemptions, bypass short-circuit, and modal gating-disable/overlay-retention coverage.
+Tests: vendor/bin/phpunit --filter EnforceBlockingNotificationsTest --testdox
+Notes: Six behavioral tests with 19 assertions include a real published blocking entry and verify mode branching before resolver work, not merely configuration strings.
