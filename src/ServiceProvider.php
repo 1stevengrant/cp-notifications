@@ -9,6 +9,7 @@ use Ghijk\CpNotifications\Listeners\ValidateNotificationAudience;
 use Ghijk\CpNotifications\Listeners\NormalizeNotificationBehavior;
 use Ghijk\CpNotifications\Listeners\PreventLockedNotificationEdits;
 use Ghijk\CpNotifications\Listeners\RenderLockedNotificationReadOnly;
+use Ghijk\CpNotifications\Http\Middleware\EnforceBlockingNotifications;
 use Ghijk\CpNotifications\Repositories\EloquentAcknowledgementRepository;
 use Ghijk\CpNotifications\Repositories\EloquentSnoozeRepository;
 use Ghijk\CpNotifications\Repositories\FileAcknowledgementRepository;
@@ -24,6 +25,12 @@ use Statamic\Providers\AddonServiceProvider;
 
 class ServiceProvider extends AddonServiceProvider
 {
+    protected $middlewareGroups = [
+        'statamic.cp.authenticated' => [
+            EnforceBlockingNotifications::class,
+        ],
+    ];
+
     protected $listen = [
         EntryBlueprintFound::class => [
             RenderLockedNotificationReadOnly::class,

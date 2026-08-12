@@ -73,7 +73,7 @@
 ## 7. Strict blocking enforcement
 
 - [x] Build the acknowledgement interstitial for unresolved blocking notices.
-- [ ] Add CP middleware that guards routes when enforcement is `strict`.
+- [x] Add CP middleware that guards routes when enforcement is `strict`.
 - [ ] Redirect users with an active blocking notice to the interstitial.
 - [ ] Avoid redirect loops and permit required assets, acknowledgement routes, and logout.
 - [ ] Short-circuit route gating for users with `bypass notifications`.

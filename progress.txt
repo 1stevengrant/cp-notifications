@@ -312,3 +312,9 @@ Todo: Build the acknowledgement interstitial for unresolved blocking notices.
 Done: Added a dedicated authenticated CP interstitial route and view plus a reusable resolver that derives ordered blocking notices from the live active and permission-aware gating stacks.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: The interstitial renders only when an unresolved blocking notice exists and otherwise returns users to the CP; the global confirmation overlay remains the action surface.
+
+2026-08-12 17:10:27 NZST
+Todo: Add CP middleware that guards routes when enforcement is `strict`.
+Done: Added and registered authenticated-CP middleware that evaluates the live blocking stack only in strict mode and redirects gated requests to the acknowledgement interstitial.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The middleware lives after Statamic authentication and exempts the addon's interstitial/API action routes so users can fetch and clear the notice that caused gating.
