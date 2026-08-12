@@ -33,7 +33,7 @@
 - [x] Enforce uniqueness per `(notification, user)` at the database level.
 - [x] Implement file repositories using one YAML file per notice/user record under the configured storage path.
 - [x] Make file writes atomic and safe under concurrent requests.
-- [ ] Implement `auto`, `eloquent`, and `file` driver resolution; auto-detect `statamic/eloquent-driver`.
+- [x] Implement `auto`, `eloquent`, and `file` driver resolution; auto-detect `statamic/eloquent-driver`.
 - [ ] Bind the selected repositories into Laravel's container.
 - [ ] Ensure acknowledgements cannot be updated, revoked, or deleted through application APIs.
 - [ ] Ensure a snooze lasts 24 hours and cannot be used a second time for the same notice/user.
