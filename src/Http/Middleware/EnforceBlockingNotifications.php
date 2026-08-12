@@ -22,10 +22,7 @@ final class EnforceBlockingNotifications
 
         $user = User::current();
 
-        if (! $user || $request->routeIs(
-            'statamic.cp.cp-notifications.acknowledge',
-            'statamic.cp.cp-notifications.api.*',
-        )) {
+        if (! $user || $this->isExempt($request)) {
             return $next($request);
         }
 
@@ -34,5 +31,19 @@ final class EnforceBlockingNotifications
         }
 
         return $next($request);
+    }
+
+    private function isExempt(Request $request): bool
+    {
+        return $request->routeIs(
+            'statamic.cp.cp-notifications.acknowledge',
+            'statamic.cp.cp-notifications.api.*',
+            'statamic.cp.logout',
+            'statamic.cp.token',
+            'statamic.cp.extend',
+            'statamic.cp.assets.thumbnails.show',
+            'statamic.cp.assets.svgs.show',
+            'statamic.cp.assets.pdfs.show',
+        );
     }
 }

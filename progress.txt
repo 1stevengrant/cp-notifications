@@ -324,3 +324,9 @@ Todo: Redirect users with an active blocking notice to the interstitial.
 Done: Added a behavioral middleware test using a real published blocking entry, live audience/window filtering, empty acknowledgement/snooze state, and a non-bypass user to prove CP requests redirect to the interstitial.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: The test exercises the composed production resolver rather than stubbing the redirect decision, covering canonical collection querying and gating-stack behavior together.
+
+2026-08-12 17:12:20 NZST
+Todo: Avoid redirect loops and permit required assets, acknowledgement routes, and logout.
+Done: Centralized strict-gate exemptions for the interstitial, notification APIs, logout/session maintenance, and CP thumbnail/SVG/PDF delivery routes.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The interstitial and action wildcard prevent self-redirect loops; static compiled addon assets are served outside the authenticated CP route group and therefore never enter this middleware.

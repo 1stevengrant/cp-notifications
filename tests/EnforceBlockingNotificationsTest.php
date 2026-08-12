@@ -104,4 +104,22 @@ class EnforceBlockingNotificationsTest extends TestCase
 
         $this->assertTrue($response->isRedirect(route('statamic.cp.cp-notifications.acknowledge')));
     }
+
+    public function test_interstitial_actions_logout_session_and_required_asset_routes_are_exempt(): void
+    {
+        $source = file_get_contents(__DIR__.'/../src/Http/Middleware/EnforceBlockingNotifications.php');
+
+        foreach ([
+            'statamic.cp.cp-notifications.acknowledge',
+            'statamic.cp.cp-notifications.api.*',
+            'statamic.cp.logout',
+            'statamic.cp.token',
+            'statamic.cp.extend',
+            'statamic.cp.assets.thumbnails.show',
+            'statamic.cp.assets.svgs.show',
+            'statamic.cp.assets.pdfs.show',
+        ] as $route) {
+            $this->assertStringContainsString("'{$route}'", $source);
+        }
+    }
 }
