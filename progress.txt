@@ -426,3 +426,9 @@ Todo: Implement nudge eligibility from enabled, threshold_hours, and optional ca
 Done: Added an application-timezone eligibility policy covering active-window enforcement, inclusive threshold and cadence boundaries, one-shot behavior, and manual timing bypass.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Manual reminders may bypass per-notice enablement and timing but cannot send for draft, future, or expired notices; non-positive cadence is normalized to a minimum one-hour repeat interval.
+
+2026-08-12 17:31:51 NZST
+Todo: Track enough delivery state to enforce one-shot and repeating cadence without duplicate sends.
+Done: Added per-notice/per-user delivery timestamp and count repositories for file and Eloquent storage, integrated them into eligibility and sending, and made queued notice jobs unique.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: File updates use an exclusive lock and atomic rename; database updates use a unique recipient key and transactional increment, so one recipient's delivery never suppresses a newly targeted user.

@@ -5,11 +5,12 @@ namespace Ghijk\CpNotifications\Jobs;
 use Ghijk\CpNotifications\Nudges\NotificationNudgeService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-final class SendNotificationNudges implements ShouldQueue
+final class SendNotificationNudges implements ShouldBeUnique, ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -22,5 +23,10 @@ final class SendNotificationNudges implements ShouldQueue
     public function handle(NotificationNudgeService $nudges): void
     {
         $nudges->send($this->notificationId, $this->manual);
+    }
+
+    public function uniqueId(): string
+    {
+        return $this->notificationId;
     }
 }

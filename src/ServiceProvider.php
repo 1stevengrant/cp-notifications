@@ -5,6 +5,7 @@ namespace Ghijk\CpNotifications;
 use Ghijk\CpNotifications\Console\Commands\InstallCommand;
 use Ghijk\CpNotifications\Contracts\AcknowledgementRepository;
 use Ghijk\CpNotifications\Contracts\SnoozeRepository;
+use Ghijk\CpNotifications\Contracts\NudgeDeliveryRepository;
 use Ghijk\CpNotifications\Listeners\ValidateNotificationAudience;
 use Ghijk\CpNotifications\Listeners\NormalizeNotificationBehavior;
 use Ghijk\CpNotifications\Listeners\PreventLockedNotificationEdits;
@@ -15,6 +16,8 @@ use Ghijk\CpNotifications\Repositories\EloquentAcknowledgementRepository;
 use Ghijk\CpNotifications\Repositories\EloquentSnoozeRepository;
 use Ghijk\CpNotifications\Repositories\FileAcknowledgementRepository;
 use Ghijk\CpNotifications\Repositories\FileSnoozeRepository;
+use Ghijk\CpNotifications\Repositories\FileNudgeDeliveryRepository;
+use Ghijk\CpNotifications\Repositories\EloquentNudgeDeliveryRepository;
 use Ghijk\CpNotifications\Repositories\RepositoryDriverResolver;
 use Illuminate\Contracts\Foundation\Application;
 use Statamic\CP\Navigation\Nav as Navigation;
@@ -74,6 +77,12 @@ class ServiceProvider extends AddonServiceProvider
             return $this->repositoryDriver($app) === 'eloquent'
                 ? new EloquentSnoozeRepository($app->make('db')->connection())
                 : new FileSnoozeRepository($app->make('files'), $this->repositoryStoragePath($app));
+        });
+
+        $this->app->singleton(NudgeDeliveryRepository::class, function (Application $app) {
+            return $this->repositoryDriver($app) === 'eloquent'
+                ? new EloquentNudgeDeliveryRepository($app->make('db')->connection())
+                : new FileNudgeDeliveryRepository($app->make('files'), $this->repositoryStoragePath($app));
         });
     }
 
