@@ -81,7 +81,7 @@
 
 ## 8. Inbox and management surfaces
 
-- [ ] Build the user's Inbox showing only notices targeted at that user.
+- [x] Build the user's Inbox showing only notices targeted at that user.
 - [ ] Show active notices and retained history, including previously read notices.
 - [ ] Apply `retention.inbox_days`; treat `null` as indefinite retention.
 - [ ] Ensure expired, unacknowledged advisories stop appearing as active but remain reportable.

@@ -4,10 +4,11 @@ use Ghijk\CpNotifications\Http\Controllers\ActiveStackController;
 use Ghijk\CpNotifications\Http\Controllers\AcknowledgeNotificationController;
 use Ghijk\CpNotifications\Http\Controllers\SnoozeNotificationController;
 use Ghijk\CpNotifications\Http\Controllers\BlockingInterstitialController;
+use Ghijk\CpNotifications\Http\Controllers\InboxController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('cp-notifications')->name('cp-notifications.')->group(function (): void {
-    Route::view('inbox', 'cp-notifications::inbox')->name('inbox');
+    Route::get('inbox', InboxController::class)->name('inbox');
     Route::view('manage', 'cp-notifications::manage')->name('manage');
     Route::view('reports', 'cp-notifications::reports')->name('reports');
     Route::get('acknowledge', BlockingInterstitialController::class)->name('acknowledge');

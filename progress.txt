@@ -342,3 +342,9 @@ Todo: In `modal` mode, disable route guarding while retaining the overlay.
 Done: Added a behavioral test proving modal enforcement returns before user/stack resolution and confirmed the global overlay remains appended independently of middleware mode.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Strict and modal share the same overlay and action APIs; only strict mode activates route redirection.
+
+2026-08-12 17:14:35 NZST
+Todo: Build the user's Inbox showing only notices targeted at that user.
+Done: Replaced the placeholder Inbox with a user-specific controller, canonical live resolver, and CP listing view restricted to published notices matching the current user's audience.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Audience membership is evaluated on every Inbox request, so role/group changes immediately affect visibility and draft notices never leak to recipients.
