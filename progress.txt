@@ -228,3 +228,9 @@ Todo: Compute `locked` as true once the first acknowledgement exists.
 Done: Added a notification lock service that derives lock state directly from the immutable acknowledgement repository and becomes true with the first record.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Lock state is derived rather than copied into entry content, preventing stale flags and keeping both persistence drivers authoritative.
+
+2026-08-12 16:56:18 NZST
+Todo: Prevent edits to locked notice content and settings on the server.
+Done: Registered an early EntrySaving listener that rejects every save path for locked notification entries while leaving unlocked notifications and unrelated collections untouched.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Enforcement runs before behavior normalization and audience validation, so rejected requests cannot mutate locked notice data in memory before failure.

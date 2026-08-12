@@ -7,6 +7,7 @@ use Ghijk\CpNotifications\Contracts\AcknowledgementRepository;
 use Ghijk\CpNotifications\Contracts\SnoozeRepository;
 use Ghijk\CpNotifications\Listeners\ValidateNotificationAudience;
 use Ghijk\CpNotifications\Listeners\NormalizeNotificationBehavior;
+use Ghijk\CpNotifications\Listeners\PreventLockedNotificationEdits;
 use Ghijk\CpNotifications\Repositories\EloquentAcknowledgementRepository;
 use Ghijk\CpNotifications\Repositories\EloquentSnoozeRepository;
 use Ghijk\CpNotifications\Repositories\FileAcknowledgementRepository;
@@ -23,6 +24,7 @@ class ServiceProvider extends AddonServiceProvider
 {
     protected $listen = [
         EntrySaving::class => [
+            PreventLockedNotificationEdits::class,
             NormalizeNotificationBehavior::class,
             ValidateNotificationAudience::class,
         ],
