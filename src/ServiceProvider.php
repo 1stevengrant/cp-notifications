@@ -88,9 +88,11 @@ class ServiceProvider extends AddonServiceProvider
         $this->registerNavigation();
         $this->registerPermissions();
 
-        Collection::computed('notifications', 'notification_status', fn ($entry): string => $this->app
-            ->make(NotificationStatus::class)
-            ->for($entry));
+        Collection::computed(
+            'notifications',
+            'notification_status',
+            static fn ($entry): string => app(NotificationStatus::class)->for($entry),
+        );
     }
 
     public function registerNavigation(): void

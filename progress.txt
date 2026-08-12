@@ -378,3 +378,9 @@ Todo: Display appropriate status indicators for draft, scheduled, active, expire
 Done: Added a computed management status column and lifecycle classifier covering all five states with application-timezone scheduling and acknowledgement-backed locking.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Locked takes precedence because acknowledged notices are immutable; expiration uses the same exclusive end boundary as active-stack resolution.
+
+2026-08-12 17:22:01 NZST
+Todo: Build a per-notice report authorized by view notification reports.
+Done: Replaced the report placeholder with a canonical notification index and per-notice report route, both enforcing the reporting permission server-side.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Per-notice lookup rejects entries outside the notifications collection or canonical site; the computed management callback was also made capture-free so entries remain queue-serializable.
