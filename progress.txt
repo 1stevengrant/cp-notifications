@@ -108,3 +108,9 @@ Todo: Create `AcknowledgementRepository` with find, idempotent record, forNotifi
 Done: Defined the typed acknowledgement persistence boundary with lookup, once-only recording, and notification/user collection queries.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: record accepts an optional CarbonImmutable timestamp for deterministic driver contract tests; implementations must return the original record on duplicate calls.
+
+2026-08-12 17:06:00 NZST
+Todo: Create the equivalent `SnoozeRepository` contract.
+Done: Defined the typed snooze persistence boundary with lookup, idempotent once-only recording, and notification/user collection queries.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: record accepts an optional CarbonImmutable expiry for deterministic driver and 24-hour boundary tests; implementations must return the original snooze when a user attempts to spend it again.
