@@ -20,7 +20,7 @@
 - [x] Add validation requiring at least one effective audience target before publishing.
 - [x] Force or treat `snoozeable` as false whenever `blocking` is true.
 - [x] Ensure notices are global across multisite installations.
-- [ ] Preserve Statamic's native author, revisions, and draft/published lifecycle.
+- [x] Preserve Statamic's native author, revisions, and draft/published lifecycle.
 
 ## 3. Acknowledgement and snooze storage
 

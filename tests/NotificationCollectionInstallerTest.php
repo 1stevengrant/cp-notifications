@@ -5,6 +5,7 @@ namespace Ghijk\CpNotifications\Tests;
 use Illuminate\Console\Command;
 use Statamic\Facades\Blueprint;
 use Statamic\Facades\Collection;
+use Statamic\Facades\Entry;
 use Statamic\Facades\Site;
 
 class NotificationCollectionInstallerTest extends TestCase
@@ -103,5 +104,22 @@ class NotificationCollectionInstallerTest extends TestCase
         $this->assertFalse($collection->propagate());
         $this->assertNull($collection->route('default'));
         $this->assertFalse($collection->routes()->has('secondary'));
+    }
+
+    public function test_it_preserves_native_authorship_revisions_and_draft_lifecycle(): void
+    {
+        config()->set('statamic.revisions.enabled', true);
+        $this->artisan('cp-notifications:install')->assertExitCode(Command::SUCCESS);
+
+        $collection = Collection::find('notifications');
+        $entry = Entry::make()
+            ->collection($collection)
+            ->published($collection->defaultPublishState())
+            ->data(['author' => ['creator-id']]);
+
+        $this->assertFalse($collection->defaultPublishState());
+        $this->assertTrue($collection->fileData()['revisions']);
+        $this->assertFalse($entry->published());
+        $this->assertSame(['creator-id'], $entry->authors()->all());
     }
 }

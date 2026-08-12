@@ -30,6 +30,8 @@ class NotificationCollectionInstaller
                 ->routes([])
                 ->sites([Site::default()->handle()])
                 ->propagate(false)
+                ->revisionsEnabled(true)
+                ->defaultPublishState(false)
                 ->requiresSlugs(false),
             fn (CollectionContract $collection) => $collection->save(),
         );
