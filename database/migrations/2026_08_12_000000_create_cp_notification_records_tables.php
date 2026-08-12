@@ -1,8 +1,8 @@
 <?php
 
 use Ghijk\CpNotifications\Repositories\EloquentAcknowledgementRepository;
-use Ghijk\CpNotifications\Repositories\EloquentSnoozeRepository;
 use Ghijk\CpNotifications\Repositories\EloquentNudgeDeliveryRepository;
+use Ghijk\CpNotifications\Repositories\EloquentSnoozeRepository;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

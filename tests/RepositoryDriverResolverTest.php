@@ -2,6 +2,7 @@
 
 namespace Ghijk\CpNotifications\Tests;
 
+use Composer\InstalledVersions;
 use Ghijk\CpNotifications\Repositories\RepositoryDriverResolver;
 use InvalidArgumentException;
 
@@ -28,7 +29,7 @@ class RepositoryDriverResolverTest extends TestCase
         $resolver = new RepositoryDriverResolver;
 
         $this->assertSame(
-            \Composer\InstalledVersions::isInstalled('statamic/eloquent-driver') ? 'eloquent' : 'file',
+            InstalledVersions::isInstalled('statamic/eloquent-driver') ? 'eloquent' : 'file',
             $resolver->resolve('auto'),
         );
     }

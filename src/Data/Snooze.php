@@ -11,8 +11,7 @@ final readonly class Snooze implements JsonSerializable
         public string $notificationId,
         public string $userId,
         public CarbonImmutable $snoozedUntil,
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $data): self
     {

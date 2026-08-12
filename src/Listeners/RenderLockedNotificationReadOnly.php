@@ -7,9 +7,7 @@ use Statamic\Events\EntryBlueprintFound;
 
 final class RenderLockedNotificationReadOnly
 {
-    public function __construct(private NotificationLock $lock)
-    {
-    }
+    public function __construct(private NotificationLock $lock) {}
 
     public function handle(EntryBlueprintFound $event): void
     {

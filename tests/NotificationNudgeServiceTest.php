@@ -12,6 +12,7 @@ use Ghijk\CpNotifications\Notifications\ActiveWindow;
 use Ghijk\CpNotifications\Nudges\NotificationNudgeService;
 use Ghijk\CpNotifications\Nudges\NudgeEligibility;
 use Ghijk\CpNotifications\Repositories\FileNudgeDeliveryRepository;
+use Illuminate\Contracts\Mail\Factory;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Mail;
 use Mockery;
@@ -68,7 +69,7 @@ class NotificationNudgeServiceTest extends TestCase
             $acknowledgements,
             new FileNudgeDeliveryRepository(new Filesystem, $this->deliveryPath),
             new NudgeEligibility(new ActiveWindow),
-            $this->app->make(\Illuminate\Contracts\Mail\Factory::class),
+            $this->app->make(Factory::class),
         );
 
         $this->assertSame(1, $service->send('notice-1'));
@@ -106,17 +107,15 @@ class NotificationNudgeServiceTest extends TestCase
             $acknowledgements,
             new FileNudgeDeliveryRepository(new Filesystem, $this->deliveryPath),
             new NudgeEligibility(new ActiveWindow),
-            $this->app->make(\Illuminate\Contracts\Mail\Factory::class),
+            $this->app->make(Factory::class),
         );
 
         $this->assertSame(1, $service->send('notice-1'));
-        Mail::assertSent(NotificationNudge::class, fn ($mail): bool =>
-            $mail->hasTo('pending@example.com')
+        Mail::assertSent(NotificationNudge::class, fn ($mail): bool => $mail->hasTo('pending@example.com')
             && ! str_contains($mail->render(), 'Sensitive control-panel-only content')
             && str_contains($mail->render(), cp_route('cp-notifications.inbox'))
         );
-        Mail::assertNotSent(NotificationNudge::class, fn ($mail): bool =>
-            $mail->hasTo('acknowledged@example.com') || $mail->hasTo('outside@example.com')
+        Mail::assertNotSent(NotificationNudge::class, fn ($mail): bool => $mail->hasTo('acknowledged@example.com') || $mail->hasTo('outside@example.com')
         );
     }
 
@@ -143,7 +142,7 @@ class NotificationNudgeServiceTest extends TestCase
             $acknowledgements,
             new FileNudgeDeliveryRepository(new Filesystem, $this->deliveryPath),
             new NudgeEligibility(new ActiveWindow),
-            $this->app->make(\Illuminate\Contracts\Mail\Factory::class),
+            $this->app->make(Factory::class),
         );
 
         $this->assertSame(1, $service->send('notice-1'));

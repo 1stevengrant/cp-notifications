@@ -7,6 +7,7 @@ use Ghijk\CpNotifications\Contracts\AcknowledgementRepository;
 use Ghijk\CpNotifications\Data\Acknowledgement;
 use Ghijk\CpNotifications\Listeners\PreventLockedNotificationEdits;
 use Ghijk\CpNotifications\Notifications\NotificationLock;
+use Ghijk\CpNotifications\ServiceProvider;
 use Illuminate\Validation\ValidationException;
 use Mockery;
 use Statamic\Entries\Collection;
@@ -72,7 +73,7 @@ class PreventLockedNotificationEditsTest extends TestCase
 
     public function test_the_listener_is_registered_before_save_normalization(): void
     {
-        $listeners = (new \ReflectionClass(\Ghijk\CpNotifications\ServiceProvider::class))
+        $listeners = (new \ReflectionClass(ServiceProvider::class))
             ->getDefaultProperties()['listen'][EntrySaving::class];
 
         $this->assertSame(PreventLockedNotificationEdits::class, $listeners[0]);

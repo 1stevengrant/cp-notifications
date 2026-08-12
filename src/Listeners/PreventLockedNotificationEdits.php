@@ -8,9 +8,7 @@ use Statamic\Events\EntrySaving;
 
 final class PreventLockedNotificationEdits
 {
-    public function __construct(private NotificationLock $lock)
-    {
-    }
+    public function __construct(private NotificationLock $lock) {}
 
     public function handle(EntrySaving $event): void
     {

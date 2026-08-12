@@ -16,8 +16,7 @@ final class FileAcknowledgementRepository implements AcknowledgementRepository
         private readonly Filesystem $files,
         private readonly string $storagePath,
         private readonly ?AtomicFileWriter $writer = null,
-    ) {
-    }
+    ) {}
 
     public function find(string $notificationId, string $userId): ?Acknowledgement
     {

@@ -5,14 +5,12 @@ namespace Ghijk\CpNotifications\Http\Middleware;
 use Closure;
 use Ghijk\CpNotifications\Notifications\BlockingNoticeResolver;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Statamic\Facades\User;
+use Symfony\Component\HttpFoundation\Response;
 
 final class EnforceBlockingNotifications
 {
-    public function __construct(private BlockingNoticeResolver $blocking)
-    {
-    }
+    public function __construct(private BlockingNoticeResolver $blocking) {}
 
     public function handle(Request $request, Closure $next): Response
     {

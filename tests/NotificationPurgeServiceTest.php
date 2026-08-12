@@ -80,8 +80,7 @@ class NotificationPurgeServiceTest extends TestCase
         $logger = Mockery::mock(LoggerInterface::class);
         $logger->expects('info')->once()->with(
             'CP notification manual purge completed.',
-            Mockery::on(fn (array $context): bool =>
-                $context['actor_id'] === 'admin-1'
+            Mockery::on(fn (array $context): bool => $context['actor_id'] === 'admin-1'
                 && $context['notification_ids'] === ['notice-1']
                 && $context['affected_count'] === 1
                 && $context['occurred_at'] === '2026-08-12T12:00:00+12:00'
@@ -105,8 +104,7 @@ class NotificationPurgeServiceTest extends TestCase
         $logger = Mockery::mock(LoggerInterface::class);
         $logger->expects('error')->once()->with(
             'CP notification manual purge failed.',
-            Mockery::on(fn (array $context): bool =>
-                $context['actor_id'] === 'admin-1'
+            Mockery::on(fn (array $context): bool => $context['actor_id'] === 'admin-1'
                 && $context['affected_count'] === 0
                 && $context['result'] === 'failure'
                 && $context['exception'] === \RuntimeException::class

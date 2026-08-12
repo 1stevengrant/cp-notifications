@@ -8,9 +8,7 @@ use Statamic\Events\EntryDeleting;
 
 final class PreventAcknowledgedNotificationDeletion
 {
-    public function __construct(private NotificationLock $lock)
-    {
-    }
+    public function __construct(private NotificationLock $lock) {}
 
     public function handle(EntryDeleting $event): void
     {

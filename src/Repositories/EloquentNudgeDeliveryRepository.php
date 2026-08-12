@@ -12,9 +12,7 @@ final class EloquentNudgeDeliveryRepository implements NudgeDeliveryRepository
 {
     public const TABLE = 'cp_notification_nudge_deliveries';
 
-    public function __construct(private ConnectionInterface $database)
-    {
-    }
+    public function __construct(private ConnectionInterface $database) {}
 
     public function find(string $notificationId, string $userId): ?NudgeDelivery
     {

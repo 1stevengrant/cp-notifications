@@ -5,10 +5,10 @@ namespace Ghijk\CpNotifications\Tests;
 use Ghijk\CpNotifications\Audience\AudienceMatcher;
 use Ghijk\CpNotifications\Audience\AudienceResolver;
 use Mockery;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Statamic\Auth\UserCollection;
 use Statamic\Contracts\Auth\User;
 use Statamic\Contracts\Auth\UserRepository;
-use PHPUnit\Framework\Attributes\DataProvider;
 
 class AudienceResolverTest extends TestCase
 {

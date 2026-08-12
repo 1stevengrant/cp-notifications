@@ -18,8 +18,7 @@ final class NotificationNudgeService
         private NudgeDeliveryRepository $deliveries,
         private NudgeEligibility $eligibility,
         private MailFactory $mail,
-    ) {
-    }
+    ) {}
 
     public function send(string $notificationId, bool $manual = false): int
     {

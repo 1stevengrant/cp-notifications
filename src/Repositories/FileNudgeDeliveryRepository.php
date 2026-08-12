@@ -11,9 +11,7 @@ use Symfony\Component\Yaml\Yaml;
 
 final class FileNudgeDeliveryRepository implements NudgeDeliveryRepository
 {
-    public function __construct(private Filesystem $files, private string $storagePath)
-    {
-    }
+    public function __construct(private Filesystem $files, private string $storagePath) {}
 
     public function find(string $notificationId, string $userId): ?NudgeDelivery
     {

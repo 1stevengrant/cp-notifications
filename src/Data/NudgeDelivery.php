@@ -11,8 +11,7 @@ final readonly class NudgeDelivery
         public string $userId,
         public CarbonImmutable $lastSentAt,
         public int $sendCount,
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $data): self
     {

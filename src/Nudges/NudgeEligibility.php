@@ -10,9 +10,7 @@ use Statamic\Contracts\Entries\Entry;
 
 final class NudgeEligibility
 {
-    public function __construct(private ActiveWindow $window)
-    {
-    }
+    public function __construct(private ActiveWindow $window) {}
 
     public function eligible(
         Entry $notification,

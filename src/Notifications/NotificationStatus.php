@@ -9,9 +9,7 @@ use Statamic\Contracts\Entries\Entry;
 
 final class NotificationStatus
 {
-    public function __construct(private NotificationLock $lock)
-    {
-    }
+    public function __construct(private NotificationLock $lock) {}
 
     public function for(Entry $notification, CarbonInterface|DateTimeInterface|string|null $now = null): string
     {

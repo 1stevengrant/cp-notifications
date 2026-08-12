@@ -2,15 +2,15 @@
 
 namespace Ghijk\CpNotifications\Http\Controllers;
 
-use Ghijk\CpNotifications\Reports\NotificationReportResolver;
 use Ghijk\CpNotifications\Jobs\SendNotificationNudges;
+use Ghijk\CpNotifications\Reports\NotificationReportResolver;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Statamic\Facades\Collection;
 use Statamic\Facades\Entry;
 use Statamic\Facades\Site;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Illuminate\Http\RedirectResponse;
 
 final class ReportController
 {

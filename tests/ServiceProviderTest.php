@@ -8,8 +8,9 @@ use Ghijk\CpNotifications\Repositories\EloquentAcknowledgementRepository;
 use Ghijk\CpNotifications\Repositories\EloquentSnoozeRepository;
 use Ghijk\CpNotifications\Repositories\FileAcknowledgementRepository;
 use Ghijk\CpNotifications\Repositories\FileSnoozeRepository;
-use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
+use Ghijk\CpNotifications\ServiceProvider;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
 
 class ServiceProviderTest extends TestCase
 {
@@ -57,7 +58,7 @@ class ServiceProviderTest extends TestCase
 
     public function test_it_registers_cp_routes_and_vite_assets(): void
     {
-        $provider = $this->app->getProvider(\Ghijk\CpNotifications\ServiceProvider::class);
+        $provider = $this->app->getProvider(ServiceProvider::class);
         $reflection = new \ReflectionClass($provider);
 
         $routes = $reflection->getProperty('routes')->getValue($provider);

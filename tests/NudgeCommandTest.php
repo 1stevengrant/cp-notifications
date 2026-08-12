@@ -35,8 +35,7 @@ class NudgeCommandTest extends TestCase
             ->assertExitCode(Command::SUCCESS);
 
         Bus::assertDispatchedTimes(SendNotificationNudges::class, 1);
-        Bus::assertDispatched(SendNotificationNudges::class, fn ($job): bool =>
-            $job->notificationId === 'eligible' && ! $job->manual
+        Bus::assertDispatched(SendNotificationNudges::class, fn ($job): bool => $job->notificationId === 'eligible' && ! $job->manual
         );
     }
 

@@ -13,9 +13,7 @@ final class EloquentSnoozeRepository implements SnoozeRepository
 {
     public const TABLE = 'cp_notification_snoozes';
 
-    public function __construct(private readonly ConnectionInterface $database)
-    {
-    }
+    public function __construct(private readonly ConnectionInterface $database) {}
 
     public function find(string $notificationId, string $userId): ?Snooze
     {

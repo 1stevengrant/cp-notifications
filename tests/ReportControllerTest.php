@@ -2,6 +2,7 @@
 
 namespace Ghijk\CpNotifications\Tests;
 
+use Carbon\CarbonImmutable;
 use Ghijk\CpNotifications\Audience\AudienceMatcher;
 use Ghijk\CpNotifications\Audience\AudienceResolver;
 use Ghijk\CpNotifications\Contracts\AcknowledgementRepository;
@@ -9,15 +10,14 @@ use Ghijk\CpNotifications\Contracts\SnoozeRepository;
 use Ghijk\CpNotifications\Data\Acknowledgement;
 use Ghijk\CpNotifications\Data\Snooze;
 use Ghijk\CpNotifications\Http\Controllers\ReportController;
+use Ghijk\CpNotifications\Jobs\SendNotificationNudges;
 use Ghijk\CpNotifications\Reports\NotificationReportResolver;
-use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Bus;
-use Ghijk\CpNotifications\Jobs\SendNotificationNudges;
 use Mockery;
+use Statamic\Auth\UserCollection;
 use Statamic\Contracts\Auth\User as UserContract;
 use Statamic\Contracts\Auth\UserRepository;
-use Statamic\Auth\UserCollection;
 use Statamic\Facades\Collection;
 use Statamic\Facades\Entry;
 use Statamic\Facades\Site;
@@ -134,8 +134,7 @@ class ReportControllerTest extends TestCase
 
         (new ReportController)->remind($request, 'notice-1');
 
-        Bus::assertDispatched(SendNotificationNudges::class, fn ($job): bool =>
-            $job->notificationId === 'notice-1' && $job->manual
+        Bus::assertDispatched(SendNotificationNudges::class, fn ($job): bool => $job->notificationId === 'notice-1' && $job->manual
         );
     }
 }

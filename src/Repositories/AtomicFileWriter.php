@@ -7,9 +7,7 @@ use RuntimeException;
 
 class AtomicFileWriter
 {
-    public function __construct(private readonly Filesystem $files)
-    {
-    }
+    public function __construct(private readonly Filesystem $files) {}
 
     public function create(string $path, string $contents): bool
     {

@@ -3,9 +3,9 @@
 namespace Ghijk\CpNotifications\Tests;
 
 use Carbon\CarbonImmutable;
+use Ghijk\CpNotifications\Repositories\AtomicFileWriter;
 use Ghijk\CpNotifications\Repositories\FileAcknowledgementRepository;
 use Ghijk\CpNotifications\Repositories\FileSnoozeRepository;
-use Ghijk\CpNotifications\Repositories\AtomicFileWriter;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Symfony\Component\Yaml\Yaml;

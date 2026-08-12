@@ -57,6 +57,7 @@ class ManageNotificationsControllerTest extends TestCase
         $request = Request::create('/cp/cp-notifications/manage', 'POST', ['confirmed' => $confirmed]);
         $request->headers->set('referer', '/cp/cp-notifications/manage');
         $request->setUserResolver(fn () => $user);
+
         return $request;
     }
 }

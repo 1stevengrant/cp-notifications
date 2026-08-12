@@ -2,14 +2,15 @@
 
 namespace Ghijk\CpNotifications\Tests;
 
+use Carbon\CarbonImmutable;
 use Ghijk\CpNotifications\Audience\AudienceMatcher;
-use Ghijk\CpNotifications\Http\Controllers\InboxController;
-use Ghijk\CpNotifications\Notifications\InboxNoticeResolver;
-use Ghijk\CpNotifications\Notifications\ActiveWindow;
 use Ghijk\CpNotifications\Contracts\AcknowledgementRepository;
 use Ghijk\CpNotifications\Contracts\SnoozeRepository;
 use Ghijk\CpNotifications\Data\Acknowledgement;
-use Carbon\CarbonImmutable;
+use Ghijk\CpNotifications\Http\Controllers\InboxController;
+use Ghijk\CpNotifications\Notifications\ActiveWindow;
+use Ghijk\CpNotifications\Notifications\GatingStack;
+use Ghijk\CpNotifications\Notifications\InboxNoticeResolver;
 use Mockery;
 use Statamic\Contracts\Auth\User;
 use Statamic\Facades\Collection;
@@ -74,7 +75,7 @@ class InboxNoticeResolverTest extends TestCase
         ))->resolve($user);
 
         $this->assertSame(['targeted'], $items->pluck('notification')->map->id()->all());
-        $this->assertCount(0, (new \Ghijk\CpNotifications\Notifications\GatingStack)
+        $this->assertCount(0, (new GatingStack)
             ->forUser($items->pluck('notification'), $user));
     }
 

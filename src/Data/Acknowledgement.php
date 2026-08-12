@@ -12,8 +12,7 @@ final readonly class Acknowledgement implements JsonSerializable
         public string $notificationId,
         public string $userId,
         public CarbonImmutable $acknowledgedAt,
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $data): self
     {

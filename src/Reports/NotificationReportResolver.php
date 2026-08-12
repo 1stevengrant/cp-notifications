@@ -17,8 +17,7 @@ final class NotificationReportResolver
         private AcknowledgementRepository $acknowledgements,
         private SnoozeRepository $snoozes,
         private UserRepository $users,
-    ) {
-    }
+    ) {}
 
     public function resolve(Entry $notification): Collection
     {

@@ -2,11 +2,11 @@
 
 namespace Ghijk\CpNotifications\Notifications;
 
+use Carbon\CarbonImmutable;
+use DateTimeInterface;
 use Ghijk\CpNotifications\Audience\AudienceMatcher;
 use Ghijk\CpNotifications\Contracts\AcknowledgementRepository;
 use Ghijk\CpNotifications\Contracts\SnoozeRepository;
-use Carbon\CarbonImmutable;
-use DateTimeInterface;
 use Illuminate\Support\Collection as SupportCollection;
 use Statamic\Contracts\Auth\User;
 use Statamic\Facades\Collection;

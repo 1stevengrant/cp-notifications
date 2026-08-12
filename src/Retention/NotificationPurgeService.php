@@ -16,8 +16,7 @@ final class NotificationPurgeService
     public function __construct(
         private AcknowledgementRepository $acknowledgements,
         private LoggerInterface $logger,
-    ) {
-    }
+    ) {}
 
     public function candidates(): SupportCollection
     {

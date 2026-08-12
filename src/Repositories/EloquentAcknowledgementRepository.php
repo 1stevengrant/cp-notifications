@@ -14,9 +14,7 @@ final class EloquentAcknowledgementRepository implements AcknowledgementReposito
 {
     public const TABLE = 'cp_notification_acknowledgements';
 
-    public function __construct(private readonly ConnectionInterface $database)
-    {
-    }
+    public function __construct(private readonly ConnectionInterface $database) {}
 
     public function find(string $notificationId, string $userId): ?Acknowledgement
     {

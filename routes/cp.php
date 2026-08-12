@@ -1,12 +1,12 @@
 <?php
 
-use Ghijk\CpNotifications\Http\Controllers\ActiveStackController;
 use Ghijk\CpNotifications\Http\Controllers\AcknowledgeNotificationController;
-use Ghijk\CpNotifications\Http\Controllers\SnoozeNotificationController;
+use Ghijk\CpNotifications\Http\Controllers\ActiveStackController;
 use Ghijk\CpNotifications\Http\Controllers\BlockingInterstitialController;
 use Ghijk\CpNotifications\Http\Controllers\InboxController;
-use Ghijk\CpNotifications\Http\Controllers\ReportController;
 use Ghijk\CpNotifications\Http\Controllers\ManageNotificationsController;
+use Ghijk\CpNotifications\Http\Controllers\ReportController;
+use Ghijk\CpNotifications\Http\Controllers\SnoozeNotificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('cp-notifications')->name('cp-notifications.')->group(function (): void {

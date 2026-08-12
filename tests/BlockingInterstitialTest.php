@@ -3,7 +3,6 @@
 namespace Ghijk\CpNotifications\Tests;
 
 use Ghijk\CpNotifications\Http\Controllers\BlockingInterstitialController;
-use Ghijk\CpNotifications\Notifications\BlockingNoticeResolver;
 
 class BlockingInterstitialTest extends TestCase
 {

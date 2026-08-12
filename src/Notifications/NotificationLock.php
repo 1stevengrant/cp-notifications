@@ -7,9 +7,7 @@ use Statamic\Contracts\Entries\Entry;
 
 final class NotificationLock
 {
-    public function __construct(private AcknowledgementRepository $acknowledgements)
-    {
-    }
+    public function __construct(private AcknowledgementRepository $acknowledgements) {}
 
     public function isLocked(Entry|string $notification): bool
     {

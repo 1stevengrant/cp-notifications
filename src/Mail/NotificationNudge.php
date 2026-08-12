@@ -13,9 +13,7 @@ final class NotificationNudge extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public string $notificationTitle)
-    {
-    }
+    public function __construct(public string $notificationTitle) {}
 
     public function envelope(): Envelope
     {
