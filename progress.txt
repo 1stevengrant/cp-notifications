@@ -660,3 +660,9 @@ Todo: Document locked notices and the superseding-notice correction workflow.
 Done: Documented first-ack immutability across read-only form, save rejection, and deletion protection, plus creating a corrected superseding notice while retaining original evidence/reports.
 Tests: vendor/bin/phpunit --filter 'DocumentationTest::test_locked|PreventLockedNotificationEditsTest|RenderLockedNotificationReadOnlyTest|PreventAcknowledgedNotificationDeletionTest' --testdox; composer validate --no-check-publish; git diff --check
 Notes: Eight focused tests align the documented correction path with actual UI and server enforcement.
+
+2026-08-12 18:04:02 NZST
+Todo: Verify compatibility with Statamic 6, Laravel 13, Vue 3, the Statamic UI kit, flat-file installs, and statamic/eloquent-driver installs.
+Done: Expanded the Testbench matrix to Laravel 13, verified Statamic 6.27.1/Laravel 13.25.0/PHP 8.4.23/Vue 3.5.41, confirmed Statamic UI component usage, exercised both persistence implementations and migrations, and confirmed Composer resolves statamic/eloquent-driver 5.11 without making it a runtime dependency.
+Tests: composer require --dev 'statamic/eloquent-driver:^5.11' --dry-run --no-interaction; vendor/bin/phpunit; composer validate --strict; npm run build; git diff --check
+Notes: The Laravel 13 suite passed 153 tests with 529 assertions; focused persistence and compatibility coverage passed 28 tests with 137 assertions.

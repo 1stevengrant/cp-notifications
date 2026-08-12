@@ -51,6 +51,20 @@ npm run build
 Use `npm run dev` while developing the CP UI. Production installations do not
 need Node.js when using the compiled assets shipped with the package.
 
+## Compatibility
+
+The release suite is verified against Statamic 6.27, Laravel 13.25, PHP 8.4,
+and Vue 3.5. The Composer constraints also retain Laravel 12 coverage through
+Testbench 10. The control-panel overlay is a Vue 3 component built with
+Statamic UI components (`ui-card`, `ui-badge`, and `ui-button`).
+
+Both persistence paths are covered by the release suite: the default flat-file
+repositories are exercised against temporary Statamic storage, while the
+Eloquent repositories and published migrations are exercised against a real
+database connection. Composer dependency resolution is also checked with
+`statamic/eloquent-driver` 5.11 before release; that optional package is not a
+runtime dependency of this addon.
+
 ## Persistence drivers
 
 `CP_NOTIFICATIONS_DRIVER` controls acknowledgement, snooze, and nudge-delivery

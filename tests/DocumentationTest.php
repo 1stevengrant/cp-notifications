@@ -82,4 +82,20 @@ class DocumentationTest extends TestCase
         $this->assertStringContainsString('superseding notice', $readme);
         $this->assertStringContainsString('historical evidence', $readme);
     }
+
+    public function test_verified_compatibility_matrix_is_documented(): void
+    {
+        $readme = file_get_contents(__DIR__.'/../README.md');
+        $overlay = file_get_contents(__DIR__.'/../resources/js/components/NotificationOverlay.vue');
+        $packageLock = json_decode(file_get_contents(__DIR__.'/../package-lock.json'), true, flags: JSON_THROW_ON_ERROR);
+
+        $this->assertStringContainsString('Statamic 6.27', $readme);
+        $this->assertStringContainsString('Laravel 13.25', $readme);
+        $this->assertStringContainsString('statamic/eloquent-driver` 5.11', $readme);
+        $this->assertStringStartsWith('3.', $packageLock['packages']['node_modules/vue']['version']);
+
+        foreach (['<ui-card', '<ui-badge', '<ui-button'] as $component) {
+            $this->assertStringContainsString($component, $overlay);
+        }
+    }
 }
