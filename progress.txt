@@ -468,3 +468,9 @@ Todo: Ensure notices themselves remain available only inside the CP.
 Done: Verified notifications retain no frontend route and reminder rendering excludes stored notice body content while linking only to the authenticated CP Inbox.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Email provides the notice title for identification but never reproduces the authored Bard body, so reading and acknowledgement remain control-panel actions.
+
+2026-08-12 17:37:11 NZST
+Todo: Never automatically hard-delete notices or acknowledgement records.
+Done: Added an architectural safety test proving automatic commands, queued jobs, and nudge services contain no deletion path, no purge is scheduled, and acknowledgement storage exposes no delete API.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Any later notice removal must therefore enter through the separate permissioned and confirmed manual workflow; acknowledgement records remain immutable by contract.
