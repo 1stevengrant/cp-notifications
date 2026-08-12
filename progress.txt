@@ -282,3 +282,9 @@ Todo: Render the top notice and enforce top-down clearing.
 Done: Made the ordered stack's index-zero notice the overlay's sole renderable current item and verified that no iteration or navigation exposes later notices before it clears.
 Tests: vendor/bin/phpunit --testdox; npm run build; composer validate --strict; git diff --check
 Notes: Later notices remain in component state for the progress count but have no render path or action surface until the server refresh promotes the next item.
+
+2026-08-12 17:06:32 NZST
+Todo: Make blocking notices confirm-only and impossible to dismiss or snooze.
+Done: Added an explicit attestation checkbox and Statamic UI confirmation button to the overlay, wired to the strict acknowledgement endpoint with CSRF protection and no dismiss or snooze control for blocking notices.
+Tests: vendor/bin/phpunit --testdox; npm run build; composer validate --strict; git diff --check
+Notes: Confirmation stays disabled until the user actively checks the attestation; the server independently requires the literal boolean confirmation value.

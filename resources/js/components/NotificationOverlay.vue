@@ -15,6 +15,18 @@
             </div>
             <h1 id="cp-notification-title">{{ current.title }}</h1>
             <div class="cp-notification-overlay__body">{{ body }}</div>
+            <div class="cp-notification-overlay__actions">
+                <label class="cp-notification-overlay__confirmation">
+                    <input v-model="confirmed" type="checkbox" :disabled="submitting">
+                    <span>I have read and understand</span>
+                </label>
+                <ui-button
+                    text="Confirm"
+                    variant="primary"
+                    :disabled="!confirmed || submitting"
+                    @click="confirm"
+                />
+            </div>
         </ui-card>
     </div>
 </template>
@@ -25,6 +37,8 @@ export default {
         return {
             notices: [],
             loading: false,
+            submitting: false,
+            confirmed: false,
         };
     },
 
@@ -58,6 +72,27 @@ export default {
     },
 
     methods: {
+        async confirm() {
+            if (!this.current || !this.confirmed || this.submitting) return;
+
+            this.submitting = true;
+
+            try {
+                await fetch(cp_url(`cp-notifications/api/notifications/${this.current.id}/acknowledge`), {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': Statamic.$config.get('csrfToken'),
+                    },
+                    body: JSON.stringify({ confirmed: true }),
+                });
+            } finally {
+                this.submitting = false;
+            }
+        },
+
         async refresh() {
             this.loading = true;
 
@@ -118,5 +153,20 @@ export default {
 
 .cp-notification-overlay__body {
     white-space: pre-wrap;
+}
+
+.cp-notification-overlay__actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.cp-notification-overlay__confirmation {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
 }
 </style>

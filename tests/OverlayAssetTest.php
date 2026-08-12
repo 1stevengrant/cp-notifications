@@ -25,4 +25,16 @@ class OverlayAssetTest extends TestCase
         $this->assertStringNotContainsString('v-for=', $component);
         $this->assertSame(1, substr_count($component, 'data-testid="cp-notification-current"'));
     }
+
+    public function test_blocking_notice_has_only_explicit_confirmation_controls(): void
+    {
+        $component = file_get_contents(__DIR__.'/../resources/js/components/NotificationOverlay.vue');
+
+        $this->assertStringContainsString('I have read and understand', $component);
+        $this->assertStringContainsString(':disabled="!confirmed || submitting"', $component);
+        $this->assertStringContainsString('JSON.stringify({ confirmed: true })', $component);
+        $this->assertStringNotContainsString('Dismiss', $component);
+        $this->assertStringNotContainsString('current.blocking', $component);
+        $this->assertStringNotContainsString('snooze(', $component);
+    }
 }
