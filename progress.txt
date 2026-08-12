@@ -204,3 +204,9 @@ Todo: Filter notices with a currently active snooze from the active stack.
 Done: Extended active-stack resolution to exclude notices whose retained one-time snooze is active for the current user.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: At the exact `snoozed_until` instant the notice returns to the stack; expired snooze records remain stored to prevent reuse.
+
+2026-08-12 16:53:13 NZST
+Todo: Keep bypass users in audience/inbox results while excluding them only from gating.
+Done: Added a dedicated gating-stack projection that empties enforcement results for users with the bypass permission without mutating or filtering their visible active notices.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Audience, Inbox, and reporting services remain permission-agnostic; bypass is applied only at the enforcement boundary.
