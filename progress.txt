@@ -288,3 +288,9 @@ Todo: Make blocking notices confirm-only and impossible to dismiss or snooze.
 Done: Added an explicit attestation checkbox and Statamic UI confirmation button to the overlay, wired to the strict acknowledgement endpoint with CSRF protection and no dismiss or snooze control for blocking notices.
 Tests: vendor/bin/phpunit --testdox; npm run build; composer validate --strict; git diff --check
 Notes: Confirmation stays disabled until the user actively checks the attestation; the server independently requires the literal boolean confirmation value.
+
+2026-08-12 17:07:08 NZST
+Todo: Allow eligible advisory notices to be confirmed or snoozed.
+Done: Added a 24-hour Snooze action for notices that are both advisory and snoozeable while retaining the explicit confirmation path for every advisory.
+Tests: vendor/bin/phpunit --testdox; npm run build; composer validate --strict; git diff --check
+Notes: The UI condition mirrors server eligibility: blocking notices never render Snooze even if malformed stored data claims they are snoozeable.

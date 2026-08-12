@@ -66,7 +66,7 @@
 - [x] Build and register a global Vue 3 overlay using Statamic UI components.
 - [x] Render the top notice and enforce top-down clearing.
 - [x] Make blocking notices confirm-only and impossible to dismiss or snooze.
-- [ ] Allow eligible advisory notices to be confirmed or snoozed.
+- [x] Allow eligible advisory notices to be confirmed or snoozed.
 - [ ] Refresh/advance the stack after each successful action.
 - [ ] Handle expired, already-acknowledged, and concurrently updated notices gracefully.
 

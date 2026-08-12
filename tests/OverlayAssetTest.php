@@ -34,7 +34,17 @@ class OverlayAssetTest extends TestCase
         $this->assertStringContainsString(':disabled="!confirmed || submitting"', $component);
         $this->assertStringContainsString('JSON.stringify({ confirmed: true })', $component);
         $this->assertStringNotContainsString('Dismiss', $component);
-        $this->assertStringNotContainsString('current.blocking', $component);
-        $this->assertStringNotContainsString('snooze(', $component);
+        $this->assertStringContainsString('this.current?.snoozeable && !this.current?.blocking', $component);
+    }
+
+    public function test_eligible_advisory_can_be_confirmed_or_snoozed(): void
+    {
+        $component = file_get_contents(__DIR__.'/../resources/js/components/NotificationOverlay.vue');
+
+        $this->assertStringContainsString('v-if="canSnooze"', $component);
+        $this->assertStringContainsString('Snooze for 24 hours', $component);
+        $this->assertStringContainsString('async snooze()', $component);
+        $this->assertStringContainsString('/snooze`)', $component);
+        $this->assertStringContainsString('@click="confirm"', $component);
     }
 }

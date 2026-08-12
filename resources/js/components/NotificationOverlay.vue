@@ -20,12 +20,20 @@
                     <input v-model="confirmed" type="checkbox" :disabled="submitting">
                     <span>I have read and understand</span>
                 </label>
-                <ui-button
-                    text="Confirm"
-                    variant="primary"
-                    :disabled="!confirmed || submitting"
-                    @click="confirm"
-                />
+                <div class="cp-notification-overlay__buttons">
+                    <ui-button
+                        v-if="canSnooze"
+                        text="Snooze for 24 hours"
+                        :disabled="submitting"
+                        @click="snooze"
+                    />
+                    <ui-button
+                        text="Confirm"
+                        variant="primary"
+                        :disabled="!confirmed || submitting"
+                        @click="confirm"
+                    />
+                </div>
             </div>
         </ui-card>
     </div>
@@ -52,6 +60,10 @@ export default {
             return this.current ? 1 : 0;
         },
 
+        canSnooze() {
+            return Boolean(this.current?.snoozeable && !this.current?.blocking);
+        },
+
         badgeColor() {
             return {
                 critical: 'red',
@@ -72,6 +84,25 @@ export default {
     },
 
     methods: {
+        async snooze() {
+            if (!this.canSnooze || this.submitting) return;
+
+            this.submitting = true;
+
+            try {
+                await fetch(cp_url(`cp-notifications/api/notifications/${this.current.id}/snooze`), {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        Accept: 'application/json',
+                        'X-CSRF-TOKEN': Statamic.$config.get('csrfToken'),
+                    },
+                });
+            } finally {
+                this.submitting = false;
+            }
+        },
+
         async confirm() {
             if (!this.current || !this.confirmed || this.submitting) return;
 
@@ -168,5 +199,10 @@ export default {
     align-items: center;
     gap: 0.5rem;
     font-weight: 600;
+}
+
+.cp-notification-overlay__buttons {
+    display: flex;
+    gap: 0.75rem;
 }
 </style>
