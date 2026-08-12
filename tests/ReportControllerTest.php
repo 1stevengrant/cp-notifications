@@ -48,26 +48,45 @@ class ReportControllerTest extends TestCase
         $targeted->allows('isInGroup')->andReturnFalse();
         $users = Mockery::mock(UserRepository::class);
         $users->allows('all')->andReturn(new UserCollection([$targeted]));
+        $former = Mockery::mock(UserContract::class);
+        $former->allows('id')->andReturn('former-user');
+        $users->allows('find')->with('former-user')->andReturn($former);
         $audience = new AudienceResolver($users, new AudienceMatcher);
-        $acknowledgements = Mockery::mock(AcknowledgementRepository::class);
-        $acknowledgements->allows('find')->with('notice-1', 'targeted-user')->andReturn(
-            new Acknowledgement('ack-1', 'notice-1', 'targeted-user', CarbonImmutable::parse('2026-08-12 12:00')),
+        $targetedAcknowledgement = new Acknowledgement(
+            'ack-1',
+            'notice-1',
+            'targeted-user',
+            CarbonImmutable::parse('2026-08-12 12:00'),
         );
+        $formerAcknowledgement = new Acknowledgement(
+            'ack-2',
+            'notice-1',
+            'former-user',
+            CarbonImmutable::parse('2026-08-11 12:00'),
+        );
+        $acknowledgements = Mockery::mock(AcknowledgementRepository::class);
+        $acknowledgements->allows('find')->with('notice-1', 'targeted-user')->andReturn($targetedAcknowledgement);
+        $acknowledgements->allows('forNotification')->with('notice-1')->andReturn(collect([
+            $targetedAcknowledgement,
+            $formerAcknowledgement,
+        ]));
         CarbonImmutable::setTestNow('2026-08-12 12:00:00 Pacific/Auckland');
         $snoozes = Mockery::mock(SnoozeRepository::class);
         $snoozes->allows('find')->with('notice-1', 'targeted-user')->andReturn(
             new Snooze('notice-1', 'targeted-user', CarbonImmutable::parse('2026-08-13 12:00 Pacific/Auckland')),
         );
-        $reportResolver = new NotificationReportResolver($audience, $acknowledgements, $snoozes);
+        $snoozes->allows('find')->with('notice-1', 'former-user')->andReturnNull();
+        $reportResolver = new NotificationReportResolver($audience, $acknowledgements, $snoozes, $users);
 
         $index = $controller->index($request);
         $report = $controller->show($request, 'notice-1', $reportResolver);
 
         $this->assertSame(['notice-1'], $index->getData()['notifications']->map->id()->all());
         $this->assertSame('notice-1', $report->getData()['notification']->id());
-        $this->assertSame(['targeted-user'], $report->getData()['rows']->pluck('user')->map->id()->all());
+        $this->assertSame(['targeted-user', 'former-user'], $report->getData()['rows']->pluck('user')->map->id()->all());
         $this->assertSame('2026-08-12 12:00:00', $report->getData()['rows']->first()['acknowledgement']->acknowledgedAt->format('Y-m-d H:i:s'));
         $this->assertTrue($report->getData()['rows']->first()['snooze_active']);
+        $this->assertFalse($report->getData()['rows']->last()['currently_targeted']);
         $this->assertTrue($this->app['router']->has('statamic.cp.cp-notifications.reports.show'));
     }
 

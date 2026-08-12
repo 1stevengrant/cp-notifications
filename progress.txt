@@ -402,3 +402,9 @@ Todo: Display current/used snooze state.
 Done: Joined snooze records into report rows and displayed never-used, currently active, or previously used state with the recorded expiry timestamp.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Current state uses the same exact expiry-boundary rule as active-stack snooze filtering, while expired records remain visible as one-shot usage history.
+
+2026-08-12 17:25:37 NZST
+Todo: Preserve recorded acknowledgements in reporting even if a user later leaves the targeted role/group.
+Done: Merged acknowledgement history missing from the live audience back into report rows and labeled those recipients as former while preserving their recorded timestamp.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Current audience membership remains live, but historical acknowledgement evidence is repository-backed and is also retained by user ID if the user record was deleted.

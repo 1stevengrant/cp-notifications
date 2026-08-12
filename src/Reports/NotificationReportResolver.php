@@ -7,6 +7,7 @@ use Ghijk\CpNotifications\Audience\AudienceResolver;
 use Ghijk\CpNotifications\Contracts\AcknowledgementRepository;
 use Ghijk\CpNotifications\Contracts\SnoozeRepository;
 use Illuminate\Support\Collection;
+use Statamic\Contracts\Auth\UserRepository;
 use Statamic\Contracts\Entries\Entry;
 
 final class NotificationReportResolver
@@ -15,6 +16,7 @@ final class NotificationReportResolver
         private AudienceResolver $audience,
         private AcknowledgementRepository $acknowledgements,
         private SnoozeRepository $snoozes,
+        private UserRepository $users,
     ) {
     }
 
@@ -22,7 +24,7 @@ final class NotificationReportResolver
     {
         $instant = CarbonImmutable::now(config('app.timezone', 'UTC'));
 
-        return $this->audience->resolve($notification)
+        $rows = $this->audience->resolve($notification)
             ->map(function ($user) use ($notification, $instant): array {
                 $snooze = $this->snoozes->find(
                     (string) $notification->id(),
@@ -37,8 +39,31 @@ final class NotificationReportResolver
                     ),
                     'snooze' => $snooze,
                     'snooze_active' => $snooze?->isActiveAt($instant) ?? false,
+                    'currently_targeted' => true,
                 ];
             })
             ->values();
+
+        $currentUserIds = $rows->pluck('user')->map->id()->map(fn ($id): string => (string) $id);
+
+        $this->acknowledgements->forNotification((string) $notification->id())
+            ->reject(fn ($acknowledgement): bool => $currentUserIds->contains($acknowledgement->userId))
+            ->each(function ($acknowledgement) use ($rows, $notification, $instant): void {
+                $snooze = $this->snoozes->find(
+                    (string) $notification->id(),
+                    $acknowledgement->userId,
+                );
+
+                $rows->push([
+                    'user' => $this->users->find($acknowledgement->userId),
+                    'user_id' => $acknowledgement->userId,
+                    'acknowledgement' => $acknowledgement,
+                    'snooze' => $snooze,
+                    'snooze_active' => $snooze?->isActiveAt($instant) ?? false,
+                    'currently_targeted' => false,
+                ]);
+            });
+
+        return $rows;
     }
 }

@@ -14,6 +14,7 @@
                 <tr>
                     <th>{{ __('User') }}</th>
                     <th>{{ __('Email') }}</th>
+                    <th>{{ __('Audience') }}</th>
                     <th>{{ __('Status') }}</th>
                     <th>{{ __('Acknowledged at') }}</th>
                     <th>{{ __('Snooze') }}</th>
@@ -22,8 +23,9 @@
             <tbody>
                 @foreach ($rows as $row)
                     <tr>
-                        <td>{{ $row['user']->name() }}</td>
-                        <td>{{ $row['user']->email() }}</td>
+                        <td>{{ $row['user']?->name() ?? ($row['user_id'] ?? __('Deleted user')) }}</td>
+                        <td>{{ $row['user']?->email() ?? '—' }}</td>
+                        <td>{{ $row['currently_targeted'] ? __('Current') : __('Former') }}</td>
                         <td>{{ $row['acknowledgement'] ? __('Acknowledged') : __('Pending') }}</td>
                         <td>{{ $row['acknowledgement']?->acknowledgedAt->format('Y-m-d H:i:s') ?? '—' }}</td>
                         <td>
