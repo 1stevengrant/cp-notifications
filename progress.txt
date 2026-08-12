@@ -306,3 +306,9 @@ Todo: Handle expired, already-acknowledged, and concurrently updated notices gra
 Done: Added centralized action reconciliation that refreshes on successful idempotent responses and stale 404/409 states, while surfacing retryable validation and network errors in an accessible alert.
 Tests: vendor/bin/phpunit --testdox; npm run build; composer validate --strict; git diff --check
 Notes: Expired, deleted, concurrently snoozed, and otherwise stale notices disappear through authoritative refresh; transport failures leave the current notice and controls available for retry.
+
+2026-08-12 17:09:24 NZST
+Todo: Build the acknowledgement interstitial for unresolved blocking notices.
+Done: Added a dedicated authenticated CP interstitial route and view plus a reusable resolver that derives ordered blocking notices from the live active and permission-aware gating stacks.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The interstitial renders only when an unresolved blocking notice exists and otherwise returns users to the CP; the global confirmation overlay remains the action surface.
