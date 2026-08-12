@@ -15,6 +15,7 @@ class FileAcknowledgementRepository implements AcknowledgementRepository
     public function __construct(
         private readonly Filesystem $files,
         private readonly string $storagePath,
+        private readonly ?AtomicFileWriter $writer = null,
     ) {
     }
 
@@ -41,10 +42,12 @@ class FileAcknowledgementRepository implements AcknowledgementRepository
             acknowledgedAt: $acknowledgedAt ?? CarbonImmutable::now(),
         );
         $path = $this->path($notificationId, $userId);
-        $this->files->ensureDirectoryExists(dirname($path));
-        $this->files->put($path, Yaml::dump($acknowledgement->toArray(), 2, 2));
+        $created = ($this->writer ?? new AtomicFileWriter($this->files))->create(
+            $path,
+            Yaml::dump($acknowledgement->toArray(), 2, 2),
+        );
 
-        return $acknowledgement;
+        return $created ? $acknowledgement : $this->read($path);
     }
 
     public function forNotification(string $notificationId): Collection

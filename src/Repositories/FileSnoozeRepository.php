@@ -14,6 +14,7 @@ class FileSnoozeRepository implements SnoozeRepository
     public function __construct(
         private readonly Filesystem $files,
         private readonly string $storagePath,
+        private readonly ?AtomicFileWriter $writer = null,
     ) {
     }
 
@@ -39,10 +40,12 @@ class FileSnoozeRepository implements SnoozeRepository
             snoozedUntil: $snoozedUntil ?? CarbonImmutable::now()->addDay(),
         );
         $path = $this->path($notificationId, $userId);
-        $this->files->ensureDirectoryExists(dirname($path));
-        $this->files->put($path, Yaml::dump($snooze->toArray(), 2, 2));
+        $created = ($this->writer ?? new AtomicFileWriter($this->files))->create(
+            $path,
+            Yaml::dump($snooze->toArray(), 2, 2),
+        );
 
-        return $snooze;
+        return $created ? $snooze : $this->read($path);
     }
 
     public function forNotification(string $notificationId): Collection

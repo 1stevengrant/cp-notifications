@@ -5,6 +5,7 @@ namespace Ghijk\CpNotifications\Tests;
 use Carbon\CarbonImmutable;
 use Ghijk\CpNotifications\Repositories\FileAcknowledgementRepository;
 use Ghijk\CpNotifications\Repositories\FileSnoozeRepository;
+use Ghijk\CpNotifications\Repositories\AtomicFileWriter;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Symfony\Component\Yaml\Yaml;
@@ -66,5 +67,51 @@ class FileRepositoriesTest extends TestCase
         $this->assertCount(2, $repository->forNotification('notice/1'));
         $this->assertCount(1, $repository->forUser('user/1'));
         $this->assertNull($repository->find('missing', 'user/1'));
+    }
+
+    public function test_atomic_writer_publishes_only_the_first_complete_record(): void
+    {
+        $path = $this->storagePath.'/records/record.yaml';
+        $writer = new AtomicFileWriter($this->files);
+
+        $this->assertTrue($writer->create($path, "winner: first\n"));
+        $this->assertFalse($writer->create($path, "winner: second\n"));
+        $this->assertSame(['winner' => 'first'], Yaml::parseFile($path));
+        $this->assertSame([], $this->files->glob(dirname($path).'/.pending-*'));
+    }
+
+    public function test_competing_processes_leave_one_complete_acknowledgement(): void
+    {
+        if (! function_exists('pcntl_fork')) {
+            $this->markTestSkipped('The pcntl extension is required for the concurrency test.');
+        }
+
+        $children = [];
+
+        foreach (range(1, 6) as $attempt) {
+            $pid = pcntl_fork();
+
+            if ($pid === 0) {
+                (new FileAcknowledgementRepository(new Filesystem, $this->storagePath))->record(
+                    'notice-concurrent',
+                    'user-concurrent',
+                    CarbonImmutable::parse("2026-08-12T10:00:0{$attempt}+12:00"),
+                );
+                exit(0);
+            }
+
+            $this->assertGreaterThan(0, $pid);
+            $children[] = $pid;
+        }
+
+        foreach ($children as $pid) {
+            pcntl_waitpid($pid, $status);
+            $this->assertTrue(pcntl_wifexited($status));
+            $this->assertSame(0, pcntl_wexitstatus($status));
+        }
+
+        $records = $this->files->allFiles($this->storagePath.'/acks');
+        $this->assertCount(1, $records);
+        $this->assertSame('notice-concurrent', Yaml::parseFile((string) $records[0])['notification_id']);
     }
 }
