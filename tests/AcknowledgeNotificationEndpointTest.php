@@ -42,8 +42,8 @@ class AcknowledgeNotificationEndpointTest extends TestCase
         $this->app->instance(AcknowledgementRepository::class, $repository);
         $url = cp_route('cp-notifications.api.notifications.acknowledge', 'notice-1');
 
-        $this->postJson($url)->assertOk()->assertJsonPath('data.id', 'ack-1');
-        $this->postJson($url)->assertOk()->assertJsonPath('data.id', 'ack-1');
+        $this->postJson($url, ['confirmed' => true])->assertOk()->assertJsonPath('data.id', 'ack-1');
+        $this->postJson($url, ['confirmed' => true])->assertOk()->assertJsonPath('data.id', 'ack-1');
     }
 
     public function test_inactive_or_untargeted_notifications_cannot_be_acknowledged(): void
@@ -57,8 +57,25 @@ class AcknowledgeNotificationEndpointTest extends TestCase
         $repository->shouldNotReceive('record');
         $this->app->instance(AcknowledgementRepository::class, $repository);
 
-        $this->postJson(cp_route('cp-notifications.api.notifications.acknowledge', 'future'))
+        $this->postJson(cp_route('cp-notifications.api.notifications.acknowledge', 'future'), ['confirmed' => true])
             ->assertConflict();
+    }
+
+    public function test_literal_boolean_confirmation_is_required_server_side(): void
+    {
+        $this->actingAs(User::make()->id('user-1')->email('user@example.com')->set('super', true));
+        $repository = Mockery::mock(AcknowledgementRepository::class);
+        $repository->shouldNotReceive('record');
+        $this->app->instance(AcknowledgementRepository::class, $repository);
+        $url = cp_route('cp-notifications.api.notifications.acknowledge', 'notice-1');
+
+        $this->postJson($url)->assertUnprocessable()->assertJsonValidationErrors('confirmed');
+        $this->postJson($url, ['confirmed' => 'true'])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('confirmed');
+        $this->postJson($url, ['confirmed' => false])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('confirmed');
     }
 
     private function notice(string $id)

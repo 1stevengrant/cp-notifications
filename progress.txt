@@ -258,3 +258,9 @@ Todo: Add idempotent acknowledgement/confirm endpoint(s).
 Done: Added an authenticated acknowledgement endpoint that validates live activity and audience eligibility, records through the once-only repository, and returns the original record on repeat requests.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Already-acknowledged retries remain successful even after the notice leaves its active window, supporting safe client retries without creating duplicate records.
+
+2026-08-12 17:01:40 NZST
+Todo: Require the explicit “I have read and understand” confirmation value server-side.
+Done: Required the literal JSON boolean `confirmed: true` before any acknowledgement lookup or write and added an actionable validation response for missing, false, or string values.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Strict boolean comparison prevents generic truthy payloads from being treated as the user's explicit attestation.
