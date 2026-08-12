@@ -432,3 +432,9 @@ Todo: Track enough delivery state to enforce one-shot and repeating cadence with
 Done: Added per-notice/per-user delivery timestamp and count repositories for file and Eloquent storage, integrated them into eligibility and sending, and made queued notice jobs unique.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: File updates use an exclusive lock and atomic rename; database updates use a unique recipient key and transactional increment, so one recipient's delivery never suppresses a newly targeted user.
+
+2026-08-12 17:32:29 NZST
+Todo: Create the nudge mailable using the configured sender or the app mail fallback.
+Done: Verified the reminder mailable uses the optional addon sender override, otherwise defers to Laravel mail configuration, and links recipients directly to the CP Inbox.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Email contains the notice title as context but never the notice body, keeping the actual notification available only inside the authenticated control panel.
