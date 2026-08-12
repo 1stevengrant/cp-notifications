@@ -100,7 +100,7 @@
 
 ## 10. Nudges
 
-- [ ] Implement nudge eligibility from `enabled`, `threshold_hours`, and optional `cadence_hours`.
+- [x] Implement nudge eligibility from `enabled`, `threshold_hours`, and optional `cadence_hours`.
 - [ ] Track enough delivery state to enforce one-shot and repeating cadence without duplicate sends.
 - [ ] Create the nudge mailable using the configured sender or the app mail fallback.
 - [ ] Create a shared job/service for scheduled and manual reminders.
