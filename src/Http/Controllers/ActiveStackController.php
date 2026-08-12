@@ -1,0 +1,40 @@
+<?php
+
+namespace Ghijk\CpNotifications\Http\Controllers;
+
+use Ghijk\CpNotifications\Notifications\ActiveStackResolver;
+use Illuminate\Http\JsonResponse;
+use Statamic\Facades\Collection;
+use Statamic\Facades\Site;
+use Statamic\Facades\User;
+
+final class ActiveStackController
+{
+    public function __invoke(ActiveStackResolver $resolver): JsonResponse
+    {
+        $user = User::current();
+
+        abort_unless($user, 401);
+
+        $collection = Collection::find('notifications');
+        $notifications = $collection
+            ? $collection->queryEntries()->where('site', Site::default()->handle())->get()
+            : collect();
+
+        $stack = $resolver->resolve($notifications, $user);
+
+        return response()->json([
+            'data' => $stack->map(fn ($notification): array => [
+                'id' => $notification->id(),
+                'title' => $notification->get('title'),
+                'body' => $notification->get('body'),
+                'severity' => $notification->get('severity', 'info'),
+                'blocking' => (bool) $notification->get('blocking', false),
+                'snoozeable' => (bool) $notification->get('snoozeable', false),
+                'priority' => $notification->get('priority'),
+                'start_date' => $notification->get('start_date'),
+                'end_date' => $notification->get('end_date'),
+            ])->values(),
+        ]);
+    }
+}

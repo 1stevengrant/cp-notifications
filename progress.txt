@@ -246,3 +246,9 @@ Todo: Provide a clear validation/error message directing admins to create a supe
 Done: Expanded locked-save validation to explain that acknowledgements caused the lock and instruct administrators to create a superseding notification for corrections.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: The message is returned as a normal validation error, so CP and custom save clients receive the same actionable response.
+
+2026-08-12 17:00:07 NZST
+Todo: Add an authenticated endpoint returning the current user's ordered active stack.
+Done: Added a CP-authenticated JSON endpoint that queries the canonical notification collection, resolves the current user's live ordered stack, and returns the overlay-facing notice fields.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The route inherits Statamic's authenticated CP middleware and always queries the default-site notification set, preserving global multisite behavior.
