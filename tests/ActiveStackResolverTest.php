@@ -101,6 +101,30 @@ class ActiveStackResolverTest extends TestCase
         $this->assertSame(['expired-snooze', 'never-snoozed'], $stack->map->id()->all());
     }
 
+    public function test_mixed_blocking_and_advisory_stack_keeps_server_order_for_top_down_overlay(): void
+    {
+        $acknowledgements = Mockery::mock(AcknowledgementRepository::class);
+        $acknowledgements->allows('find')->andReturnNull();
+        $snoozes = Mockery::mock(SnoozeRepository::class);
+        $snoozes->allows('find')->andReturnNull();
+        $blocking = $this->notice('blocking')->set('blocking', true)->set('severity', 'critical');
+        $advisory = $this->notice('advisory')->set('blocking', false)->set('priority', 1);
+
+        $stack = (new ActiveStackResolver(
+            new AudienceMatcher,
+            new ActiveWindow,
+            $acknowledgements,
+            $snoozes,
+            new NotificationOrder,
+        ))->resolve([$blocking, $advisory], $this->user('user-1'), '2026-08-12 12:00');
+
+        $this->assertSame(['advisory', 'blocking'], $stack->map->id()->all());
+        $this->assertSame('advisory', $stack->first()->id());
+        $component = file_get_contents(__DIR__.'/../resources/js/components/NotificationOverlay.vue');
+        $this->assertStringContainsString('return this.notices[0] ?? null', $component);
+        $this->assertStringNotContainsString('v-for=', $component);
+    }
+
     private function user(string $id): User
     {
         $user = Mockery::mock(User::class);

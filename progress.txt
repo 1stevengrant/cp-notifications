@@ -582,3 +582,9 @@ Todo: Test locked notices reject edits after the first acknowledgement.
 Done: Audited and ran first-ack lock detection, server-side save rejection, listener ordering, superseding-notice guidance, and complete publish-form read-only coverage.
 Tests: vendor/bin/phpunit --filter 'NotificationLockTest|PreventLockedNotificationEditsTest|RenderLockedNotificationReadOnlyTest' --testdox
 Notes: Eight focused tests prove the lock is enforced independently in both persistence and UI layers while unrelated collections and unacknowledged notices remain editable.
+
+2026-08-12 17:52:00 NZST
+Todo: Test overlay top-down behavior for mixed blocking/advisory stacks.
+Done: Added a mixed blocking/advisory active-stack case and composed its server order with the overlay's index-zero-only render path and no iteration escape.
+Tests: vendor/bin/phpunit --filter 'ActiveStackResolverTest|OverlayAssetTest' --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Explicit priority can place an advisory ahead of a blocking notice; whichever server ordering selects first is the only actionable notice until refresh advances the stack.
