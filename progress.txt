@@ -564,3 +564,9 @@ Todo: Test that role/group removal changes current targeting but preserves an ex
 Done: Added a state-transition report test that removes a user's targeted role between resolutions and proves Current becomes Former while the same acknowledgement remains attached.
 Tests: vendor/bin/phpunit --filter NotificationReportResolverTest; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Audience resolution remains live while acknowledgement history is merged independently, directly exercising the compliance-history invariant rather than composing separate static cases.
+
+2026-08-12 17:50:37 NZST
+Todo: Test scheduling boundaries, open-ended notices, expiration, and future blocking notices.
+Done: Added explicit future-blocking boundary coverage and audited inclusive start, exclusive expiry, open-ended, draft, missing-start, and configured-timezone cases.
+Tests: vendor/bin/phpunit --filter ActiveWindowTest --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Blocking is behavioral metadata only; it cannot make a future notice active before its scheduled start or extend it past an end date.

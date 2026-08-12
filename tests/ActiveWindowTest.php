@@ -51,6 +51,15 @@ class ActiveWindowTest extends TestCase
         $this->assertTrue((new ActiveWindow)->isActive($notice, '2027-01-01 00:00'));
     }
 
+    public function test_future_blocking_notice_is_inactive_until_its_start_boundary(): void
+    {
+        $notice = $this->notification(true, '2026-08-13 09:00')->set('blocking', true);
+        $window = new ActiveWindow;
+
+        $this->assertFalse($window->isActive($notice, '2026-08-13 08:59:59'));
+        $this->assertTrue($window->isActive($notice, '2026-08-13 09:00:00'));
+    }
+
     public function test_instants_are_compared_in_the_configured_site_timezone(): void
     {
         $notice = $this->notification(true, '2026-08-12 09:00', '2026-08-12 10:00');
