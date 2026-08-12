@@ -6,6 +6,7 @@ use Carbon\CarbonImmutable;
 use Ghijk\CpNotifications\Audience\AudienceMatcher;
 use Ghijk\CpNotifications\Audience\AudienceResolver;
 use Ghijk\CpNotifications\Contracts\AcknowledgementRepository;
+use Ghijk\CpNotifications\Data\Acknowledgement;
 use Ghijk\CpNotifications\Mail\NotificationNudge;
 use Ghijk\CpNotifications\Notifications\ActiveWindow;
 use Ghijk\CpNotifications\Nudges\NotificationNudgeService;
@@ -73,5 +74,55 @@ class NotificationNudgeServiceTest extends TestCase
         $this->assertSame(1, $service->send('notice-1'));
         $this->assertSame(0, $service->send('notice-1'));
         Mail::assertSent(NotificationNudge::class, 1);
+    }
+
+    public function test_email_goes_only_to_currently_targeted_users_without_an_acknowledgement(): void
+    {
+        Mail::fake();
+        config()->set('app.timezone', 'Pacific/Auckland');
+        CarbonImmutable::setTestNow('2026-08-12 12:00 Pacific/Auckland');
+        Collection::make('notifications')->sites([Site::default()->handle()])->save();
+        Entry::make()->id('notice-1')->collection('notifications')->locale(Site::default()->handle())
+            ->data([
+                'title' => 'Required reading',
+                'audience' => ['users' => ['pending', 'acknowledged']],
+                'start_date' => '2026-08-11 12:00',
+                'nudge' => ['enabled' => true, 'threshold_hours' => 24],
+            ])->save();
+        $pending = $this->user('pending', 'pending@example.com');
+        $acknowledged = $this->user('acknowledged', 'acknowledged@example.com');
+        $outside = $this->user('outside', 'outside@example.com');
+        $users = Mockery::mock(UserRepository::class);
+        $users->allows('all')->andReturn(new UserCollection([$pending, $acknowledged, $outside]));
+        $acknowledgements = Mockery::mock(AcknowledgementRepository::class);
+        $acknowledgements->allows('find')->andReturnUsing(
+            fn (string $notificationId, string $userId) => $userId === 'acknowledged'
+                ? new Acknowledgement('ack-1', $notificationId, $userId, CarbonImmutable::now())
+                : null,
+        );
+        $service = new NotificationNudgeService(
+            new AudienceResolver($users, new AudienceMatcher),
+            $acknowledgements,
+            new FileNudgeDeliveryRepository(new Filesystem, $this->deliveryPath),
+            new NudgeEligibility(new ActiveWindow),
+            $this->app->make(\Illuminate\Contracts\Mail\Factory::class),
+        );
+
+        $this->assertSame(1, $service->send('notice-1'));
+        Mail::assertSent(NotificationNudge::class, fn ($mail): bool => $mail->hasTo('pending@example.com'));
+        Mail::assertNotSent(NotificationNudge::class, fn ($mail): bool =>
+            $mail->hasTo('acknowledged@example.com') || $mail->hasTo('outside@example.com')
+        );
+    }
+
+    private function user(string $id, string $email): User
+    {
+        $user = Mockery::mock(User::class);
+        $user->allows('id')->andReturn($id);
+        $user->allows('email')->andReturn($email);
+        $user->allows('hasRole')->andReturnFalse();
+        $user->allows('isInGroup')->andReturnFalse();
+
+        return $user;
     }
 }

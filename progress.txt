@@ -456,3 +456,9 @@ Todo: Register/document the command's Laravel scheduler integration.
 Done: Registered the nudge command hourly with overlap prevention and documented production cron, local scheduler work, and queue worker requirements.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: The scheduler registration ships with the addon; host applications only need Laravel's standard scheduler runner and an asynchronous worker when not using the sync queue.
+
+2026-08-12 17:35:45 NZST
+Todo: Email only currently targeted users who have not acknowledged the notice.
+Done: Added delivery-level coverage proving the shared service emails a pending live target while excluding both acknowledged current targets and users outside the current audience.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Audience membership is resolved immediately before each job sends, so role or group changes made after queue dispatch are honored at execution time.

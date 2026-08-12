@@ -106,7 +106,7 @@
 - [x] Create a shared job/service for scheduled and manual reminders.
 - [x] Add the `cp-notifications:nudge` command.
 - [x] Register/document the command's Laravel scheduler integration.
-- [ ] Email only currently targeted users who have not acknowledged the notice.
+- [x] Email only currently targeted users who have not acknowledged the notice.
 - [ ] Ensure notices themselves remain available only inside the CP.
 
 ## 11. Retention and manual purge
