@@ -3,12 +3,14 @@
 @section('title', __('Notification Inbox'))
 
 @section('content')
-    <div class="max-w-page mx-auto px-4 py-6 md:px-8">
-        <header class="mb-6">
-            <h1 class="text-2xl font-bold">{{ __('Notification Inbox') }}</h1>
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">
-                {{ __('Notices targeted to your account, including retained history.') }}
-            </p>
+    <div class="cp-notification-page">
+        <header class="cp-notification-page__header">
+            <div>
+                <h1 class="cp-notification-page__heading">{{ __('Notification Inbox') }}</h1>
+                <p class="cp-notification-page__intro">
+                    {{ __('Notices targeted to your account, including retained history.') }}
+                </p>
+            </div>
         </header>
 
         <div class="cp-notification-inbox" data-testid="notification-inbox">

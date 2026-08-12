@@ -11,7 +11,7 @@ test('dashboard pages use the statamic control panel shell', function () {
         $this->assertStringContainsString("@extends('statamic::layout')", $markup, $view);
         $this->assertStringContainsString("@section('title'", $markup, $view);
         $this->assertStringContainsString("@section('content')", $markup, $view);
-        $this->assertStringContainsString('max-w-page mx-auto', $markup, $view);
+        $this->assertStringContainsString($view === 'blocking' ? 'max-w-page mx-auto' : 'cp-notification-page', $markup, $view);
     }
 });
 
@@ -24,13 +24,14 @@ test('dashboard pages use statamic content patterns', function () {
     $this->assertStringContainsString('cp-notification-inbox', $inbox);
     $this->assertStringContainsString('cp-notification-badge--{{ $notification->get', $inbox);
     $this->assertStringContainsString("cp-notification-badge--{{ \$item['active'] ? 'active' : 'history' }}", $inbox);
-    $this->assertStringContainsString('btn-primary', $manage);
-    $this->assertStringContainsString('card p-0 overflow-hidden', $reports);
-    $this->assertStringContainsString('data-table', $reports);
-    $this->assertStringContainsString('overflow-x-auto', $reports);
-    $this->assertStringContainsString('btn-primary', $report);
-    $this->assertStringContainsString('data-table', $report);
-    $this->assertStringContainsString('badge-sm', $report);
+    $this->assertStringContainsString('cp-notification-button--primary', $manage);
+    $this->assertStringContainsString('cp-notification-card', $manage);
+    $this->assertStringContainsString('cp-notification-card', $reports);
+    $this->assertStringContainsString('cp-notification-table', $reports);
+    $this->assertStringContainsString('cp-notification-button', $reports);
+    $this->assertStringContainsString('cp-notification-button--primary', $report);
+    $this->assertStringContainsString('cp-notification-table', $report);
+    $this->assertStringContainsString('cp-notification-badge', $report);
 });
 
 test('dashboard page templates compile', function () {

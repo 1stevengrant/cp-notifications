@@ -56,9 +56,13 @@ test('the modal displays rendered Bard content in a real browser', function (): 
     expect(File::exists(public_path('vendor/statamic/cp/build/manifest.json')))->toBeTrue();
     expect(Statamic::cpViteScripts()->toHtml())->toContain('<script');
 
-    visit(cp_route('cp-notifications.inbox'))
+    $page = visit(cp_route('cp-notifications.inbox'))
         ->assertSee('Editorial policy')
         ->assertSee('Every editor must confirm the updated editorial policy.')
         ->assertDontSee('[{"type":"paragraph"')
         ->assertNoJavaScriptErrors();
+
+    expect($page->script("getComputedStyle(document.querySelector('.cp-notification-inbox')).borderRadius"))->not->toBe('0px');
+    expect($page->script("getComputedStyle(document.querySelector('.cp-notification-inbox__content')).display"))->toBe('grid');
+    expect($page->script("getComputedStyle(document.querySelector('.cp-notification-badge--critical')).backgroundColor"))->not->toBe('rgba(0, 0, 0, 0)');
 })->group('browser');
