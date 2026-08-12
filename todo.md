@@ -121,7 +121,7 @@
 ## 12. Automated tests
 
 - [x] Test addon registration, config defaults, navigation, and permissions.
-- [ ] Test blueprint validation, including empty audiences and blocking/snoozeable rules.
+- [x] Test blueprint validation, including empty audiences and blocking/snoozeable rules.
 - [ ] Contract-test both acknowledgement repository drivers.
 - [ ] Contract-test both snooze repository drivers.
 - [ ] Test parallel file-driver acknowledgements for race safety and valid YAML output.

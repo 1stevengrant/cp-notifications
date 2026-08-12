@@ -510,3 +510,9 @@ Todo: Test addon registration, config defaults, navigation, and permissions.
 Done: Audited and ran the provider discovery, package metadata, config publication/defaults, CP navigation/route, and complete permission registration coverage.
 Tests: vendor/bin/phpunit --filter 'PackageScaffoldTest|ServiceProviderTest|NavigationTest|PermissionTest' --testdox
 Notes: Fifteen focused tests with 45 assertions directly cover the checklist scope; no indirect inference or implementation-only claim was needed.
+
+2026-08-12 17:43:32 NZST
+Todo: Test blueprint validation, including empty audiences and blocking/snoozeable rules.
+Done: Audited and ran complete blueprint construction, audience publication validation, and blocking/advisory snooze normalization coverage.
+Tests: vendor/bin/phpunit --filter 'ValidateNotificationAudienceTest|NormalizeNotificationBehaviorTest|NotificationCollectionInstallerTest' --testdox
+Notes: Fourteen focused tests with 46 assertions cover empty published audiences, incomplete drafts, all four audience selectors, and both behavior-normalization branches.
