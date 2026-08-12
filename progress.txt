@@ -666,3 +666,9 @@ Todo: Verify compatibility with Statamic 6, Laravel 13, Vue 3, the Statamic UI k
 Done: Expanded the Testbench matrix to Laravel 13, verified Statamic 6.27.1/Laravel 13.25.0/PHP 8.4.23/Vue 3.5.41, confirmed Statamic UI component usage, exercised both persistence implementations and migrations, and confirmed Composer resolves statamic/eloquent-driver 5.11 without making it a runtime dependency.
 Tests: composer require --dev 'statamic/eloquent-driver:^5.11' --dry-run --no-interaction; vendor/bin/phpunit; composer validate --strict; npm run build; git diff --check
 Notes: The Laravel 13 suite passed 153 tests with 529 assertions; focused persistence and compatibility coverage passed 28 tests with 137 assertions.
+
+2026-08-12 18:05:00 NZST
+Todo: Do not add recurring notices; use start/end windows in v1.
+Done: Documented the single-window v1 model and the create-a-new-notice workflow for repeated messages; added a regression check that recurrence fields are absent from the blueprint.
+Tests: vendor/bin/phpunit --filter 'DocumentationTest::test_recurring_notices' --testdox; git diff --check
+Notes: Recurring notice behavior remains intentionally outside v1.

@@ -65,6 +65,11 @@ database connection. Composer dependency resolution is also checked with
 `statamic/eloquent-driver` 5.11 before release; that optional package is not a
 runtime dependency of this addon.
 
+## V1 scope
+
+Notices do not recur. Each notice has one `start_date`/`end_date` publication
+window; create a new notice when the same message must be published again.
+
 ## Persistence drivers
 
 `CP_NOTIFICATIONS_DRIVER` controls acknowledgement, snooze, and nudge-delivery

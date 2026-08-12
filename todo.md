@@ -153,6 +153,6 @@
 
 ## Deferred (not v1)
 
-- [ ] Do not add recurring notices; use start/end windows in v1.
+- [x] Do not add recurring notices; use start/end windows in v1.
 - [ ] Do not add per-user timezone scheduling; use the site timezone in v1.
 - [ ] Defer dedicated compliance/attestation product framing beyond the existing report and CSV record.

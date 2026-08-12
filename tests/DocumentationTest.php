@@ -98,4 +98,16 @@ class DocumentationTest extends TestCase
             $this->assertStringContainsString($component, $overlay);
         }
     }
+
+    public function test_recurring_notices_are_explicitly_out_of_v1_scope(): void
+    {
+        $readme = file_get_contents(__DIR__.'/../README.md');
+        $installer = file_get_contents(__DIR__.'/../src/Content/NotificationCollectionInstaller.php');
+
+        $this->assertStringContainsString('Notices do not recur', $readme);
+        $this->assertStringContainsString('one `start_date`/`end_date`', $readme);
+        $this->assertStringContainsString('publication', $readme);
+        $this->assertStringNotContainsString("'handle' => 'recurrence'", $installer);
+        $this->assertStringNotContainsString("'handle' => 'repeat_rule'", $installer);
+    }
 }
