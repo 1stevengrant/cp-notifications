@@ -3,8 +3,16 @@
 namespace Ghijk\CpNotifications;
 
 use Ghijk\CpNotifications\Console\Commands\InstallCommand;
+use Ghijk\CpNotifications\Contracts\AcknowledgementRepository;
+use Ghijk\CpNotifications\Contracts\SnoozeRepository;
 use Ghijk\CpNotifications\Listeners\ValidateNotificationAudience;
 use Ghijk\CpNotifications\Listeners\NormalizeNotificationBehavior;
+use Ghijk\CpNotifications\Repositories\EloquentAcknowledgementRepository;
+use Ghijk\CpNotifications\Repositories\EloquentSnoozeRepository;
+use Ghijk\CpNotifications\Repositories\FileAcknowledgementRepository;
+use Ghijk\CpNotifications\Repositories\FileSnoozeRepository;
+use Ghijk\CpNotifications\Repositories\RepositoryDriverResolver;
+use Illuminate\Contracts\Foundation\Application;
 use Statamic\CP\Navigation\Nav as Navigation;
 use Statamic\Events\EntrySaving;
 use Statamic\Facades\CP\Nav;
@@ -35,6 +43,23 @@ class ServiceProvider extends AddonServiceProvider
         ],
         'publicDirectory' => 'resources/dist',
     ];
+
+    public function register(): void
+    {
+        $this->app->singleton(RepositoryDriverResolver::class);
+
+        $this->app->singleton(AcknowledgementRepository::class, function (Application $app) {
+            return $this->repositoryDriver($app) === 'eloquent'
+                ? new EloquentAcknowledgementRepository($app->make('db')->connection())
+                : new FileAcknowledgementRepository($app->make('files'), $this->repositoryStoragePath($app));
+        });
+
+        $this->app->singleton(SnoozeRepository::class, function (Application $app) {
+            return $this->repositoryDriver($app) === 'eloquent'
+                ? new EloquentSnoozeRepository($app->make('db')->connection())
+                : new FileSnoozeRepository($app->make('files'), $this->repositoryStoragePath($app));
+        });
+    }
 
     public function bootAddon(): void
     {
@@ -86,5 +111,20 @@ class ServiceProvider extends AddonServiceProvider
                     ->label('Purge expired notifications');
             });
         });
+    }
+
+    private function repositoryDriver(Application $app): string
+    {
+        return $app->make(RepositoryDriverResolver::class)->resolve(
+            $app->make('config')->get('cp-notifications.acknowledgements.driver', 'auto'),
+        );
+    }
+
+    private function repositoryStoragePath(Application $app): string
+    {
+        return $app->make('config')->get(
+            'cp-notifications.acknowledgements.file_path',
+            storage_path('statamic/cp-notifications'),
+        );
     }
 }

@@ -150,3 +150,9 @@ Todo: Implement `auto`, `eloquent`, and `file` driver resolution; auto-detect `s
 Done: Added a validated repository driver resolver that preserves explicit file/eloquent configuration and resolves auto through Composer's installed-package registry.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Detection can be overridden explicitly in focused tests; unsupported driver names fail early with a configuration-specific exception.
+
+2026-08-12 17:56:00 NZST
+Todo: Bind the selected repositories into Laravel's container.
+Done: Registered lazy singleton bindings for both repository contracts, resolving the shared configured driver and constructing database- or file-backed implementations with their required Laravel dependencies.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Lazy resolution ensures Statamic's addon config has booted before the driver and configured file storage path are read.
