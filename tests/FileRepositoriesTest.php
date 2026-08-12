@@ -131,6 +131,14 @@ class FileRepositoriesTest extends TestCase
 
         $records = $this->files->allFiles($this->storagePath.'/acks');
         $this->assertCount(1, $records);
-        $this->assertSame('notice-concurrent', Yaml::parseFile((string) $records[0])['notification_id']);
+        $data = Yaml::parseFile((string) $records[0]);
+        $this->assertSame(
+            ['id', 'notification_id', 'user_id', 'acknowledged_at'],
+            array_keys($data),
+        );
+        $this->assertNotEmpty($data['id']);
+        $this->assertSame('notice-concurrent', $data['notification_id']);
+        $this->assertSame('user-concurrent', $data['user_id']);
+        $this->assertInstanceOf(CarbonImmutable::class, CarbonImmutable::parse($data['acknowledged_at']));
     }
 }

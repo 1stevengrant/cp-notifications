@@ -528,3 +528,9 @@ Todo: Contract-test both snooze repository drivers.
 Done: Audited and ran the single-use repository contract plus direct file and Eloquent persistence, lookup, query, reuse prevention, and default-expiry coverage.
 Tests: vendor/bin/phpunit --filter 'SnoozeRepositoryContractTest|FileRepositoriesTest|EloquentRepositoriesTest' --testdox
 Notes: Ten combined tests with 64 assertions verify both drivers through the same externally observable semantics while retaining driver-specific storage checks.
+
+2026-08-12 17:44:56 NZST
+Todo: Test parallel file-driver acknowledgements for race safety and valid YAML output.
+Done: Strengthened the six-process race test to prove exactly one complete YAML record with the exact schema, nonempty ID, correct notice/user pair, and parseable acknowledgement timestamp.
+Tests: vendor/bin/phpunit --filter 'FileRepositoriesTest::test_competing_processes'; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: The test exercises separate repository and filesystem instances in forked processes, so it validates the hard-link publication boundary rather than in-process object state.
