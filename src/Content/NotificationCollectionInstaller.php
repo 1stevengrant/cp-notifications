@@ -19,6 +19,7 @@ class NotificationCollectionInstaller
                 );
             }
 
+            $this->configureCollection($collection);
             $this->installBlueprint();
 
             return $collection;
@@ -32,13 +33,23 @@ class NotificationCollectionInstaller
                 ->propagate(false)
                 ->revisionsEnabled(true)
                 ->defaultPublishState(false)
-                ->requiresSlugs(false),
+                ->requiresSlugs(false)
+                ->sortField('start_date')
+                ->sortDirection('desc'),
             fn (CollectionContract $collection) => $collection->save(),
         );
 
         $this->installBlueprint();
 
         return $collection;
+    }
+
+    private function configureCollection(CollectionContract $collection): void
+    {
+        $collection
+            ->sortField('start_date')
+            ->sortDirection('desc')
+            ->save();
     }
 
     private function installBlueprint(): void
@@ -53,8 +64,8 @@ class NotificationCollectionInstaller
                         'sections' => [
                             [
                                 'fields' => [
-                                    ['handle' => 'title', 'field' => ['type' => 'text', 'required' => true]],
-                                    ['handle' => 'body', 'field' => ['type' => 'bard', 'display' => 'Body', 'required' => true]],
+                                    ['handle' => 'title', 'field' => ['type' => 'text', 'required' => true, 'listable' => true]],
+                                    ['handle' => 'body', 'field' => ['type' => 'bard', 'display' => 'Body', 'required' => true, 'listable' => false]],
                                     ['handle' => 'severity', 'field' => [
                                         'type' => 'select',
                                         'display' => 'Severity',
@@ -65,10 +76,11 @@ class NotificationCollectionInstaller
                                             'critical' => 'Critical',
                                         ],
                                         'required' => true,
+                                        'listable' => true,
                                     ]],
-                                    ['handle' => 'blocking', 'field' => ['type' => 'toggle', 'display' => 'Blocking', 'default' => false]],
-                                    ['handle' => 'snoozeable', 'field' => ['type' => 'toggle', 'display' => 'Snoozeable', 'default' => false]],
-                                    ['handle' => 'priority', 'field' => ['type' => 'integer', 'display' => 'Priority']],
+                                    ['handle' => 'blocking', 'field' => ['type' => 'toggle', 'display' => 'Blocking', 'default' => false, 'listable' => true]],
+                                    ['handle' => 'snoozeable', 'field' => ['type' => 'toggle', 'display' => 'Snoozeable', 'default' => false, 'listable' => 'hidden']],
+                                    ['handle' => 'priority', 'field' => ['type' => 'integer', 'display' => 'Priority', 'listable' => 'hidden']],
                                 ],
                             ],
                         ],
@@ -81,6 +93,7 @@ class NotificationCollectionInstaller
                                     ['handle' => 'audience', 'field' => [
                                         'type' => 'group',
                                         'display' => 'Audience',
+                                        'listable' => false,
                                         'fields' => [
                                             ['handle' => 'all', 'field' => ['type' => 'toggle', 'display' => 'All users', 'default' => false]],
                                             ['handle' => 'roles', 'field' => ['type' => 'user_roles', 'display' => 'Roles']],
@@ -97,8 +110,8 @@ class NotificationCollectionInstaller
                         'sections' => [
                             [
                                 'fields' => [
-                                    ['handle' => 'start_date', 'field' => ['type' => 'date', 'display' => 'Start date', 'time_enabled' => true, 'required' => true]],
-                                    ['handle' => 'end_date', 'field' => ['type' => 'date', 'display' => 'End date', 'time_enabled' => true]],
+                                    ['handle' => 'start_date', 'field' => ['type' => 'date', 'display' => 'Start date', 'time_enabled' => true, 'required' => true, 'listable' => true]],
+                                    ['handle' => 'end_date', 'field' => ['type' => 'date', 'display' => 'End date', 'time_enabled' => true, 'listable' => true]],
                                 ],
                             ],
                         ],
@@ -111,6 +124,7 @@ class NotificationCollectionInstaller
                                     ['handle' => 'nudge', 'field' => [
                                         'type' => 'group',
                                         'display' => 'Nudge settings',
+                                        'listable' => false,
                                         'fields' => [
                                             ['handle' => 'enabled', 'field' => ['type' => 'toggle', 'display' => 'Enabled', 'default' => false]],
                                             ['handle' => 'threshold_hours', 'field' => ['type' => 'integer', 'display' => 'Threshold hours', 'default' => 24]],

@@ -36,6 +36,8 @@ class NotificationCollectionInstallerTest extends TestCase
         $this->assertSame('Notifications', $collection->title());
         $this->assertNull($collection->route(Site::default()->handle()));
         $this->assertFalse($collection->requiresSlugs());
+        $this->assertSame('start_date', $collection->sortField());
+        $this->assertSame('desc', $collection->sortDirection());
     }
 
     public function test_installing_the_collection_is_idempotent(): void
@@ -80,6 +82,13 @@ class NotificationCollectionInstallerTest extends TestCase
         $this->assertSame('bard', $fields['body']->type());
         $this->assertSame(['info', 'warning', 'critical'], array_keys($fields['severity']->get('options')));
         $this->assertTrue($fields['start_date']->get('time_enabled'));
+        $this->assertSame(
+            ['title', 'severity', 'blocking', 'start_date', 'end_date'],
+            $blueprint->columns()->filter->visible()->pluck('field')->all(),
+        );
+        $this->assertFalse($fields['body']->isListable());
+        $this->assertTrue($fields['priority']->isListable());
+        $this->assertFalse($fields['priority']->isVisibleOnListing());
 
         $audienceFields = collect($fields['audience']->get('fields'))->pluck('handle')->all();
         $nudgeFields = collect($fields['nudge']->get('fields'))->pluck('handle')->all();

@@ -366,3 +366,9 @@ Todo: Ensure expired, unacknowledged advisories stop appearing as active but rem
 Done: Verified with an end-to-end Inbox resolver test that an unacknowledged advisory immediately becomes inactive at expiry while remaining in retained history.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Active state derives from the exclusive end boundary, while reportable history is governed separately by Inbox retention and does not require an acknowledgement.
+
+2026-08-12 17:19:05 NZST
+Todo: Configure the collection listing and publish form for notice management.
+Done: Configured notifications to sort by descending start date and exposed concise title, severity, blocking, start, and end columns while retaining the complete tabbed publish blueprint.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Idempotent installs also repair the collection sort settings; body and nested group fields remain edit-form-only, while optional snooze and priority fields stay available through column customization.
