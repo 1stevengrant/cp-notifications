@@ -132,7 +132,7 @@
 - [x] Test that role/group removal changes current targeting but preserves an existing acknowledgement.
 - [x] Test scheduling boundaries, open-ended notices, expiration, and future blocking notices.
 - [x] Test priority, severity, and start-date ordering plus ties/null values.
-- [ ] Test locked notices reject edits after the first acknowledgement.
+- [x] Test locked notices reject edits after the first acknowledgement.
 - [ ] Test overlay top-down behavior for mixed blocking/advisory stacks.
 - [ ] Test strict middleware enforcement and modal-only mode.
 - [ ] Test bypass users are not gated but can still see notices in their inbox.

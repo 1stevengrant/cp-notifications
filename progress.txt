@@ -576,3 +576,9 @@ Todo: Test priority, severity, and start-date ordering plus ties/null values.
 Done: Audited and ran complete-sequence ordering tests spanning explicit priorities, all severities, oldest starts, zero/null/blank priorities, exact ties, and deterministic ID fallback.
 Tests: vendor/bin/phpunit --filter NotificationOrderTest --testdox
 Notes: Assertions compare the entire sorted ID sequence, making every precedence tier observable rather than checking isolated pairwise outcomes.
+
+2026-08-12 17:51:15 NZST
+Todo: Test locked notices reject edits after the first acknowledgement.
+Done: Audited and ran first-ack lock detection, server-side save rejection, listener ordering, superseding-notice guidance, and complete publish-form read-only coverage.
+Tests: vendor/bin/phpunit --filter 'NotificationLockTest|PreventLockedNotificationEditsTest|RenderLockedNotificationReadOnlyTest' --testdox
+Notes: Eight focused tests prove the lock is enforced independently in both persistence and UI layers while unrelated collections and unacknowledged notices remain editable.
