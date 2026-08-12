@@ -8,6 +8,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use PDO;
 
 class MigrationsTest extends TestCase
 {
@@ -80,6 +81,63 @@ class MigrationsTest extends TestCase
 
         $this->expectException(QueryException::class);
         DB::table(EloquentSnoozeRepository::TABLE)->insert($record);
+    }
+
+    public function test_database_uniqueness_survives_concurrent_acknowledgement_attempts(): void
+    {
+        if (! function_exists('pcntl_fork')) {
+            $this->markTestSkipped('The pcntl extension is required for the concurrency test.');
+        }
+
+        $path = sys_get_temp_dir().'/cp-notifications-db-race-'.bin2hex(random_bytes(4)).'.sqlite';
+        $database = new PDO('sqlite:'.$path);
+        $database->exec('PRAGMA journal_mode=WAL');
+        $database->exec('CREATE TABLE acknowledgements (
+            id TEXT PRIMARY KEY,
+            notification_id TEXT NOT NULL,
+            user_id TEXT NOT NULL,
+            acknowledged_at TEXT NOT NULL,
+            UNIQUE (notification_id, user_id)
+        )');
+        $children = [];
+
+        foreach (range(1, 6) as $attempt) {
+            $pid = pcntl_fork();
+
+            if ($pid === 0) {
+                $connection = new PDO('sqlite:'.$path);
+                $connection->setAttribute(PDO::ATTR_TIMEOUT, 5);
+                $statement = $connection->prepare(
+                    'INSERT OR IGNORE INTO acknowledgements
+                    (id, notification_id, user_id, acknowledged_at) VALUES (?, ?, ?, ?)',
+                );
+                $statement->execute([
+                    'ack-'.$attempt,
+                    'notice-concurrent',
+                    'user-concurrent',
+                    '2026-08-12T10:00:0'.$attempt.'+12:00',
+                ]);
+                exit(0);
+            }
+
+            $this->assertGreaterThan(0, $pid);
+            $children[] = $pid;
+        }
+
+        foreach ($children as $pid) {
+            pcntl_waitpid($pid, $status);
+            $this->assertTrue(pcntl_wifexited($status));
+            $this->assertSame(0, pcntl_wexitstatus($status));
+        }
+
+        $this->assertSame(1, (int) $database->query('SELECT COUNT(*) FROM acknowledgements')->fetchColumn());
+        $winner = $database->query('SELECT * FROM acknowledgements')->fetch(PDO::FETCH_ASSOC);
+        $this->assertSame('notice-concurrent', $winner['notification_id']);
+        $this->assertSame('user-concurrent', $winner['user_id']);
+        $database = null;
+        @unlink($path);
+        @unlink($path.'-shm');
+        @unlink($path.'-wal');
     }
 
     private function recordTablesMigration(): Migration

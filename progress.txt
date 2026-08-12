@@ -540,3 +540,9 @@ Todo: Test idempotent, once-only acknowledgements under concurrent requests.
 Done: Added the racing HTTP interleaving where both requests miss lookup and invoke atomic record, proving both responses return the same winning immutable acknowledgement.
 Tests: vendor/bin/phpunit --filter 'AcknowledgeNotificationEndpointTest|FileRepositoriesTest::test_competing_processes'; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Request-level behavior is composed with the real six-process storage race, covering both controller semantics and the atomic winner selection it relies upon.
+
+2026-08-12 17:47:31 NZST
+Todo: Test database uniqueness under concurrent acknowledgement attempts.
+Done: Added a six-process SQLite WAL race using separate connections and the production-equivalent unique notice/user key, proving exactly one correct acknowledgement row survives.
+Tests: vendor/bin/phpunit --filter 'MigrationsTest::test_database_uniqueness_survives'; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Each child uses insert-or-ignore as the Eloquent repository does, validating database arbitration under simultaneous attempts rather than a sequential duplicate exception.
