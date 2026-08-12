@@ -6,3 +6,9 @@ Todo: Scaffold the Statamic 6 / Laravel 13 addon package as `ghijk/cp-notificati
 Done: Completed publishable Composer metadata, declared supported PHP and Statamic versions, replaced the placeholder README copy, and added package/provider scaffold tests.
 Tests: composer validate --strict; vendor/bin/phpunit --testdox
 Notes: Statamic 6 supports Laravel 12 and 13, so the addon keeps Statamic's compatible range while documenting Laravel 13 as the recommended target.
+
+2026-08-12 16:02:00 NZST
+Todo: Register the addon service provider, publishable config, routes, migrations, commands, and CP assets.
+Done: Registered the addon config and CP route sources, migration loading/publishing, an install command, and the Statamic Vite entrypoints; added the standard frontend build manifest and configuration.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Feature routes, migrations, and Vue components will be added to these registered extension points with their corresponding todos.
