@@ -25,4 +25,27 @@ class PermissionTest extends TestCase
             $registered->get('view notifications')->group(),
         );
     }
+
+    public function test_manage_notifications_is_registered(): void
+    {
+        $registered = $this->registeredPermissions();
+
+        $this->assertSame(
+            'Manage notifications',
+            $registered->get('manage notifications')->label(),
+        );
+        $this->assertSame(
+            'cp-notifications',
+            $registered->get('manage notifications')->group(),
+        );
+    }
+
+    private function registeredPermissions(): Permissions
+    {
+        $permissions = new Permissions;
+        Permission::swap($permissions);
+        (new ServiceProvider($this->app))->registerPermissions();
+
+        return $permissions->boot();
+    }
 }

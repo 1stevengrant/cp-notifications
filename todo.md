@@ -8,7 +8,7 @@
 - [x] Register the Inbox CP navigation item and links to management/reporting surfaces.
 - [ ] Register Statamic permissions:
   - [x] `view notifications` (available to all users by default).
-  - [ ] `manage notifications`.
+  - [x] `manage notifications`.
   - [ ] `view notification reports`.
   - [ ] `bypass notifications` (granted to the creator by default).
   - [ ] `purge notifications`.

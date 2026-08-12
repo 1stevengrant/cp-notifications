@@ -66,6 +66,8 @@ class ServiceProvider extends AddonServiceProvider
             Permission::group('cp-notifications', 'CP Notifications', function (): void {
                 Permission::register('view notifications')
                     ->label('View own notification inbox');
+                Permission::register('manage notifications')
+                    ->label('Manage notifications');
             });
         });
     }

@@ -30,3 +30,9 @@ Todo: Register `view notifications` (available to all users by default).
 Done: Registered the Inbox permission in a dedicated CP Notifications permission group and made the Inbox navigation available by default to authenticated CP users instead of requiring role assignment.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: The permission remains registered for discoverability and future policy integration, while default Inbox availability is expressed by the absence of an additional navigation authorization gate.
+
+2026-08-12 16:18:00 NZST
+Todo: Register `manage notifications`.
+Done: Registered the management ability in the CP Notifications permission group; the Manage navigation item already requires this exact ability.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Collection policies and management endpoints will consume this ability as those features are implemented.
