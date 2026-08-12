@@ -25,7 +25,7 @@
 ## 3. Acknowledgement and snooze storage
 
 - [x] Define the immutable `Acknowledgement` data object.
-- [ ] Define the transient, single-use `Snooze` data object.
+- [x] Define the transient, single-use `Snooze` data object.
 - [ ] Create `AcknowledgementRepository` with `find`, idempotent `record`, `forNotification`, and `forUser` methods.
 - [ ] Create the equivalent `SnoozeRepository` contract.
 - [ ] Implement the Eloquent acknowledgement and snooze repositories.

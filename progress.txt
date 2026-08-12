@@ -96,3 +96,9 @@ Todo: Define the immutable `Acknowledgement` data object.
 Done: Added a final readonly acknowledgement value object with stable record, notification, user, and immutable timestamp fields plus array/JSON hydration and serialization.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Storage drivers will use snake_case serialized keys while application code receives typed camelCase properties and CarbonImmutable timestamps.
+
+2026-08-12 16:58:00 NZST
+Todo: Define the transient, single-use `Snooze` data object.
+Done: Added a final readonly snooze value object with notification/user identity, immutable expiry, array/JSON serialization, and shared active-at-time behavior.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: A snooze is active strictly before snoozed_until and inactive at the exact expiry boundary.
