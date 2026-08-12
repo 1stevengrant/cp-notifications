@@ -648,3 +648,9 @@ Todo: Document notice creation, targeting, scheduling, reporting, export, nudges
 Done: Added a complete notice workflow guide covering blueprint fields, publication windows, live audiences, ordering, Inbox/modal actions, reports/former recipients, CSV, manual/scheduled reminders, and confirmed clear-out.
 Tests: vendor/bin/phpunit --filter DocumentationTest --testdox; composer validate --no-check-publish; git diff --check
 Notes: Twenty-eight documentation assertions now guard required setup, storage, enforcement, and administrator/user workflow details.
+
+2026-08-12 17:59:57 NZST
+Todo: Warn that blocking notices with an end_date are unusual and can expire without acknowledgement.
+Done: Added a prominent blocking-expiry warning explaining exact-time gating removal without acknowledgement and recommending no end date when confirmation must remain mandatory.
+Tests: vendor/bin/phpunit --filter 'DocumentationTest::test_blocking|ActiveWindowTest::test_published' --testdox; composer validate --no-check-publish; git diff --check
+Notes: Documentation language matches the inclusive-start/exclusive-end implementation rather than implying blocking status overrides scheduling.

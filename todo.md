@@ -147,7 +147,7 @@
 - [x] Document file versus Eloquent drivers and `auto` selection behavior.
 - [x] Document `strict` versus `modal` enforcement and bypass permission implications.
 - [x] Document notice creation, targeting, scheduling, reporting, export, nudges, and purge workflows.
-- [ ] Warn that blocking notices with an `end_date` are unusual and can expire without acknowledgement.
+- [x] Warn that blocking notices with an `end_date` are unusual and can expire without acknowledgement.
 - [ ] Document locked notices and the superseding-notice correction workflow.
 - [ ] Verify compatibility with Statamic 6, Laravel 13, Vue 3, the Statamic UI kit, flat-file installs, and `statamic/eloquent-driver` installs.
 

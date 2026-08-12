@@ -63,4 +63,13 @@ class DocumentationTest extends TestCase
             $this->assertStringContainsString($detail, $readme);
         }
     }
+
+    public function test_blocking_end_date_expiry_risk_is_documented(): void
+    {
+        $readme = file_get_contents(__DIR__.'/../README.md');
+
+        $this->assertStringContainsString('Blocking notice expiry', $readme);
+        $this->assertStringContainsString('stops gating users', $readme);
+        $this->assertStringContainsString('never acknowledged it', $readme);
+    }
 }

@@ -112,6 +112,11 @@ provided. Audiences are expanded live, so later role/group changes immediately
 affect visibility and reminders. Explicit priority sorts first, followed by
 severity, oldest start, and a deterministic ID tie-break.
 
+> **Blocking notice expiry:** Giving a blocking notice an `end_date` is unusual.
+> At that exact time it expires and stops gating users even when they never acknowledged it.
+> Leave `end_date` empty when acknowledgement must remain
+> mandatory until every targeted user confirms.
+
 Targeted users read active and retained historical notices in Notifications → Inbox.
 The global modal presents the same active stack one at a time. Confirming
 records an immutable acknowledgement; an eligible advisory can instead use its
