@@ -12,3 +12,9 @@ Todo: Register the addon service provider, publishable config, routes, migration
 Done: Registered the addon config and CP route sources, migration loading/publishing, an install command, and the Statamic Vite entrypoints; added the standard frontend build manifest and configuration.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Feature routes, migrations, and Vue components will be added to these registered extension points with their corresponding todos.
+
+2026-08-12 16:06:00 NZST
+Todo: Add `config/cp-notifications.php` with acknowledgement driver, enforcement, retention, and nudge settings.
+Done: Added environment-aware acknowledgement driver and file path, strict/modal enforcement, Inbox retention, and nudge sender configuration with the PRD defaults.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Null Inbox retention means indefinite history; a null nudge sender delegates to the host application's mail configuration.

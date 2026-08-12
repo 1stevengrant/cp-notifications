@@ -9,7 +9,14 @@ class ServiceProviderTest extends TestCase
 {
     public function test_it_merges_and_publishes_its_config(): void
     {
-        $this->assertSame([], config('cp-notifications'));
+        $this->assertSame('auto', config('cp-notifications.acknowledgements.driver'));
+        $this->assertSame(
+            storage_path('statamic/cp-notifications'),
+            config('cp-notifications.acknowledgements.file_path'),
+        );
+        $this->assertSame('strict', config('cp-notifications.enforcement'));
+        $this->assertNull(config('cp-notifications.retention.inbox_days'));
+        $this->assertNull(config('cp-notifications.nudge.from_address'));
 
         $this->assertContains(
             'cp-notifications-config',
