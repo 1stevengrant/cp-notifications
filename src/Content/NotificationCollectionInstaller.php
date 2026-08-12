@@ -65,6 +65,19 @@ class NotificationCollectionInstaller
                             [
                                 'fields' => [
                                     ['handle' => 'title', 'field' => ['type' => 'text', 'required' => true, 'listable' => true]],
+                                    ['handle' => 'notification_status', 'field' => [
+                                        'type' => 'select',
+                                        'display' => 'Status',
+                                        'visibility' => 'computed',
+                                        'listable' => true,
+                                        'options' => [
+                                            'draft' => 'Draft',
+                                            'scheduled' => 'Scheduled',
+                                            'active' => 'Active',
+                                            'expired' => 'Expired',
+                                            'locked' => 'Locked',
+                                        ],
+                                    ]],
                                     ['handle' => 'body', 'field' => ['type' => 'bard', 'display' => 'Body', 'required' => true, 'listable' => false]],
                                     ['handle' => 'severity', 'field' => [
                                         'type' => 'select',

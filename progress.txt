@@ -372,3 +372,9 @@ Todo: Configure the collection listing and publish form for notice management.
 Done: Configured notifications to sort by descending start date and exposed concise title, severity, blocking, start, and end columns while retaining the complete tabbed publish blueprint.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Idempotent installs also repair the collection sort settings; body and nested group fields remain edit-form-only, while optional snooze and priority fields stay available through column customization.
+
+2026-08-12 17:20:18 NZST
+Todo: Display appropriate status indicators for draft, scheduled, active, expired, and locked notices.
+Done: Added a computed management status column and lifecycle classifier covering all five states with application-timezone scheduling and acknowledgement-backed locking.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Locked takes precedence because acknowledged notices are immutable; expiration uses the same exclusive end boundary as active-stack resolution.

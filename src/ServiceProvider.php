@@ -10,6 +10,7 @@ use Ghijk\CpNotifications\Listeners\NormalizeNotificationBehavior;
 use Ghijk\CpNotifications\Listeners\PreventLockedNotificationEdits;
 use Ghijk\CpNotifications\Listeners\RenderLockedNotificationReadOnly;
 use Ghijk\CpNotifications\Http\Middleware\EnforceBlockingNotifications;
+use Ghijk\CpNotifications\Notifications\NotificationStatus;
 use Ghijk\CpNotifications\Repositories\EloquentAcknowledgementRepository;
 use Ghijk\CpNotifications\Repositories\EloquentSnoozeRepository;
 use Ghijk\CpNotifications\Repositories\FileAcknowledgementRepository;
@@ -20,6 +21,7 @@ use Statamic\CP\Navigation\Nav as Navigation;
 use Statamic\Events\EntrySaving;
 use Statamic\Events\EntryBlueprintFound;
 use Statamic\Facades\CP\Nav;
+use Statamic\Facades\Collection;
 use Statamic\Facades\Permission;
 use Statamic\Providers\AddonServiceProvider;
 
@@ -85,6 +87,10 @@ class ServiceProvider extends AddonServiceProvider
 
         $this->registerNavigation();
         $this->registerPermissions();
+
+        Collection::computed('notifications', 'notification_status', fn ($entry): string => $this->app
+            ->make(NotificationStatus::class)
+            ->for($entry));
     }
 
     public function registerNavigation(): void

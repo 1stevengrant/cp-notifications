@@ -86,7 +86,7 @@
 - [x] Apply `retention.inbox_days`; treat `null` as indefinite retention.
 - [x] Ensure expired, unacknowledged advisories stop appearing as active but remain reportable.
 - [x] Configure the collection listing and publish form for notice management.
-- [ ] Display appropriate status indicators for draft, scheduled, active, expired, and locked notices.
+- [x] Display appropriate status indicators for draft, scheduled, active, expired, and locked notices.
 
 ## 9. Reporting and export
 

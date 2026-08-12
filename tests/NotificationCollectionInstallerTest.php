@@ -76,16 +76,17 @@ class NotificationCollectionInstallerTest extends TestCase
 
         $fields = $blueprint->fields()->all();
         $this->assertSame(
-            ['title', 'body', 'severity', 'blocking', 'snoozeable', 'priority', 'audience', 'start_date', 'end_date', 'nudge'],
+            ['title', 'notification_status', 'body', 'severity', 'blocking', 'snoozeable', 'priority', 'audience', 'start_date', 'end_date', 'nudge'],
             $fields->keys()->all(),
         );
         $this->assertSame('bard', $fields['body']->type());
         $this->assertSame(['info', 'warning', 'critical'], array_keys($fields['severity']->get('options')));
         $this->assertTrue($fields['start_date']->get('time_enabled'));
         $this->assertSame(
-            ['title', 'severity', 'blocking', 'start_date', 'end_date'],
+            ['title', 'notification_status', 'severity', 'blocking', 'start_date', 'end_date'],
             $blueprint->columns()->filter->visible()->pluck('field')->all(),
         );
+        $this->assertSame('computed', $fields['notification_status']->visibility());
         $this->assertFalse($fields['body']->isListable());
         $this->assertTrue($fields['priority']->isListable());
         $this->assertFalse($fields['priority']->isVisibleOnListing());
