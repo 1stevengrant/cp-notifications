@@ -112,7 +112,7 @@
 ## 11. Retention and manual purge
 
 - [x] Never automatically hard-delete notices or acknowledgement records.
-- [ ] Build a confirmed manual clear-out action authorized by `purge notifications`.
+- [x] Build a confirmed manual clear-out action authorized by `purge notifications`.
 - [ ] Restrict purge candidates to appropriate old, expired notices.
 - [ ] Prevent system deletion of notices that have acknowledgements.
 - [ ] Define whether manual purge archives or removes eligible notices and document the behavior.

@@ -6,11 +6,13 @@ use Ghijk\CpNotifications\Http\Controllers\SnoozeNotificationController;
 use Ghijk\CpNotifications\Http\Controllers\BlockingInterstitialController;
 use Ghijk\CpNotifications\Http\Controllers\InboxController;
 use Ghijk\CpNotifications\Http\Controllers\ReportController;
+use Ghijk\CpNotifications\Http\Controllers\ManageNotificationsController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('cp-notifications')->name('cp-notifications.')->group(function (): void {
     Route::get('inbox', InboxController::class)->name('inbox');
-    Route::view('manage', 'cp-notifications::manage')->name('manage');
+    Route::get('manage', [ManageNotificationsController::class, 'index'])->name('manage');
+    Route::post('manage/purge', [ManageNotificationsController::class, 'purge'])->name('manage.purge');
     Route::get('reports', [ReportController::class, 'index'])->name('reports');
     Route::get('reports/{notification}', [ReportController::class, 'show'])->name('reports.show');
     Route::get('reports/{notification}/export', [ReportController::class, 'export'])->name('reports.export');

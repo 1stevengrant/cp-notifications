@@ -474,3 +474,9 @@ Todo: Never automatically hard-delete notices or acknowledgement records.
 Done: Added an architectural safety test proving automatic commands, queued jobs, and nudge services contain no deletion path, no purge is scheduled, and acknowledgement storage exposes no delete API.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Any later notice removal must therefore enter through the separate permissioned and confirmed manual workflow; acknowledgement records remain immutable by contract.
+
+2026-08-12 17:38:52 NZST
+Todo: Build a confirmed manual clear-out action authorized by purge notifications.
+Done: Added a management-page candidate preview and POST-only clear-out action enforcing the purge permission and an accepted confirmation before invoking the centralized purge service.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Direct route access is authorized server-side and invalid or missing confirmation fails validation; the form is disabled when no eligible notices exist.
