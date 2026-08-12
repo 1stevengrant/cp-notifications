@@ -270,3 +270,9 @@ Todo: Add the single-use 24-hour snooze endpoint for eligible advisory notices.
 Done: Added an authenticated snooze endpoint restricted to active, targeted, non-blocking, snoozeable advisories, returning the repository's exact 24-hour expiry.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Any existing snooze record causes a conflict even after expiry, enforcing the one-time allowance independently of current snooze activity.
+
+2026-08-12 17:04:46 NZST
+Todo: Build and register a global Vue 3 overlay using Statamic UI components.
+Done: Added a globally appended Vue 3 overlay using Statamic UI card and badge components, accessible dialog semantics, severity styling, and authenticated stack loading; added the Tailwind 4 build dependency and compiled distributable assets.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; npm run build; git diff --check
+Notes: The overlay is appended through Statamic's global component manager, so it mounts across CP views rather than requiring each page template to include it.
