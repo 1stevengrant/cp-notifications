@@ -384,3 +384,9 @@ Todo: Build a per-notice report authorized by view notification reports.
 Done: Replaced the report placeholder with a canonical notification index and per-notice report route, both enforcing the reporting permission server-side.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Per-notice lookup rejects entries outside the notifications collection or canonical site; the computed management callback was also made capture-free so entries remain queue-serializable.
+
+2026-08-12 17:22:51 NZST
+Todo: Expand the notice audience live into the current targeted-user set.
+Done: Wired per-notice reports to the shared audience resolver and rendered the deduplicated current recipient names and email addresses.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Audience expansion runs on every report request, so role, group, explicit-user, and all-user targeting reflects current membership rather than a stored snapshot.

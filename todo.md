@@ -91,7 +91,7 @@
 ## 9. Reporting and export
 
 - [x] Build a per-notice report authorized by `view notification reports`.
-- [ ] Expand the notice audience live into the current targeted-user set.
+- [x] Expand the notice audience live into the current targeted-user set.
 - [ ] Display each targeted user's acknowledgement status and `acknowledged_at` value.
 - [ ] Display current/used snooze state.
 - [ ] Preserve recorded acknowledgements in reporting even if a user later leaves the targeted role/group.
