@@ -702,3 +702,9 @@ Todo: Add icons to the Inbox, Manage, and Reports notification menu items.
 Done: Replaced invalid navigation icon handles with native Statamic 6 icons: mail-inbox-content for Inbox, collections for Manage, and charts-donut-graph for Reports; cleared the statamic-sandbox.test caches.
 Tests: vendor/bin/pest tests/NavigationTest.php --compact; composer test -- --compact; vendor/bin/pint --test; git diff --check
 Notes: Navigation tests assert both the configured handles and the presence of every SVG in Statamic's installed icon set; 162 application tests pass with 595 assertions.
+
+2026-08-13 09:15:46 NZST
+Todo: Add clear publishing instructions for every notification field.
+Done: Added inline guidance to all 11 top-level fields and all 7 nested audience/nudge fields, covering display locations, status locking, severity ordering, blocking and snoozing, priority, live targeting, scheduling and expiry, and automatic reminder timing; reinstalled the blueprint in statamic-sandbox.test without changing entries.
+Tests: vendor/bin/pest tests/NotificationCollectionInstallerTest.php --compact; composer test -- --compact; vendor/bin/pint --test; git diff --check
+Notes: A regression test requires non-empty instructions on every field and checks the highest-risk behavioral warnings; 163 application tests pass with 636 assertions.

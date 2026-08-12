@@ -76,6 +76,29 @@ test('it creates the complete notification blueprint', function () {
     expect($nudgeFields)->toBe(['enabled', 'threshold_hours', 'cadence_hours']);
 });
 
+test('every notification field explains its publishing behavior', function () {
+    $this->artisan('cp-notifications:install')->assertExitCode(Command::SUCCESS);
+
+    $fields = Blueprint::find('collections.notifications.notification')->fields()->all();
+
+    foreach ($fields as $handle => $field) {
+        expect($field->get('instructions'), "Missing instructions for {$handle}")->toBeString()->not->toBeEmpty();
+    }
+
+    foreach (['audience', 'nudge'] as $groupHandle) {
+        foreach ($fields[$groupHandle]->get('fields') as $field) {
+            expect($field['field']['instructions'], "Missing instructions for {$groupHandle}.{$field['handle']}")
+                ->toBeString()
+                ->not->toBeEmpty();
+        }
+    }
+
+    expect($fields['severity']->get('instructions'))->toContain('does not make a notice blocking');
+    expect($fields['blocking']->get('instructions'))->toContain('cannot be snoozed');
+    expect($fields['end_date']->get('instructions'))->toContain('stops blocking');
+    expect($fields['nudge']->get('instructions'))->toContain('currently targeted users');
+});
+
 test('notifications use one canonical site in multisite installs', function () {
     config()->set('statamic.system.multisite', true);
     Site::setSites([
