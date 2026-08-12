@@ -15,12 +15,14 @@ return new class extends Migration
             $table->string('notification_id')->index();
             $table->string('user_id')->index();
             $table->dateTimeTz('acknowledged_at')->index();
+            $table->unique(['notification_id', 'user_id']);
         });
 
         Schema::create(EloquentSnoozeRepository::TABLE, function (Blueprint $table): void {
             $table->string('notification_id')->index();
             $table->string('user_id')->index();
             $table->dateTimeTz('snoozed_until')->index();
+            $table->unique(['notification_id', 'user_id']);
         });
     }
 

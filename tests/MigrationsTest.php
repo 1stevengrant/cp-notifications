@@ -5,6 +5,8 @@ namespace Ghijk\CpNotifications\Tests;
 use Ghijk\CpNotifications\Repositories\EloquentAcknowledgementRepository;
 use Ghijk\CpNotifications\Repositories\EloquentSnoozeRepository;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class MigrationsTest extends TestCase
@@ -36,10 +38,48 @@ class MigrationsTest extends TestCase
         $this->assertContains('cp_notification_snoozes_user_id_index', $snoozeIndexes);
         $this->assertContains('cp_notification_snoozes_snoozed_until_index', $snoozeIndexes);
 
+        $this->assertTrue(collect(Schema::getIndexes(EloquentAcknowledgementRepository::TABLE))->contains(
+            fn (array $index): bool => $index['unique'] && $index['columns'] === ['notification_id', 'user_id'],
+        ));
+        $this->assertTrue(collect(Schema::getIndexes(EloquentSnoozeRepository::TABLE))->contains(
+            fn (array $index): bool => $index['unique'] && $index['columns'] === ['notification_id', 'user_id'],
+        ));
+
         $migration->down();
 
         $this->assertFalse(Schema::hasTable(EloquentAcknowledgementRepository::TABLE));
         $this->assertFalse(Schema::hasTable(EloquentSnoozeRepository::TABLE));
+    }
+
+    public function test_acknowledgements_are_unique_per_notification_and_user(): void
+    {
+        $this->recordTablesMigration()->up();
+        $record = [
+            'id' => 'ack-1',
+            'notification_id' => 'notice-1',
+            'user_id' => 'user-1',
+            'acknowledged_at' => '2026-08-12T10:00:00+12:00',
+        ];
+
+        DB::table(EloquentAcknowledgementRepository::TABLE)->insert($record);
+
+        $this->expectException(QueryException::class);
+        DB::table(EloquentAcknowledgementRepository::TABLE)->insert([...$record, 'id' => 'ack-2']);
+    }
+
+    public function test_snoozes_are_unique_per_notification_and_user(): void
+    {
+        $this->recordTablesMigration()->up();
+        $record = [
+            'notification_id' => 'notice-1',
+            'user_id' => 'user-1',
+            'snoozed_until' => '2026-08-13T10:00:00+12:00',
+        ];
+
+        DB::table(EloquentSnoozeRepository::TABLE)->insert($record);
+
+        $this->expectException(QueryException::class);
+        DB::table(EloquentSnoozeRepository::TABLE)->insert($record);
     }
 
     private function recordTablesMigration(): Migration

@@ -126,3 +126,9 @@ Todo: Add migrations and indexes for acknowledgement and snooze tables.
 Done: Added a reversible production migration for acknowledgement and snooze storage, including primary acknowledgement IDs and indexes for notification, user, acknowledgement time, and snooze expiry lookups.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Composite notification/user uniqueness is intentionally added and verified by its immediately following dedicated todo.
+
+2026-08-12 17:25:00 NZST
+Todo: Enforce uniqueness per `(notification, user)` at the database level.
+Done: Added composite unique constraints for notification/user pairs to both acknowledgement and snooze tables, making once-only records enforceable independently of application code.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Migration tests verify both unique-index definitions and real duplicate-insert failures for each record type.
