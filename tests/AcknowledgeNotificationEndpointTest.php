@@ -46,6 +46,32 @@ class AcknowledgeNotificationEndpointTest extends TestCase
         $this->postJson($url, ['confirmed' => true])->assertOk()->assertJsonPath('data.id', 'ack-1');
     }
 
+    public function test_racing_requests_return_the_same_once_only_repository_winner(): void
+    {
+        CarbonImmutable::setTestNow('2026-08-12 12:00:00');
+        $this->actingAs(User::make()->id('user-1')->email('user@example.com')->set('super', true));
+        Collection::make('notifications')->sites([Site::default()->handle()])->save();
+        $this->notice('notice-1')->save();
+        $winner = new Acknowledgement(
+            id: 'winning-ack',
+            notificationId: 'notice-1',
+            userId: 'user-1',
+            acknowledgedAt: CarbonImmutable::now(),
+        );
+        $repository = Mockery::mock(AcknowledgementRepository::class);
+        $repository->expects('find')->twice()->with('notice-1', 'user-1')->andReturnNull();
+        $repository->expects('record')->twice()->with('notice-1', 'user-1')->andReturn($winner);
+        $this->app->instance(AcknowledgementRepository::class, $repository);
+        $url = cp_route('cp-notifications.api.notifications.acknowledge', 'notice-1');
+
+        $first = $this->postJson($url, ['confirmed' => true]);
+        $second = $this->postJson($url, ['confirmed' => true]);
+
+        $first->assertOk()->assertJsonPath('data.id', 'winning-ack');
+        $second->assertOk()->assertJsonPath('data.id', 'winning-ack');
+        $this->assertSame($first->json('data'), $second->json('data'));
+    }
+
     public function test_inactive_or_untargeted_notifications_cannot_be_acknowledged(): void
     {
         CarbonImmutable::setTestNow('2026-08-12 12:00:00');
