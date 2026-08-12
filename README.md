@@ -76,6 +76,25 @@ CP_NOTIFICATIONS_DRIVER=file
 Changing drivers does not migrate existing records. Move the stored data as a
 separate deployment operation before switching a live installation.
 
+## Enforcement modes and bypass
+
+Set `CP_NOTIFICATIONS_ENFORCEMENT` to one of:
+
+- `strict` (default) — all targeted active notices appear in the global modal;
+  an unresolved blocking notice also redirects authenticated CP routes to the
+  acknowledgement interstitial until it is confirmed.
+- `modal` — targeted active notices still appear in the same global modal, but
+  blocking notices do not guard CP routes.
+
+Users with `bypass notifications` are never route-gated in strict mode. Bypass
+does not hide notices, remove them from the user's Inbox, mark them read, or
+change audience membership. It should be reserved for operational accounts
+that must recover or administer the CP during a blocking-notice incident.
+
+Blocking notices always require explicit confirmation and cannot be dismissed
+or snoozed. Eligible advisory notices may be confirmed or snoozed once for 24
+hours.
+
 ## Scheduled reminders
 
 The addon registers `cp-notifications:nudge` with Laravel's scheduler to run

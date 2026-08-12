@@ -33,4 +33,15 @@ class DocumentationTest extends TestCase
         $this->assertStringContainsString('auto` — the default', $readme);
         $this->assertStringContainsString('does not migrate existing records', $readme);
     }
+
+    public function test_enforcement_modes_and_bypass_implications_are_documented(): void
+    {
+        $readme = file_get_contents(__DIR__.'/../README.md');
+
+        $this->assertStringContainsString('CP_NOTIFICATIONS_ENFORCEMENT', $readme);
+        $this->assertStringContainsString('`strict` (default)', $readme);
+        $this->assertStringContainsString('`modal`', $readme);
+        $this->assertStringContainsString('bypass notifications', $readme);
+        $this->assertStringContainsString('does not hide notices', $readme);
+    }
 }

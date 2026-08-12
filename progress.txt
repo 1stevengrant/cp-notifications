@@ -636,3 +636,9 @@ Todo: Document file versus Eloquent drivers and auto selection behavior.
 Done: Documented shared persistence scope, flat-file paths/atomicity, Eloquent migrations, Composer-based auto detection, explicit environment selection, and the no-automatic-migration caveat.
 Tests: vendor/bin/phpunit --filter 'DocumentationTest|RepositoryDriverResolverTest|ServiceProviderTest::test_it_binds' --testdox; composer validate --no-check-publish; git diff --check
 Notes: Eight focused tests with 27 assertions align the documented choices with actual resolver and container-binding behavior.
+
+2026-08-12 17:58:17 NZST
+Todo: Document strict versus modal enforcement and bypass permission implications.
+Done: Documented overlay and route-guard behavior for both modes, strict-mode bypass recovery use, and the fact that bypass never hides, reads, or retargets notices.
+Tests: vendor/bin/phpunit --filter 'DocumentationTest|EnforceBlockingNotificationsTest|GatingStackTest' --testdox; composer validate --no-check-publish; git diff --check
+Notes: Eleven focused tests with 44 assertions tie operational guidance to real redirect, exemption, modal, and visible-but-ungated behavior.
