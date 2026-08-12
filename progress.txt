@@ -210,3 +210,9 @@ Todo: Keep bypass users in audience/inbox results while excluding them only from
 Done: Added a dedicated gating-stack projection that empties enforcement results for users with the bypass permission without mutating or filtering their visible active notices.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Audience, Inbox, and reporting services remain permission-agnostic; bypass is applied only at the enforcement boundary.
+
+2026-08-12 16:54:17 NZST
+Todo: Order notices by explicit priority override, then severity (`critical`, `warning`, `info`), then oldest `start_date`.
+Done: Added deterministic active-stack ordering with explicit lower-number priorities first, followed by critical, warning, and info severity, then oldest start time. Also hardened an existing parent-directory creation race exposed by repeated concurrency tests.
+Tests: vendor/bin/phpunit (three consecutive runs); composer validate --strict; git diff --check
+Notes: Any explicit numeric priority sorts ahead of the unprioritized severity queue. Exact null and full-tie precedence is verified by the following dedicated todo.

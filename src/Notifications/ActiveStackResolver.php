@@ -18,6 +18,7 @@ final class ActiveStackResolver
         private ActiveWindow $window,
         private AcknowledgementRepository $acknowledgements,
         private SnoozeRepository $snoozes,
+        private NotificationOrder $order,
     ) {}
 
     public function resolve(
@@ -29,7 +30,7 @@ final class ActiveStackResolver
             ? CarbonImmutable::instance($now)
             : CarbonImmutable::parse($now ?? 'now', config('app.timezone', 'UTC'));
 
-        return collect($notifications)
+        $active = collect($notifications)
             ->filter(fn ($notification): bool => $this->audience->matches($notification, $user))
             ->filter(fn ($notification): bool => $this->window->isActive($notification, $now))
             ->reject(fn ($notification): bool => $this->acknowledgements->find(
@@ -40,7 +41,8 @@ final class ActiveStackResolver
                 $snooze = $this->snoozes->find((string) $notification->id(), (string) $user->id());
 
                 return $snooze?->isActiveAt($instant) ?? false;
-            })
-            ->values();
+            });
+
+        return $this->order->sort($active);
     }
 }

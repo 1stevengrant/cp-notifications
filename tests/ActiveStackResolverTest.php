@@ -10,6 +10,7 @@ use Ghijk\CpNotifications\Data\Acknowledgement;
 use Ghijk\CpNotifications\Data\Snooze;
 use Ghijk\CpNotifications\Notifications\ActiveStackResolver;
 use Ghijk\CpNotifications\Notifications\ActiveWindow;
+use Ghijk\CpNotifications\Notifications\NotificationOrder;
 use Mockery;
 use Statamic\Contracts\Auth\User;
 use Statamic\Entries\Collection;
@@ -36,6 +37,7 @@ class ActiveStackResolverTest extends TestCase
             new ActiveWindow,
             $acknowledgements,
             $snoozes,
+            new NotificationOrder,
         ))->resolve(
             [$this->notice('unread'), $this->notice('read')],
             $user,
@@ -60,6 +62,7 @@ class ActiveStackResolverTest extends TestCase
             new ActiveWindow,
             $acknowledgements,
             $snoozes,
+            new NotificationOrder,
         ))->resolve([$outsideAudience, $future], $user, '2026-08-12 12:00');
 
         $this->assertCount(0, $stack);
@@ -88,6 +91,7 @@ class ActiveStackResolverTest extends TestCase
             new ActiveWindow,
             $acknowledgements,
             $snoozes,
+            new NotificationOrder,
         ))->resolve([
             $this->notice('active-snooze'),
             $this->notice('expired-snooze'),
