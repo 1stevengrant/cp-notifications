@@ -5,7 +5,7 @@
 - [x] Scaffold the Statamic 6 / Laravel 13 addon package as `ghijk/cp-notifications`.
 - [x] Register the addon service provider, publishable config, routes, migrations, commands, and CP assets.
 - [x] Add `config/cp-notifications.php` with acknowledgement driver, enforcement, retention, and nudge settings.
-- [ ] Register the Inbox CP navigation item and links to management/reporting surfaces.
+- [x] Register the Inbox CP navigation item and links to management/reporting surfaces.
 - [ ] Register Statamic permissions:
   - [ ] `view notifications` (available to all users by default).
   - [ ] `manage notifications`.

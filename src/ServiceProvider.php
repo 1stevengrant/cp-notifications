@@ -3,6 +3,8 @@
 namespace Ghijk\CpNotifications;
 
 use Ghijk\CpNotifications\Console\Commands\InstallCommand;
+use Statamic\CP\Navigation\Nav as Navigation;
+use Statamic\Facades\CP\Nav;
 use Statamic\Providers\AddonServiceProvider;
 
 class ServiceProvider extends AddonServiceProvider
@@ -30,5 +32,30 @@ class ServiceProvider extends AddonServiceProvider
         $this->publishesMigrations([
             __DIR__.'/../database/migrations' => database_path('migrations'),
         ], 'cp-notifications-migrations');
+
+        $this->registerNavigation();
+    }
+
+    public function registerNavigation(): void
+    {
+        Nav::extend(function (Navigation $nav): void {
+            $nav->create('Inbox')
+                ->section('Notifications')
+                ->icon('inbox')
+                ->route('cp-notifications.inbox')
+                ->can('view notifications');
+
+            $nav->create('Manage')
+                ->section('Notifications')
+                ->icon('collection')
+                ->route('cp-notifications.manage')
+                ->can('manage notifications');
+
+            $nav->create('Reports')
+                ->section('Notifications')
+                ->icon('charts')
+                ->route('cp-notifications.reports')
+                ->can('view notification reports');
+        });
     }
 }

@@ -18,3 +18,9 @@ Todo: Add `config/cp-notifications.php` with acknowledgement driver, enforcement
 Done: Added environment-aware acknowledgement driver and file path, strict/modal enforcement, Inbox retention, and nudge sender configuration with the PRD defaults.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Null Inbox retention means indefinite history; a null nudge sender delegates to the host application's mail configuration.
+
+2026-08-12 16:10:00 NZST
+Todo: Register the Inbox CP navigation item and links to management/reporting surfaces.
+Done: Added a Notifications navigation section with Inbox, Manage, and Reports links, registered their CP routes, and provided initial surface views for progressive enhancement by later todos.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Each navigation item declares its final permission ability; permission definitions and endpoint authorization are completed by their dedicated todos.
