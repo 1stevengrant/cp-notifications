@@ -696,3 +696,9 @@ Todo: Correct the unformatted Inbox, Manage, and Reports pages in the Statamic s
 Done: Replaced legacy Statamic 5 card, button, badge, and table selectors with addon-owned responsive components using Statamic 6 theme tokens, rebuilt the production bundle, published it into statamic-sandbox.test, and cleared the host caches.
 Tests: composer test -- --compact; composer test:browser -- --compact; vendor/bin/pint --test; npm run build; git diff --check
 Notes: The browser test now checks computed card layout, grid layout, and critical badge background so a present-but-unloaded stylesheet fails the suite; 161 application tests and one browser test pass with 598 total assertions.
+
+2026-08-13 09:05:05 NZST
+Todo: Add icons to the Inbox, Manage, and Reports notification menu items.
+Done: Replaced invalid navigation icon handles with native Statamic 6 icons: mail-inbox-content for Inbox, collections for Manage, and charts-donut-graph for Reports; cleared the statamic-sandbox.test caches.
+Tests: vendor/bin/pest tests/NavigationTest.php --compact; composer test -- --compact; vendor/bin/pint --test; git diff --check
+Notes: Navigation tests assert both the configured handles and the presence of every SVG in Statamic's installed icon set; 162 application tests pass with 595 assertions.

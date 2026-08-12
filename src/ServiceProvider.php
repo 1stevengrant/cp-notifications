@@ -122,18 +122,18 @@ class ServiceProvider extends AddonServiceProvider
         Nav::extend(function (Navigation $nav): void {
             $nav->create('Inbox')
                 ->section('Notifications')
-                ->icon('inbox')
+                ->icon('mail-inbox-content')
                 ->route('cp-notifications.inbox');
 
             $nav->create('Manage')
                 ->section('Notifications')
-                ->icon('collection')
+                ->icon('collections')
                 ->route('cp-notifications.manage')
                 ->can('manage notifications');
 
             $nav->create('Reports')
                 ->section('Notifications')
-                ->icon('charts')
+                ->icon('charts-donut-graph')
                 ->route('cp-notifications.reports')
                 ->can('view notification reports');
         });
