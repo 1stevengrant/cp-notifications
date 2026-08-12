@@ -102,3 +102,9 @@ Todo: Define the transient, single-use `Snooze` data object.
 Done: Added a final readonly snooze value object with notification/user identity, immutable expiry, array/JSON serialization, and shared active-at-time behavior.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: A snooze is active strictly before snoozed_until and inactive at the exact expiry boundary.
+
+2026-08-12 17:02:00 NZST
+Todo: Create `AcknowledgementRepository` with find, idempotent record, forNotification, and forUser methods.
+Done: Defined the typed acknowledgement persistence boundary with lookup, once-only recording, and notification/user collection queries.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: record accepts an optional CarbonImmutable timestamp for deterministic driver contract tests; implementations must return the original record on duplicate calls.
