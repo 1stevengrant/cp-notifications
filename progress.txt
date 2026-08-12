@@ -174,3 +174,9 @@ Todo: Resolve audience membership from `all`, roles, groups, and explicit user I
 Done: Added an audience matcher that evaluates notification entries or audience arrays against Statamic users using all-user, effective-role, group, and explicit-user rules.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Role matching uses Statamic's effective `hasRole` behavior, so roles inherited through groups are included in membership resolution.
+
+2026-08-12 16:49:07 NZST
+Todo: De-duplicate users targeted through multiple audience rules.
+Done: Added an audience resolver that scans the current Statamic user repository once, filters through the shared matcher, and returns one user per stable user ID even when rules or repository results overlap.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The resolver preserves repository order while returning Statamic's native UserCollection type for downstream inbox and reporting use.
