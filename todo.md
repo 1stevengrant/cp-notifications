@@ -114,7 +114,7 @@
 - [x] Never automatically hard-delete notices or acknowledgement records.
 - [x] Build a confirmed manual clear-out action authorized by `purge notifications`.
 - [x] Restrict purge candidates to appropriate old, expired notices.
-- [ ] Prevent system deletion of notices that have acknowledgements.
+- [x] Prevent system deletion of notices that have acknowledgements.
 - [ ] Define whether manual purge archives or removes eligible notices and document the behavior.
 - [ ] Log the acting admin, affected notices, timestamp, and result of every purge.
 

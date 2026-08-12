@@ -486,3 +486,9 @@ Todo: Restrict purge candidates to appropriate old, expired notices.
 Done: Verified candidates are published, ended notices at or beyond the Inbox retention age, with an inclusive cutoff and exclusions for drafts, active, open-ended, and recently expired notices.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: When Inbox retention is indefinite, manual clear-out may consider any already-expired published notice; it remains permissioned, confirmed, acknowledgement-safe, and logged.
+
+2026-08-12 17:41:08 NZST
+Todo: Prevent system deletion of notices that have acknowledgements.
+Done: Added a global Statamic deletion guard for acknowledged notifications and a second repository check immediately before each purge deletion to close preview-time races.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Native collection deletion and addon purge now share the immutable-acknowledgement rule; a newly recorded acknowledgement wins even after a notice appeared in the purge preview.

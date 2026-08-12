@@ -4,6 +4,7 @@ namespace Ghijk\CpNotifications\Tests;
 
 use Carbon\CarbonImmutable;
 use Ghijk\CpNotifications\Contracts\AcknowledgementRepository;
+use Ghijk\CpNotifications\Data\Acknowledgement;
 use Ghijk\CpNotifications\Retention\NotificationPurgeService;
 use Mockery;
 use Psr\Log\LoggerInterface;
@@ -16,7 +17,7 @@ class NotificationPurgeServiceTest extends TestCase
     protected function tearDown(): void
     {
         CarbonImmutable::setTestNow();
-        Entry::query()->where('collection', 'notifications')->get()->each->delete();
+        Entry::query()->where('collection', 'notifications')->get()->each->deleteQuietly();
         Collection::find('notifications')?->delete();
         parent::tearDown();
     }
@@ -41,6 +42,31 @@ class NotificationPurgeServiceTest extends TestCase
             ['boundary', 'older'],
             $service->candidates()->map->id()->all(),
         );
+    }
+
+    public function test_acknowledgement_created_after_preview_prevents_deletion(): void
+    {
+        config()->set('app.timezone', 'Pacific/Auckland');
+        CarbonImmutable::setTestNow('2026-08-12 12:00 Pacific/Auckland');
+        Collection::make('notifications')->sites([Site::default()->handle()])->save();
+        $this->notice('notice-1', true, '2026-08-01 12:00')->save();
+        $acknowledgement = new Acknowledgement(
+            'ack-1',
+            'notice-1',
+            'user-1',
+            CarbonImmutable::now(),
+        );
+        $acknowledgements = Mockery::mock(AcknowledgementRepository::class);
+        $acknowledgements->expects('forNotification')->with('notice-1')->twice()->andReturn(
+            collect(),
+            collect([$acknowledgement]),
+        );
+        $logger = Mockery::mock(LoggerInterface::class);
+        $logger->allows('info');
+        $service = new NotificationPurgeService($acknowledgements, $logger);
+
+        $this->assertSame([], $service->purge('admin-1')->all());
+        $this->assertNotNull(Entry::find('notice-1'));
     }
 
     private function notice(string $id, bool $published, ?string $end)

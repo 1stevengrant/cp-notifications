@@ -57,9 +57,19 @@ final class NotificationPurgeService
     public function purge(string $actorId): SupportCollection
     {
         $candidates = $this->candidates();
-        $ids = $candidates->map->id()->map(fn ($id): string => (string) $id)->values();
+        $ids = $candidates
+            ->filter(function ($notification): bool {
+                if ($this->acknowledgements->forNotification((string) $notification->id())->isNotEmpty()) {
+                    return false;
+                }
 
-        $candidates->each->delete();
+                $notification->delete();
+
+                return true;
+            })
+            ->map->id()
+            ->map(fn ($id): string => (string) $id)
+            ->values();
 
         $this->logger->info('CP notification manual purge completed.', [
             'actor_id' => $actorId,

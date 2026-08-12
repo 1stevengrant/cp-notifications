@@ -11,6 +11,7 @@ use Ghijk\CpNotifications\Listeners\ValidateNotificationAudience;
 use Ghijk\CpNotifications\Listeners\NormalizeNotificationBehavior;
 use Ghijk\CpNotifications\Listeners\PreventLockedNotificationEdits;
 use Ghijk\CpNotifications\Listeners\RenderLockedNotificationReadOnly;
+use Ghijk\CpNotifications\Listeners\PreventAcknowledgedNotificationDeletion;
 use Ghijk\CpNotifications\Http\Middleware\EnforceBlockingNotifications;
 use Ghijk\CpNotifications\Notifications\NotificationStatus;
 use Ghijk\CpNotifications\Repositories\EloquentAcknowledgementRepository;
@@ -25,6 +26,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Statamic\CP\Navigation\Nav as Navigation;
 use Statamic\Events\EntrySaving;
 use Statamic\Events\EntryBlueprintFound;
+use Statamic\Events\EntryDeleting;
 use Statamic\Facades\CP\Nav;
 use Statamic\Facades\Collection;
 use Statamic\Facades\Permission;
@@ -46,6 +48,9 @@ class ServiceProvider extends AddonServiceProvider
             PreventLockedNotificationEdits::class,
             NormalizeNotificationBehavior::class,
             ValidateNotificationAudience::class,
+        ],
+        EntryDeleting::class => [
+            PreventAcknowledgedNotificationDeletion::class,
         ],
     ];
 

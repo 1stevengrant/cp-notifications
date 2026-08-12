@@ -16,7 +16,7 @@ class AcknowledgeNotificationEndpointTest extends TestCase
     protected function tearDown(): void
     {
         CarbonImmutable::setTestNow();
-        Entry::query()->where('collection', 'notifications')->get()->each->delete();
+        Entry::query()->where('collection', 'notifications')->get()->each->deleteQuietly();
         Collection::find('notifications')?->delete();
 
         parent::tearDown();
