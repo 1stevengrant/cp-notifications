@@ -2,7 +2,9 @@
 
 namespace Ghijk\CpNotifications\Console\Commands;
 
+use Ghijk\CpNotifications\Content\NotificationCollectionInstaller;
 use Illuminate\Console\Command;
+use RuntimeException;
 
 class InstallCommand extends Command
 {
@@ -10,9 +12,17 @@ class InstallCommand extends Command
 
     protected $description = 'Install the CP Notifications content model';
 
-    public function handle(): int
+    public function handle(NotificationCollectionInstaller $installer): int
     {
-        $this->components->info('CP Notifications is registered.');
+        try {
+            $installer->install();
+        } catch (RuntimeException $exception) {
+            $this->components->error($exception->getMessage());
+
+            return self::FAILURE;
+        }
+
+        $this->components->info('The notifications collection is ready.');
 
         return self::SUCCESS;
     }

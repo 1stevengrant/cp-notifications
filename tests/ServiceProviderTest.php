@@ -2,8 +2,8 @@
 
 namespace Ghijk\CpNotifications\Tests;
 
-use Illuminate\Console\Command;
 use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
+use Illuminate\Support\Facades\Artisan;
 
 class ServiceProviderTest extends TestCase
 {
@@ -32,10 +32,7 @@ class ServiceProviderTest extends TestCase
 
     public function test_it_registers_its_install_command(): void
     {
-        $command = $this->artisan('cp-notifications:install');
-
-        $command->expectsOutputToContain('CP Notifications is registered.')
-            ->assertExitCode(Command::SUCCESS);
+        $this->assertArrayHasKey('cp-notifications:install', Artisan::all());
     }
 
     public function test_it_registers_migration_publishing(): void

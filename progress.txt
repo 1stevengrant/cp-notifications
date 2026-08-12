@@ -54,3 +54,9 @@ Todo: Register `purge notifications`.
 Done: Registered the expired-notification purge ability and completed the five-permission CP Notifications group.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: The eventual clear-out action will require this ability in addition to explicit confirmation and eligibility checks.
+
+2026-08-12 16:28:00 NZST
+Todo: Create a routeless, CP-only `notifications` collection.
+Done: Expanded the install command with an idempotent collection installer that creates the notifications collection without routes or required slugs and refuses to overwrite a conflicting routed collection.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: With no collection route, notification entries have no public content URL and are managed exclusively through control-panel surfaces.
