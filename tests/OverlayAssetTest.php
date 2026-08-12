@@ -16,4 +16,13 @@ class OverlayAssetTest extends TestCase
         $this->assertStringContainsString("cp_url('cp-notifications/api/stack')", $component);
         $this->assertStringContainsString('aria-modal="true"', $component);
     }
+
+    public function test_overlay_renders_only_the_first_ordered_notice(): void
+    {
+        $component = file_get_contents(__DIR__.'/../resources/js/components/NotificationOverlay.vue');
+
+        $this->assertStringContainsString('return this.notices[0] ?? null', $component);
+        $this->assertStringNotContainsString('v-for=', $component);
+        $this->assertSame(1, substr_count($component, 'data-testid="cp-notification-current"'));
+    }
 }

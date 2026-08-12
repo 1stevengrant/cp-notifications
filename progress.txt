@@ -276,3 +276,9 @@ Todo: Build and register a global Vue 3 overlay using Statamic UI components.
 Done: Added a globally appended Vue 3 overlay using Statamic UI card and badge components, accessible dialog semantics, severity styling, and authenticated stack loading; added the Tailwind 4 build dependency and compiled distributable assets.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; npm run build; git diff --check
 Notes: The overlay is appended through Statamic's global component manager, so it mounts across CP views rather than requiring each page template to include it.
+
+2026-08-12 17:05:32 NZST
+Todo: Render the top notice and enforce top-down clearing.
+Done: Made the ordered stack's index-zero notice the overlay's sole renderable current item and verified that no iteration or navigation exposes later notices before it clears.
+Tests: vendor/bin/phpunit --testdox; npm run build; composer validate --strict; git diff --check
+Notes: Later notices remain in component state for the progress count but have no render path or action surface until the server refresh promotes the next item.

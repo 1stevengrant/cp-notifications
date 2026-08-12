@@ -2,6 +2,7 @@
     <div
         v-if="current"
         class="cp-notification-overlay"
+        data-testid="cp-notification-current"
         role="dialog"
         aria-modal="true"
         aria-labelledby="cp-notification-title"
@@ -29,6 +30,7 @@ export default {
 
     computed: {
         current() {
+            // Later notices intentionally remain inaccessible until index zero clears.
             return this.notices[0] ?? null;
         },
 

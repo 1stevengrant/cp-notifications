@@ -9,12 +9,12 @@
     ]
   },
   "resources/js/addon.js": {
-    "file": "assets/addon-DPVmMLLp.js",
+    "file": "assets/addon-gyLXc5ZS.js",
     "name": "addon",
     "src": "resources/js/addon.js",
     "isEntry": true,
     "css": [
-      "assets/addon-B3CgXr7W.css"
+      "assets/addon-CUrBgzRX.css"
     ]
   }
 }
