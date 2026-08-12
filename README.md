@@ -1,23 +1,21 @@
-# Cp Notifications
+# CP Notifications
 
-> Cp Notifications is a Statamic addon that does something pretty neat.
+CP Notifications is a Statamic 6 addon for publishing control-panel notices and
+tracking user acknowledgements. It targets PHP 8.3 or newer and applications
+running Laravel 12 or 13, including the recommended Laravel 13 stack.
 
 ## Features
 
-This addon does:
+The planned v1 feature set includes:
 
-- This
-- And this
-- And even this
+- targeted notices inside the Statamic control panel;
+- immutable acknowledgement records; and
+- optional control-panel gating for blocking notices.
 
 ## How to Install
 
 You can install this addon via Composer:
 
-``` bash
+```bash
 composer require ghijk/cp-notifications
 ```
-
-## How to Use
-
-Here's where you can explain how to use this wonderful addon.

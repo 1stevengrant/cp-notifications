@@ -1,0 +1,8 @@
+CP Notifications implementation progress
+========================================
+
+2026-08-12 15:58:08 NZST
+Todo: Scaffold the Statamic 6 / Laravel 13 addon package as `ghijk/cp-notifications`.
+Done: Completed publishable Composer metadata, declared supported PHP and Statamic versions, replaced the placeholder README copy, and added package/provider scaffold tests.
+Tests: composer validate --strict; vendor/bin/phpunit --testdox
+Notes: Statamic 6 supports Laravel 12 and 13, so the addon keeps Statamic's compatible range while documenting Laravel 13 as the recommended target.
