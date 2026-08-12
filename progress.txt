@@ -504,3 +504,9 @@ Todo: Log the acting admin, affected notices, timestamp, and result of every pur
 Done: Added structured success and failure audit records containing actor ID, affected notification IDs/count, application-timezone timestamp, and result for every confirmed purge attempt.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Failure records include the exception class and are emitted before rethrowing; successful zero-candidate attempts are still logged as deliberate administrative actions.
+
+2026-08-12 17:43:07 NZST
+Todo: Test addon registration, config defaults, navigation, and permissions.
+Done: Audited and ran the provider discovery, package metadata, config publication/defaults, CP navigation/route, and complete permission registration coverage.
+Tests: vendor/bin/phpunit --filter 'PackageScaffoldTest|ServiceProviderTest|NavigationTest|PermissionTest' --testdox
+Notes: Fifteen focused tests with 45 assertions directly cover the checklist scope; no indirect inference or implementation-only claim was needed.
