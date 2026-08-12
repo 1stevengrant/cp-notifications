@@ -47,4 +47,14 @@ class OverlayAssetTest extends TestCase
         $this->assertStringContainsString('/snooze`)', $component);
         $this->assertStringContainsString('@click="confirm"', $component);
     }
+
+    public function test_each_successful_action_refreshes_and_advances_the_stack(): void
+    {
+        $component = file_get_contents(__DIR__.'/../resources/js/components/NotificationOverlay.vue');
+
+        $this->assertSame(3, substr_count($component, 'if (response.ok) {'));
+        $this->assertSame(2, substr_count($component, 'this.confirmed = false;'));
+        $this->assertSame(2, substr_count($component, 'await this.refresh();'));
+        $this->assertStringNotContainsString('this.notices.shift()', $component);
+    }
 }

@@ -294,3 +294,9 @@ Todo: Allow eligible advisory notices to be confirmed or snoozed.
 Done: Added a 24-hour Snooze action for notices that are both advisory and snoozeable while retaining the explicit confirmation path for every advisory.
 Tests: vendor/bin/phpunit --testdox; npm run build; composer validate --strict; git diff --check
 Notes: The UI condition mirrors server eligibility: blocking notices never render Snooze even if malformed stored data claims they are snoozeable.
+
+2026-08-12 17:07:47 NZST
+Todo: Refresh/advance the stack after each successful action.
+Done: Made successful confirmation and snooze actions reset attestation and re-fetch the authoritative ordered stack, allowing the server-selected next notice to advance into view.
+Tests: vendor/bin/phpunit --testdox; npm run build; composer validate --strict; git diff --check
+Notes: The client does not optimistically shift its local array, so concurrent audience, scheduling, acknowledgement, and priority changes are reflected during every advance.

@@ -67,7 +67,7 @@
 - [x] Render the top notice and enforce top-down clearing.
 - [x] Make blocking notices confirm-only and impossible to dismiss or snooze.
 - [x] Allow eligible advisory notices to be confirmed or snoozed.
-- [ ] Refresh/advance the stack after each successful action.
+- [x] Refresh/advance the stack after each successful action.
 - [ ] Handle expired, already-acknowledged, and concurrently updated notices gracefully.
 
 ## 7. Strict blocking enforcement

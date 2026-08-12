@@ -90,7 +90,7 @@ export default {
             this.submitting = true;
 
             try {
-                await fetch(cp_url(`cp-notifications/api/notifications/${this.current.id}/snooze`), {
+                const response = await fetch(cp_url(`cp-notifications/api/notifications/${this.current.id}/snooze`), {
                     method: 'POST',
                     credentials: 'same-origin',
                     headers: {
@@ -98,6 +98,11 @@ export default {
                         'X-CSRF-TOKEN': Statamic.$config.get('csrfToken'),
                     },
                 });
+
+                if (response.ok) {
+                    this.confirmed = false;
+                    await this.refresh();
+                }
             } finally {
                 this.submitting = false;
             }
@@ -109,7 +114,7 @@ export default {
             this.submitting = true;
 
             try {
-                await fetch(cp_url(`cp-notifications/api/notifications/${this.current.id}/acknowledge`), {
+                const response = await fetch(cp_url(`cp-notifications/api/notifications/${this.current.id}/acknowledge`), {
                     method: 'POST',
                     credentials: 'same-origin',
                     headers: {
@@ -119,6 +124,11 @@ export default {
                     },
                     body: JSON.stringify({ confirmed: true }),
                 });
+
+                if (response.ok) {
+                    this.confirmed = false;
+                    await this.refresh();
+                }
             } finally {
                 this.submitting = false;
             }
