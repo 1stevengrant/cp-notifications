@@ -642,3 +642,9 @@ Todo: Document strict versus modal enforcement and bypass permission implication
 Done: Documented overlay and route-guard behavior for both modes, strict-mode bypass recovery use, and the fact that bypass never hides, reads, or retargets notices.
 Tests: vendor/bin/phpunit --filter 'DocumentationTest|EnforceBlockingNotificationsTest|GatingStackTest' --testdox; composer validate --no-check-publish; git diff --check
 Notes: Eleven focused tests with 44 assertions tie operational guidance to real redirect, exemption, modal, and visible-but-ungated behavior.
+
+2026-08-12 17:59:14 NZST
+Todo: Document notice creation, targeting, scheduling, reporting, export, nudges, and purge workflows.
+Done: Added a complete notice workflow guide covering blueprint fields, publication windows, live audiences, ordering, Inbox/modal actions, reports/former recipients, CSV, manual/scheduled reminders, and confirmed clear-out.
+Tests: vendor/bin/phpunit --filter DocumentationTest --testdox; composer validate --no-check-publish; git diff --check
+Notes: Twenty-eight documentation assertions now guard required setup, storage, enforcement, and administrator/user workflow details.

@@ -44,4 +44,23 @@ class DocumentationTest extends TestCase
         $this->assertStringContainsString('bypass notifications', $readme);
         $this->assertStringContainsString('does not hide notices', $readme);
     }
+
+    public function test_notice_targeting_reporting_nudge_and_purge_workflows_are_documented(): void
+    {
+        $readme = file_get_contents(__DIR__.'/../README.md');
+
+        foreach ([
+            'Bard body',
+            'roles, groups, explicit users',
+            '`start_date`',
+            'application timezone',
+            'Notifications → Inbox',
+            'Export CSV',
+            'Remind non-ackers',
+            '`purge notifications`',
+            'structured audit log',
+        ] as $detail) {
+            $this->assertStringContainsString($detail, $readme);
+        }
+    }
 }

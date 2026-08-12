@@ -95,6 +95,39 @@ Blocking notices always require explicit confirmation and cannot be dismissed
 or snoozed. Eligible advisory notices may be confirmed or snoozed once for 24
 hours.
 
+## Notice workflow
+
+Administrators with `manage notifications` create drafts from Notifications →
+Manage → Open notification collection. Each notice includes:
+
+- title and Bard body;
+- info, warning, or critical severity plus optional numeric priority;
+- advisory/blocking behavior and advisory snooze eligibility;
+- an audience of all users, roles, groups, explicit users, or overlaps;
+- required `start_date` and optional `end_date`, interpreted in the application timezone;
+- optional nudge enablement, hours-after-start threshold, and repeat cadence.
+
+A published notice becomes active at `start_date` and stops at `end_date` when
+provided. Audiences are expanded live, so later role/group changes immediately
+affect visibility and reminders. Explicit priority sorts first, followed by
+severity, oldest start, and a deterministic ID tie-break.
+
+Targeted users read active and retained historical notices in Notifications → Inbox.
+The global modal presents the same active stack one at a time. Confirming
+records an immutable acknowledgement; an eligible advisory can instead use its
+single 24-hour snooze.
+
+Administrators with `view notification reports` can open each notice report to
+see current recipients, former recipients with preserved acknowledgements,
+acknowledgement timestamps, and snooze state. Export CSV downloads those same
+rows. “Remind non-ackers” queues the shared reminder workflow immediately;
+scheduled reminders use the per-notice threshold and optional cadence.
+
+Notifications → Manage previews clear-out candidates for administrators with
+`purge notifications`. The confirmed action permanently removes only eligible
+old, expired, unacknowledged notices and writes a structured audit log. See
+“Retention and manual clear-out” for exact safety rules.
+
 ## Scheduled reminders
 
 The addon registers `cp-notifications:nudge` with Laravel's scheduler to run
