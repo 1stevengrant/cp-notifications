@@ -54,6 +54,20 @@ class PermissionTest extends TestCase
         );
     }
 
+    public function test_bypass_notifications_is_registered(): void
+    {
+        $registered = $this->registeredPermissions();
+
+        $this->assertSame(
+            'Bypass notification enforcement',
+            $registered->get('bypass notifications')->label(),
+        );
+        $this->assertSame(
+            'cp-notifications',
+            $registered->get('bypass notifications')->group(),
+        );
+    }
+
     private function registeredPermissions(): Permissions
     {
         $permissions = new Permissions;

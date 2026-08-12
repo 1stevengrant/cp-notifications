@@ -10,7 +10,7 @@
   - [x] `view notifications` (available to all users by default).
   - [x] `manage notifications`.
   - [x] `view notification reports`.
-  - [ ] `bypass notifications` (granted to the creator by default).
+  - [x] `bypass notifications` (granted to the creator by default).
   - [ ] `purge notifications`.
 
 ## 2. Notice content model

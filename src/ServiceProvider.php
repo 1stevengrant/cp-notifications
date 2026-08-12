@@ -70,6 +70,8 @@ class ServiceProvider extends AddonServiceProvider
                     ->label('Manage notifications');
                 Permission::register('view notification reports')
                     ->label('View notification reports');
+                Permission::register('bypass notifications')
+                    ->label('Bypass notification enforcement');
             });
         });
     }
