@@ -7,6 +7,8 @@ use Illuminate\Http\JsonResponse;
 use Statamic\Facades\Collection;
 use Statamic\Facades\Site;
 use Statamic\Facades\User;
+use Statamic\Fields\Value;
+use Statamic\Fieldtypes\Bard;
 
 final class ActiveStackController
 {
@@ -27,7 +29,7 @@ final class ActiveStackController
             'data' => $stack->map(fn ($notification): array => [
                 'id' => $notification->id(),
                 'title' => $notification->get('title'),
-                'body' => $notification->get('body'),
+                'body_html' => $this->bodyHtml($notification),
                 'severity' => $notification->get('severity', 'info'),
                 'blocking' => (bool) $notification->get('blocking', false),
                 'snoozeable' => (bool) $notification->get('snoozeable', false),
@@ -36,5 +38,19 @@ final class ActiveStackController
                 'end_date' => $notification->get('end_date'),
             ])->values(),
         ]);
+    }
+
+    private function bodyHtml($notification): string
+    {
+        $body = $notification->augmentedValue('body');
+        $body = $body instanceof Value ? $body->value() : $body;
+
+        if (is_string($body)) {
+            return $body;
+        }
+
+        $raw = $notification->get('body');
+
+        return is_array($raw) ? (string) (new Bard)->augment($raw) : '';
     }
 }

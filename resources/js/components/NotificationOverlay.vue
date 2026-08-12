@@ -14,7 +14,7 @@
                 <span>{{ position }} of {{ notices.length }}</span>
             </div>
             <h1 id="cp-notification-title">{{ current.title }}</h1>
-            <div class="cp-notification-overlay__body">{{ body }}</div>
+            <div class="cp-notification-overlay__body" v-html="current.body_html" />
             <p v-if="error" class="cp-notification-overlay__error" role="alert">{{ error }}</p>
             <div class="cp-notification-overlay__actions">
                 <label class="cp-notification-overlay__confirmation">
@@ -74,11 +74,6 @@ export default {
             }[this.current?.severity] ?? 'blue';
         },
 
-        body() {
-            if (typeof this.current?.body === 'string') return this.current.body;
-
-            return this.current?.body ? JSON.stringify(this.current.body) : '';
-        },
     },
 
     mounted() {
@@ -206,7 +201,33 @@ export default {
 }
 
 .cp-notification-overlay__body {
-    white-space: pre-wrap;
+    line-height: 1.6;
+}
+
+.cp-notification-overlay__body :deep(p + p),
+.cp-notification-overlay__body :deep(p + ul),
+.cp-notification-overlay__body :deep(p + ol),
+.cp-notification-overlay__body :deep(ul + p),
+.cp-notification-overlay__body :deep(ol + p) {
+    margin-top: 0.75rem;
+}
+
+.cp-notification-overlay__body :deep(ul),
+.cp-notification-overlay__body :deep(ol) {
+    margin-inline-start: 1.5rem;
+}
+
+.cp-notification-overlay__body :deep(ul) {
+    list-style: disc;
+}
+
+.cp-notification-overlay__body :deep(ol) {
+    list-style: decimal;
+}
+
+.cp-notification-overlay__body :deep(a) {
+    color: var(--color-primary);
+    text-decoration: underline;
 }
 
 .cp-notification-overlay__error {

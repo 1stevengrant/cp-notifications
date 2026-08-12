@@ -26,6 +26,16 @@ class OverlayAssetTest extends TestCase
         $this->assertSame(1, substr_count($component, 'data-testid="cp-notification-current"'));
     }
 
+    public function test_overlay_renders_augmented_bard_html(): void
+    {
+        $component = file_get_contents(__DIR__.'/../resources/js/components/NotificationOverlay.vue');
+
+        $this->assertStringContainsString('v-html="current.body_html"', $component);
+        $this->assertStringNotContainsString('JSON.stringify(this.current.body)', $component);
+        $this->assertStringContainsString(':deep(ul)', $component);
+        $this->assertStringContainsString(':deep(a)', $component);
+    }
+
     public function test_blocking_notice_has_only_explicit_confirmation_controls(): void
     {
         $component = file_get_contents(__DIR__.'/../resources/js/components/NotificationOverlay.vue');

@@ -48,6 +48,31 @@ class ActiveStackEndpointTest extends TestCase
         $this->assertContains('statamic.cp.authenticated', $route->gatherMiddleware());
     }
 
+    public function test_bard_body_is_returned_as_rendered_html(): void
+    {
+        CarbonImmutable::setTestNow('2026-08-12 12:00:00');
+        $user = User::make()->id('user-1')->email('user@example.com')->set('super', true);
+        $this->actingAs($user);
+        Collection::make('notifications')->sites([Site::default()->handle()])->save();
+        $notice = $this->notice('policy', 1);
+        $notice->set('body', [[
+            'type' => 'paragraph',
+            'content' => [
+                ['type' => 'text', 'text' => 'Read the '],
+                ['type' => 'text', 'marks' => [['type' => 'bold']], 'text' => 'updated policy'],
+                ['type' => 'text', 'text' => '.'],
+            ],
+        ]])->save();
+        $this->mock(AcknowledgementRepository::class)->allows('find')->andReturnNull();
+        $this->mock(SnoozeRepository::class)->allows('find')->andReturnNull();
+
+        $response = $this->getJson(cp_route('cp-notifications.api.stack'));
+
+        $response->assertOk()
+            ->assertJsonPath('data.0.body_html', '<p>Read the <strong>updated policy</strong>.</p>')
+            ->assertJsonMissingPath('data.0.body');
+    }
+
     private function notice(string $id, int $priority)
     {
         return Entry::make()
