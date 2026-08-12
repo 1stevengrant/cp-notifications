@@ -570,3 +570,9 @@ Todo: Test scheduling boundaries, open-ended notices, expiration, and future blo
 Done: Added explicit future-blocking boundary coverage and audited inclusive start, exclusive expiry, open-ended, draft, missing-start, and configured-timezone cases.
 Tests: vendor/bin/phpunit --filter ActiveWindowTest --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Blocking is behavioral metadata only; it cannot make a future notice active before its scheduled start or extend it past an end date.
+
+2026-08-12 17:50:59 NZST
+Todo: Test priority, severity, and start-date ordering plus ties/null values.
+Done: Audited and ran complete-sequence ordering tests spanning explicit priorities, all severities, oldest starts, zero/null/blank priorities, exact ties, and deterministic ID fallback.
+Tests: vendor/bin/phpunit --filter NotificationOrderTest --testdox
+Notes: Assertions compare the entire sorted ID sequence, making every precedence tier observable rather than checking isolated pairwise outcomes.

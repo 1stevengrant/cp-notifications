@@ -131,7 +131,7 @@
 - [x] Test audience expansion for all users, roles, groups, explicit users, and overlaps.
 - [x] Test that role/group removal changes current targeting but preserves an existing acknowledgement.
 - [x] Test scheduling boundaries, open-ended notices, expiration, and future blocking notices.
-- [ ] Test priority, severity, and start-date ordering plus ties/null values.
+- [x] Test priority, severity, and start-date ordering plus ties/null values.
 - [ ] Test locked notices reject edits after the first acknowledgement.
 - [ ] Test overlay top-down behavior for mixed blocking/advisory stacks.
 - [ ] Test strict middleware enforcement and modal-only mode.
