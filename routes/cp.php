@@ -13,6 +13,7 @@ Route::prefix('cp-notifications')->name('cp-notifications.')->group(function ():
     Route::view('manage', 'cp-notifications::manage')->name('manage');
     Route::get('reports', [ReportController::class, 'index'])->name('reports');
     Route::get('reports/{notification}', [ReportController::class, 'show'])->name('reports.show');
+    Route::get('reports/{notification}/export', [ReportController::class, 'export'])->name('reports.export');
     Route::get('acknowledge', BlockingInterstitialController::class)->name('acknowledge');
     Route::get('api/stack', ActiveStackController::class)->name('api.stack');
     Route::post('api/notifications/{notification}/acknowledge', AcknowledgeNotificationController::class)

@@ -1,6 +1,9 @@
 <header class="mb-6">
     <a href="{{ cp_route('cp-notifications.reports') }}">{{ __('Notification Reports') }}</a>
     <h1>{{ $notification->get('title') }}</h1>
+    <a class="btn" href="{{ cp_route('cp-notifications.reports.export', $notification->id()) }}">
+        {{ __('Export CSV') }}
+    </a>
 </header>
 
 <div class="card p-4" data-testid="notification-report">

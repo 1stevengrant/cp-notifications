@@ -408,3 +408,9 @@ Todo: Preserve recorded acknowledgements in reporting even if a user later leave
 Done: Merged acknowledgement history missing from the live audience back into report rows and labeled those recipients as former while preserving their recorded timestamp.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Current audience membership remains live, but historical acknowledgement evidence is repository-backed and is also retained by user ID if the user record was deleted.
+
+2026-08-12 17:26:58 NZST
+Todo: Add an authorized CSV export matching the report grid.
+Done: Added a permission-protected per-notice CSV download using the canonical report rows and the same user, email, audience, acknowledgement, timestamp, and snooze columns as the grid.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: The export includes former acknowledged recipients, uses deterministic timestamps, and neutralizes spreadsheet formula prefixes in user-controlled cells.

@@ -44,12 +44,16 @@ class ReportControllerTest extends TestCase
         $controller = new ReportController;
         $targeted = Mockery::mock(UserContract::class);
         $targeted->allows('id')->andReturn('targeted-user');
+        $targeted->allows('name')->andReturn('Targeted User');
+        $targeted->allows('email')->andReturn('targeted@example.com');
         $targeted->allows('hasRole')->andReturnFalse();
         $targeted->allows('isInGroup')->andReturnFalse();
         $users = Mockery::mock(UserRepository::class);
         $users->allows('all')->andReturn(new UserCollection([$targeted]));
         $former = Mockery::mock(UserContract::class);
         $former->allows('id')->andReturn('former-user');
+        $former->allows('name')->andReturn('Former User');
+        $former->allows('email')->andReturn('former@example.com');
         $users->allows('find')->with('former-user')->andReturn($former);
         $audience = new AudienceResolver($users, new AudienceMatcher);
         $targetedAcknowledgement = new Acknowledgement(
@@ -80,6 +84,7 @@ class ReportControllerTest extends TestCase
 
         $index = $controller->index($request);
         $report = $controller->show($request, 'notice-1', $reportResolver);
+        $export = $controller->export($request, 'notice-1', $reportResolver);
 
         $this->assertSame(['notice-1'], $index->getData()['notifications']->map->id()->all());
         $this->assertSame('notice-1', $report->getData()['notification']->id());
@@ -88,6 +93,16 @@ class ReportControllerTest extends TestCase
         $this->assertTrue($report->getData()['rows']->first()['snooze_active']);
         $this->assertFalse($report->getData()['rows']->last()['currently_targeted']);
         $this->assertTrue($this->app['router']->has('statamic.cp.cp-notifications.reports.show'));
+        $this->assertTrue($this->app['router']->has('statamic.cp.cp-notifications.reports.export'));
+        $this->assertStringContainsString('notification-notice-1-report.csv', $export->headers->get('Content-Disposition'));
+
+        ob_start();
+        $export->sendContent();
+        $csv = ob_get_clean();
+
+        $this->assertStringContainsString('User,Email,Audience,Status,"Acknowledged at",Snooze', $csv);
+        $this->assertStringContainsString('"Targeted User",targeted@example.com,Current,Acknowledged', $csv);
+        $this->assertStringContainsString('"Former User",former@example.com,Former,Acknowledged', $csv);
     }
 
     public function test_report_access_requires_the_reporting_permission(): void

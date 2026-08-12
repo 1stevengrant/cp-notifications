@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Statamic\Facades\Collection;
 use Statamic\Facades\Entry;
 use Statamic\Facades\Site;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 final class ReportController
 {
@@ -26,7 +27,48 @@ final class ReportController
     public function show(Request $request, string $notification, NotificationReportResolver $report): View
     {
         $this->authorize($request);
-        $entry = Entry::find($notification);
+        $entry = $this->notification($notification);
+
+        return view('cp-notifications::report', [
+            'notification' => $entry,
+            'rows' => $report->resolve($entry),
+        ]);
+    }
+
+    public function export(Request $request, string $notification, NotificationReportResolver $report): StreamedResponse
+    {
+        $this->authorize($request);
+        $entry = $this->notification($notification);
+        $rows = $report->resolve($entry);
+
+        return response()->streamDownload(function () use ($rows): void {
+            $stream = fopen('php://output', 'wb');
+            fputcsv($stream, ['User', 'Email', 'Audience', 'Status', 'Acknowledged at', 'Snooze']);
+
+            foreach ($rows as $row) {
+                $snooze = ! $row['snooze']
+                    ? 'Not used'
+                    : ($row['snooze_active']
+                        ? 'Active until '.$row['snooze']->snoozedUntil->format('Y-m-d H:i:s')
+                        : 'Used (ended '.$row['snooze']->snoozedUntil->format('Y-m-d H:i:s').')');
+
+                fputcsv($stream, array_map($this->safeCsvCell(...), [
+                    $row['user']?->name() ?? ($row['user_id'] ?? 'Deleted user'),
+                    $row['user']?->email() ?? '',
+                    $row['currently_targeted'] ? 'Current' : 'Former',
+                    $row['acknowledgement'] ? 'Acknowledged' : 'Pending',
+                    $row['acknowledgement']?->acknowledgedAt->format('Y-m-d H:i:s') ?? '',
+                    $snooze,
+                ]));
+            }
+
+            fclose($stream);
+        }, 'notification-'.$entry->id().'-report.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
+    }
+
+    private function notification(string $id)
+    {
+        $entry = Entry::find($id);
 
         abort_unless(
             $entry
@@ -35,10 +77,14 @@ final class ReportController
             404,
         );
 
-        return view('cp-notifications::report', [
-            'notification' => $entry,
-            'rows' => $report->resolve($entry),
-        ]);
+        return $entry;
+    }
+
+    private function safeCsvCell(mixed $value): string
+    {
+        $value = (string) $value;
+
+        return preg_match('/^[=+\-@]/', $value) ? "'".$value : $value;
     }
 
     private function authorize(Request $request): void
