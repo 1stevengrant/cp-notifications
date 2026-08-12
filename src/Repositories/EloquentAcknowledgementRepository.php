@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use RuntimeException;
 
-class EloquentAcknowledgementRepository implements AcknowledgementRepository
+final class EloquentAcknowledgementRepository implements AcknowledgementRepository
 {
     public const TABLE = 'cp_notification_acknowledgements';
 

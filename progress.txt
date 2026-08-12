@@ -156,3 +156,9 @@ Todo: Bind the selected repositories into Laravel's container.
 Done: Registered lazy singleton bindings for both repository contracts, resolving the shared configured driver and constructing database- or file-backed implementations with their required Laravel dependencies.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Lazy resolution ensures Statamic's addon config has booted before the driver and configured file storage path are read.
+
+2026-08-12 18:02:00 NZST
+Todo: Ensure acknowledgements cannot be updated, revoked, or deleted through application APIs.
+Done: Hardened the append-only acknowledgement boundary by making both concrete drivers final and verifying their only public persistence operations are find, record, forNotification, and forUser.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Application services receive the mutation-free contract from the container, while the acknowledgement value itself remains final and readonly.

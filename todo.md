@@ -35,7 +35,7 @@
 - [x] Make file writes atomic and safe under concurrent requests.
 - [x] Implement `auto`, `eloquent`, and `file` driver resolution; auto-detect `statamic/eloquent-driver`.
 - [x] Bind the selected repositories into Laravel's container.
-- [ ] Ensure acknowledgements cannot be updated, revoked, or deleted through application APIs.
+- [x] Ensure acknowledgements cannot be updated, revoked, or deleted through application APIs.
 - [ ] Ensure a snooze lasts 24 hours and cannot be used a second time for the same notice/user.
 
 ## 4. Audience and active-notice resolution

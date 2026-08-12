@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Symfony\Component\Yaml\Yaml;
 
-class FileAcknowledgementRepository implements AcknowledgementRepository
+final class FileAcknowledgementRepository implements AcknowledgementRepository
 {
     public function __construct(
         private readonly Filesystem $files,
