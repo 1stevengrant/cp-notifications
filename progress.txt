@@ -618,3 +618,9 @@ Todo: Test retention visibility and purge authorization, confirmation, safety, a
 Done: Added failure-attempt audit coverage and ran the complete visibility, authorization, confirmation, cutoff, acknowledgement-race, no-automation, success-log, and failure-log matrix.
 Tests: vendor/bin/phpunit --filter 'InboxNoticeResolverTest::test_expired_history|ManageNotificationsControllerTest|NotificationPurgeServiceTest|PreventAcknowledgedNotificationDeletionTest|AutomaticDeletionSafetyTest' --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Nine focused tests prove both destructive-action safeguards and structured audit evidence, including logging before exceptional failure is rethrown.
+
+2026-08-12 17:56:13 NZST
+Todo: Test global notice behavior in multisite installations.
+Done: Added a multisite consumer test proving Inbox reads only the canonical default-site notice and excludes a secondary-site copy, alongside collection site/propagation installation coverage.
+Tests: vendor/bin/phpunit --filter 'InboxNoticeResolverTest::test_multisite|NotificationCollectionInstallerTest::test_notifications_use_one_canonical' --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Global means one shared canonical notice record for all CP users, not localized duplicates; both storage configuration and runtime query behavior enforce that model.

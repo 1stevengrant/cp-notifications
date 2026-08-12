@@ -78,6 +78,35 @@ class InboxNoticeResolverTest extends TestCase
             ->forUser($items->pluck('notification'), $user));
     }
 
+    public function test_multisite_inbox_reads_only_the_canonical_default_site(): void
+    {
+        config()->set('statamic.system.multisite', true);
+        Site::setSites([
+            'default' => ['name' => 'Default', 'url' => '/', 'locale' => 'en_US'],
+            'secondary' => ['name' => 'Secondary', 'url' => '/secondary/', 'locale' => 'en_US'],
+        ]);
+        Collection::make('notifications')->sites(['default'])->propagate(false)->save();
+        $this->notice('canonical', true, ['all' => true])->locale('default')->save();
+        $this->notice('secondary-copy', true, ['all' => true])->locale('secondary')->save();
+        $user = Mockery::mock(User::class);
+        $user->allows('id')->andReturn('user-1');
+        $user->allows('hasRole')->andReturnFalse();
+        $user->allows('isInGroup')->andReturnFalse();
+        $acknowledgements = Mockery::mock(AcknowledgementRepository::class);
+        $acknowledgements->allows('find')->andReturnNull();
+        $snoozes = Mockery::mock(SnoozeRepository::class);
+        $snoozes->allows('find')->andReturnNull();
+
+        $items = (new InboxNoticeResolver(
+            new AudienceMatcher,
+            new ActiveWindow,
+            $acknowledgements,
+            $snoozes,
+        ))->resolve($user);
+
+        $this->assertSame(['canonical'], $items->pluck('notification')->map->id()->all());
+    }
+
     public function test_inbox_route_uses_the_user_specific_controller(): void
     {
         $route = $this->app['router']->getRoutes()->getByName('statamic.cp.cp-notifications.inbox');
