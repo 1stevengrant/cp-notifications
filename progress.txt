@@ -120,3 +120,9 @@ Todo: Implement the Eloquent acknowledgement and snooze repositories.
 Done: Added database-backed acknowledgement and snooze repositories with typed hydration, idempotent insert-and-read recording, deterministic collection queries, UUID acknowledgement IDs, and a default 24-hour snooze duration.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: The repositories rely on a unique notification/user key to make insertOrIgnore concurrency-safe; the package migrations and production indexes are added by the following dedicated todos.
+
+2026-08-12 17:20:00 NZST
+Todo: Add migrations and indexes for acknowledgement and snooze tables.
+Done: Added a reversible production migration for acknowledgement and snooze storage, including primary acknowledgement IDs and indexes for notification, user, acknowledgement time, and snooze expiry lookups.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Composite notification/user uniqueness is intentionally added and verified by its immediately following dedicated todo.
