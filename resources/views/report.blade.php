@@ -6,7 +6,7 @@
 <div class="card p-4" data-testid="notification-report">
     <h2>{{ __('Current audience') }}</h2>
 
-    @if ($targetedUsers->isEmpty())
+    @if ($rows->isEmpty())
         <p>{{ __('No users are currently targeted.') }}</p>
     @else
         <table class="data-table">
@@ -14,13 +14,17 @@
                 <tr>
                     <th>{{ __('User') }}</th>
                     <th>{{ __('Email') }}</th>
+                    <th>{{ __('Status') }}</th>
+                    <th>{{ __('Acknowledged at') }}</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($targetedUsers as $targetedUser)
+                @foreach ($rows as $row)
                     <tr>
-                        <td>{{ $targetedUser->name() }}</td>
-                        <td>{{ $targetedUser->email() }}</td>
+                        <td>{{ $row['user']->name() }}</td>
+                        <td>{{ $row['user']->email() }}</td>
+                        <td>{{ $row['acknowledgement'] ? __('Acknowledged') : __('Pending') }}</td>
+                        <td>{{ $row['acknowledgement']?->acknowledgedAt->format('Y-m-d H:i:s') ?? '—' }}</td>
                     </tr>
                 @endforeach
             </tbody>

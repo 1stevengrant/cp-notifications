@@ -4,7 +4,11 @@ namespace Ghijk\CpNotifications\Tests;
 
 use Ghijk\CpNotifications\Audience\AudienceMatcher;
 use Ghijk\CpNotifications\Audience\AudienceResolver;
+use Ghijk\CpNotifications\Contracts\AcknowledgementRepository;
+use Ghijk\CpNotifications\Data\Acknowledgement;
 use Ghijk\CpNotifications\Http\Controllers\ReportController;
+use Ghijk\CpNotifications\Reports\NotificationReportResolver;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Mockery;
 use Statamic\Contracts\Auth\User as UserContract;
@@ -42,13 +46,19 @@ class ReportControllerTest extends TestCase
         $users = Mockery::mock(UserRepository::class);
         $users->allows('all')->andReturn(new UserCollection([$targeted]));
         $audience = new AudienceResolver($users, new AudienceMatcher);
+        $acknowledgements = Mockery::mock(AcknowledgementRepository::class);
+        $acknowledgements->allows('find')->with('notice-1', 'targeted-user')->andReturn(
+            new Acknowledgement('ack-1', 'notice-1', 'targeted-user', CarbonImmutable::parse('2026-08-12 12:00')),
+        );
+        $reportResolver = new NotificationReportResolver($audience, $acknowledgements);
 
         $index = $controller->index($request);
-        $report = $controller->show($request, 'notice-1', $audience);
+        $report = $controller->show($request, 'notice-1', $reportResolver);
 
         $this->assertSame(['notice-1'], $index->getData()['notifications']->map->id()->all());
         $this->assertSame('notice-1', $report->getData()['notification']->id());
-        $this->assertSame(['targeted-user'], $report->getData()['targetedUsers']->map->id()->all());
+        $this->assertSame(['targeted-user'], $report->getData()['rows']->pluck('user')->map->id()->all());
+        $this->assertSame('2026-08-12 12:00:00', $report->getData()['rows']->first()['acknowledgement']->acknowledgedAt->format('Y-m-d H:i:s'));
         $this->assertTrue($this->app['router']->has('statamic.cp.cp-notifications.reports.show'));
     }
 

@@ -390,3 +390,9 @@ Todo: Expand the notice audience live into the current targeted-user set.
 Done: Wired per-notice reports to the shared audience resolver and rendered the deduplicated current recipient names and email addresses.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Audience expansion runs on every report request, so role, group, explicit-user, and all-user targeting reflects current membership rather than a stored snapshot.
+
+2026-08-12 17:23:42 NZST
+Todo: Display each targeted user's acknowledgement status and acknowledged_at value.
+Done: Added report-row resolution that joins current recipients to acknowledgement records and displays pending/acknowledged state with the exact recorded timestamp.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Reporting reads the repository abstraction, so file and Eloquent drivers produce the same grid without duplicating persistence logic in the controller or view.

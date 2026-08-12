@@ -2,7 +2,7 @@
 
 namespace Ghijk\CpNotifications\Http\Controllers;
 
-use Ghijk\CpNotifications\Audience\AudienceResolver;
+use Ghijk\CpNotifications\Reports\NotificationReportResolver;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Statamic\Facades\Collection;
@@ -23,7 +23,7 @@ final class ReportController
         ]);
     }
 
-    public function show(Request $request, string $notification, AudienceResolver $audience): View
+    public function show(Request $request, string $notification, NotificationReportResolver $report): View
     {
         $this->authorize($request);
         $entry = Entry::find($notification);
@@ -37,7 +37,7 @@ final class ReportController
 
         return view('cp-notifications::report', [
             'notification' => $entry,
-            'targetedUsers' => $audience->resolve($entry),
+            'rows' => $report->resolve($entry),
         ]);
     }
 
