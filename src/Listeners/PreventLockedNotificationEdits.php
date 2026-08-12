@@ -21,7 +21,7 @@ final class PreventLockedNotificationEdits
         }
 
         throw ValidationException::withMessages([
-            'notification' => 'This notification is locked and cannot be changed.',
+            'notification' => 'This notification is locked because it has acknowledgements and cannot be changed. Create a superseding notification to issue a correction.',
         ]);
     }
 }

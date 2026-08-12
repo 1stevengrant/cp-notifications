@@ -34,6 +34,30 @@ class PreventLockedNotificationEditsTest extends TestCase
             ->handle(new EntrySaving($entry));
     }
 
+    public function test_the_error_directs_admins_to_create_a_superseding_notification(): void
+    {
+        $repository = Mockery::mock(AcknowledgementRepository::class);
+        $repository->allows('forNotification')->andReturn(collect([
+            new Acknowledgement(
+                id: 'ack-1',
+                notificationId: 'entry-1',
+                userId: 'user-1',
+                acknowledgedAt: CarbonImmutable::parse('2026-08-12 12:00'),
+            ),
+        ]));
+
+        try {
+            (new PreventLockedNotificationEdits(new NotificationLock($repository)))
+                ->handle(new EntrySaving($this->entry('notifications')));
+            $this->fail('Expected locked notification validation to fail.');
+        } catch (ValidationException $exception) {
+            $message = $exception->errors()['notification'][0];
+
+            $this->assertStringContainsString('acknowledgements', $message);
+            $this->assertStringContainsString('superseding notification', $message);
+        }
+    }
+
     public function test_unlocked_notifications_and_other_collections_can_save(): void
     {
         $repository = Mockery::mock(AcknowledgementRepository::class);

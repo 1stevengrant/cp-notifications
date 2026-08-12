@@ -240,3 +240,9 @@ Todo: Render locked notices as read-only in the publish form.
 Done: Added an EntryBlueprintFound listener that projects every field in a locked notification blueprint with Statamic's native read-only visibility while leaving unlocked forms editable.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: The stored blueprint remains unchanged; read-only visibility is applied only to the locked entry's runtime publish-form blueprint.
+
+2026-08-12 16:58:03 NZST
+Todo: Provide a clear validation/error message directing admins to create a superseding notice.
+Done: Expanded locked-save validation to explain that acknowledgements caused the lock and instruct administrators to create a superseding notification for corrections.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The message is returned as a normal validation error, so CP and custom save clients receive the same actionable response.

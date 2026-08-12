@@ -55,7 +55,7 @@
 - [x] Compute `locked` as true once the first acknowledgement exists.
 - [x] Prevent edits to locked notice content and settings on the server.
 - [x] Render locked notices as read-only in the publish form.
-- [ ] Provide a clear validation/error message directing admins to create a superseding notice.
+- [x] Provide a clear validation/error message directing admins to create a superseding notice.
 
 ## 6. CP API and global overlay
 
