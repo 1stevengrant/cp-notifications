@@ -78,3 +78,9 @@ Todo: Force or treat `snoozeable` as false whenever `blocking` is true.
 Done: Added an EntrySaving normalizer ahead of validation that forcibly stores blocking notifications as non-snoozeable while preserving advisory snooze settings.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Server-side normalization protects every save path, including custom clients that bypass control-panel field visibility.
+
+2026-08-12 16:46:00 NZST
+Todo: Ensure notices are global across multisite installations.
+Done: Made the notifications collection explicitly canonical to the default site with localization propagation disabled, so a single entry set drives every control-panel site.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Notification resolvers will query this default-site collection regardless of the currently selected control-panel site.

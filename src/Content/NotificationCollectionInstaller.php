@@ -6,6 +6,7 @@ use RuntimeException;
 use Statamic\Contracts\Entries\Collection as CollectionContract;
 use Statamic\Facades\Blueprint;
 use Statamic\Facades\Collection;
+use Statamic\Facades\Site;
 
 class NotificationCollectionInstaller
 {
@@ -27,6 +28,8 @@ class NotificationCollectionInstaller
             Collection::make('notifications')
                 ->title('Notifications')
                 ->routes([])
+                ->sites([Site::default()->handle()])
+                ->propagate(false)
                 ->requiresSlugs(false),
             fn (CollectionContract $collection) => $collection->save(),
         );

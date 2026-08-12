@@ -86,4 +86,22 @@ class NotificationCollectionInstallerTest extends TestCase
         $this->assertSame(['all', 'roles', 'groups', 'users'], $audienceFields);
         $this->assertSame(['enabled', 'threshold_hours', 'cadence_hours'], $nudgeFields);
     }
+
+    public function test_notifications_use_one_canonical_site_in_multisite_installs(): void
+    {
+        config()->set('statamic.system.multisite', true);
+        Site::setSites([
+            'default' => ['name' => 'Default', 'url' => '/', 'locale' => 'en_US'],
+            'secondary' => ['name' => 'Secondary', 'url' => '/secondary/', 'locale' => 'en_US'],
+        ]);
+
+        $this->artisan('cp-notifications:install')->assertExitCode(Command::SUCCESS);
+
+        $collection = Collection::find('notifications');
+
+        $this->assertSame(['default'], $collection->sites()->all());
+        $this->assertFalse($collection->propagate());
+        $this->assertNull($collection->route('default'));
+        $this->assertFalse($collection->routes()->has('secondary'));
+    }
 }

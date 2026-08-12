@@ -19,7 +19,7 @@
 - [x] Create its blueprint with title, Bard body, severity, blocking, snoozeable, priority, audience, scheduling, and nudge fields.
 - [x] Add validation requiring at least one effective audience target before publishing.
 - [x] Force or treat `snoozeable` as false whenever `blocking` is true.
-- [ ] Ensure notices are global across multisite installations.
+- [x] Ensure notices are global across multisite installations.
 - [ ] Preserve Statamic's native author, revisions, and draft/published lifecycle.
 
 ## 3. Acknowledgement and snooze storage
