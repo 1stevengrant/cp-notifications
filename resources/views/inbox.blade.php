@@ -11,14 +11,14 @@
             </p>
         </header>
 
-        <div class="card p-0 overflow-hidden" data-testid="notification-inbox">
+        <div class="cp-notification-inbox" data-testid="notification-inbox">
             @forelse ($notifications as $item)
                 @php($notification = $item['notification'])
-                <article class="p-5 border-b last:border-b-0 dark:border-gray-700">
-                    <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                        <div>
-                            <h2 class="text-base font-semibold">{{ $notification->get('title') }}</h2>
-                            <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">
+                <article class="cp-notification-inbox__item">
+                    <div class="cp-notification-inbox__content">
+                        <div class="cp-notification-inbox__copy">
+                            <h2 class="cp-notification-inbox__title">{{ $notification->get('title') }}</h2>
+                            <p class="cp-notification-inbox__meta">
                                 @if ($item['acknowledgement'])
                                     {{ __('Read :date', ['date' => $item['acknowledgement']->acknowledgedAt->toDayDateTimeString()]) }}
                                 @elseif ($item['active'])
@@ -29,14 +29,18 @@
                             </p>
                         </div>
 
-                        <div class="flex flex-wrap items-center gap-2">
-                            <span class="badge-sm">{{ ucfirst($notification->get('severity', 'info')) }}</span>
-                            <span class="badge-sm">{{ $item['active'] ? __('Active') : __('History') }}</span>
+                        <div class="cp-notification-inbox__badges">
+                            <span class="cp-notification-badge cp-notification-badge--{{ $notification->get('severity', 'info') }}">
+                                {{ ucfirst($notification->get('severity', 'info')) }}
+                            </span>
+                            <span class="cp-notification-badge cp-notification-badge--{{ $item['active'] ? 'active' : 'history' }}">
+                                {{ $item['active'] ? __('Active') : __('History') }}
+                            </span>
                         </div>
                     </div>
                 </article>
             @empty
-                <div class="p-8 text-center">
+                <div class="cp-notification-inbox__empty">
                     <h2 class="font-semibold">{{ __('Your inbox is clear') }}</h2>
                     <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">
                         {{ __('No notifications are currently targeted to you.') }}

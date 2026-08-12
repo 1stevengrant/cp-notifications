@@ -1,6 +1,6 @@
 <?php
 
-namespace Ghijk\CpNotifications\Tests;
+namespace Ghijk\CpNotifications\Tests\Pest\NotificationCollectionInstallerTest;
 
 use Illuminate\Console\Command;
 use Statamic\Facades\Blueprint;
@@ -8,129 +8,103 @@ use Statamic\Facades\Collection;
 use Statamic\Facades\Entry;
 use Statamic\Facades\Site;
 
-class NotificationCollectionInstallerTest extends TestCase
-{
-    protected function setUp(): void
-    {
-        parent::setUp();
+beforeEach(function () {
+    Collection::find('notifications')?->delete();
+    Blueprint::find('collections.notifications.notification')?->delete();
+});
 
-        Collection::find('notifications')?->delete();
-        Blueprint::find('collections.notifications.notification')?->delete();
-    }
+afterEach(function () {
+    Collection::find('notifications')?->delete();
+    Blueprint::find('collections.notifications.notification')?->delete();
 
-    protected function tearDown(): void
-    {
-        Collection::find('notifications')?->delete();
-        Blueprint::find('collections.notifications.notification')?->delete();
+});
 
-        parent::tearDown();
-    }
+test('it creates a routeless cp only notifications collection', function () {
+    $this->artisan('cp-notifications:install')->assertExitCode(Command::SUCCESS);
 
-    public function test_it_creates_a_routeless_cp_only_notifications_collection(): void
-    {
-        $this->artisan('cp-notifications:install')->assertExitCode(Command::SUCCESS);
+    $collection = Collection::find('notifications');
 
-        $collection = Collection::find('notifications');
+    expect($collection)->not->toBeNull();
+    expect($collection->title())->toBe('Notifications');
+    expect($collection->route(Site::default()->handle()))->toBeNull();
+    expect($collection->routes()->filter()->all())->toBe([]);
+    expect($collection->requiresSlugs())->toBeFalse();
+    expect($collection->sortField())->toBe('start_date');
+    expect($collection->sortDirection())->toBe('desc');
+});
 
-        $this->assertNotNull($collection);
-        $this->assertSame('Notifications', $collection->title());
-        $this->assertNull($collection->route(Site::default()->handle()));
-        $this->assertSame([], $collection->routes()->filter()->all());
-        $this->assertFalse($collection->requiresSlugs());
-        $this->assertSame('start_date', $collection->sortField());
-        $this->assertSame('desc', $collection->sortDirection());
-    }
+test('installing the collection is idempotent', function () {
+    $this->artisan('cp-notifications:install')->assertExitCode(Command::SUCCESS);
+    $this->artisan('cp-notifications:install')->assertExitCode(Command::SUCCESS);
 
-    public function test_installing_the_collection_is_idempotent(): void
-    {
-        $this->artisan('cp-notifications:install')->assertExitCode(Command::SUCCESS);
-        $this->artisan('cp-notifications:install')->assertExitCode(Command::SUCCESS);
+    expect(Collection::all()->where('handle', 'notifications')->count())->toBe(1);
+});
 
-        $this->assertSame(
-            1,
-            Collection::all()->where('handle', 'notifications')->count(),
-        );
-    }
+test('it refuses to take over an existing routed collection', function () {
+    Collection::make('notifications')->routes('/news/{slug}')->save();
 
-    public function test_it_refuses_to_take_over_an_existing_routed_collection(): void
-    {
-        Collection::make('notifications')->routes('/news/{slug}')->save();
+    $this->artisan('cp-notifications:install')
+        ->expectsOutputToContain('existing notifications collection is routed')
+        ->assertExitCode(Command::FAILURE);
 
-        $this->artisan('cp-notifications:install')
-            ->expectsOutputToContain('existing notifications collection is routed')
-            ->assertExitCode(Command::FAILURE);
+    expect(Collection::find('notifications')->route(Site::default()->handle()))->toBe('/news/{slug}');
+});
 
-        $this->assertSame(
-            '/news/{slug}',
-            Collection::find('notifications')->route(Site::default()->handle()),
-        );
-    }
+test('it creates the complete notification blueprint', function () {
+    $this->artisan('cp-notifications:install')->assertExitCode(Command::SUCCESS);
 
-    public function test_it_creates_the_complete_notification_blueprint(): void
-    {
-        $this->artisan('cp-notifications:install')->assertExitCode(Command::SUCCESS);
+    $blueprint = Blueprint::find('collections.notifications.notification');
 
-        $blueprint = Blueprint::find('collections.notifications.notification');
+    expect($blueprint)->not->toBeNull();
+    expect($blueprint->title())->toBe('Notification');
 
-        $this->assertNotNull($blueprint);
-        $this->assertSame('Notification', $blueprint->title());
+    $fields = $blueprint->fields()->all();
+    expect($fields->keys()->all())->toBe(['title', 'notification_status', 'body', 'severity', 'blocking', 'snoozeable', 'priority', 'audience', 'start_date', 'end_date', 'nudge']);
+    expect($fields['body']->type())->toBe('bard');
+    expect(array_keys($fields['severity']->get('options')))->toBe(['info', 'warning', 'critical']);
+    expect($fields['start_date']->get('time_enabled'))->toBeTrue();
+    expect($blueprint->columns()->filter->visible()->pluck('field')->all())->toBe(['title', 'notification_status', 'severity', 'blocking', 'start_date', 'end_date']);
+    expect($fields['notification_status']->visibility())->toBe('computed');
+    expect($fields['body']->isListable())->toBeFalse();
+    expect($fields['priority']->isListable())->toBeTrue();
+    expect($fields['priority']->isVisibleOnListing())->toBeFalse();
 
-        $fields = $blueprint->fields()->all();
-        $this->assertSame(
-            ['title', 'notification_status', 'body', 'severity', 'blocking', 'snoozeable', 'priority', 'audience', 'start_date', 'end_date', 'nudge'],
-            $fields->keys()->all(),
-        );
-        $this->assertSame('bard', $fields['body']->type());
-        $this->assertSame(['info', 'warning', 'critical'], array_keys($fields['severity']->get('options')));
-        $this->assertTrue($fields['start_date']->get('time_enabled'));
-        $this->assertSame(
-            ['title', 'notification_status', 'severity', 'blocking', 'start_date', 'end_date'],
-            $blueprint->columns()->filter->visible()->pluck('field')->all(),
-        );
-        $this->assertSame('computed', $fields['notification_status']->visibility());
-        $this->assertFalse($fields['body']->isListable());
-        $this->assertTrue($fields['priority']->isListable());
-        $this->assertFalse($fields['priority']->isVisibleOnListing());
+    $audienceFields = collect($fields['audience']->get('fields'))->pluck('handle')->all();
+    $nudgeFields = collect($fields['nudge']->get('fields'))->pluck('handle')->all();
 
-        $audienceFields = collect($fields['audience']->get('fields'))->pluck('handle')->all();
-        $nudgeFields = collect($fields['nudge']->get('fields'))->pluck('handle')->all();
+    expect($audienceFields)->toBe(['all', 'roles', 'groups', 'users']);
+    expect($nudgeFields)->toBe(['enabled', 'threshold_hours', 'cadence_hours']);
+});
 
-        $this->assertSame(['all', 'roles', 'groups', 'users'], $audienceFields);
-        $this->assertSame(['enabled', 'threshold_hours', 'cadence_hours'], $nudgeFields);
-    }
+test('notifications use one canonical site in multisite installs', function () {
+    config()->set('statamic.system.multisite', true);
+    Site::setSites([
+        'default' => ['name' => 'Default', 'url' => '/', 'locale' => 'en_US'],
+        'secondary' => ['name' => 'Secondary', 'url' => '/secondary/', 'locale' => 'en_US'],
+    ]);
 
-    public function test_notifications_use_one_canonical_site_in_multisite_installs(): void
-    {
-        config()->set('statamic.system.multisite', true);
-        Site::setSites([
-            'default' => ['name' => 'Default', 'url' => '/', 'locale' => 'en_US'],
-            'secondary' => ['name' => 'Secondary', 'url' => '/secondary/', 'locale' => 'en_US'],
-        ]);
+    $this->artisan('cp-notifications:install')->assertExitCode(Command::SUCCESS);
 
-        $this->artisan('cp-notifications:install')->assertExitCode(Command::SUCCESS);
+    $collection = Collection::find('notifications');
 
-        $collection = Collection::find('notifications');
+    expect($collection->sites()->all())->toBe(['default']);
+    expect($collection->propagate())->toBeFalse();
+    expect($collection->route('default'))->toBeNull();
+    expect($collection->routes()->has('secondary'))->toBeFalse();
+});
 
-        $this->assertSame(['default'], $collection->sites()->all());
-        $this->assertFalse($collection->propagate());
-        $this->assertNull($collection->route('default'));
-        $this->assertFalse($collection->routes()->has('secondary'));
-    }
+test('it preserves native authorship revisions and draft lifecycle', function () {
+    config()->set('statamic.revisions.enabled', true);
+    $this->artisan('cp-notifications:install')->assertExitCode(Command::SUCCESS);
 
-    public function test_it_preserves_native_authorship_revisions_and_draft_lifecycle(): void
-    {
-        config()->set('statamic.revisions.enabled', true);
-        $this->artisan('cp-notifications:install')->assertExitCode(Command::SUCCESS);
+    $collection = Collection::find('notifications');
+    $entry = Entry::make()
+        ->collection($collection)
+        ->published($collection->defaultPublishState())
+        ->data(['author' => ['creator-id']]);
 
-        $collection = Collection::find('notifications');
-        $entry = Entry::make()
-            ->collection($collection)
-            ->published($collection->defaultPublishState())
-            ->data(['author' => ['creator-id']]);
-
-        $this->assertFalse($collection->defaultPublishState());
-        $this->assertTrue($collection->fileData()['revisions']);
-        $this->assertFalse($entry->published());
-        $this->assertSame(['creator-id'], $entry->authors()->all());
-    }
-}
+    expect($collection->defaultPublishState())->toBeFalse();
+    expect($collection->fileData()['revisions'])->toBeTrue();
+    expect($entry->published())->toBeFalse();
+    expect($entry->authors()->all())->toBe(['creator-id']);
+});

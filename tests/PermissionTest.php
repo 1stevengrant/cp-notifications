@@ -1,93 +1,55 @@
 <?php
 
-namespace Ghijk\CpNotifications\Tests;
+namespace Ghijk\CpNotifications\Tests\Pest\PermissionTest;
 
 use Ghijk\CpNotifications\ServiceProvider;
 use Statamic\Auth\Permissions;
 use Statamic\Facades\Permission;
 
-class PermissionTest extends TestCase
+test('view notifications is registered and inbox access is default', function () {
+    $permissions = new Permissions;
+    Permission::swap($permissions);
+    (new ServiceProvider($this->app))->registerPermissions();
+
+    $registered = $permissions->boot();
+
+    expect($registered->get('view notifications')->label())->toBe('View own notification inbox');
+    expect($registered->get('view notifications')->group())->toBe('cp-notifications');
+});
+
+test('manage notifications is registered', function () {
+    $registered = registeredPermissions($this->app);
+
+    expect($registered->get('manage notifications')->label())->toBe('Manage notifications');
+    expect($registered->get('manage notifications')->group())->toBe('cp-notifications');
+});
+
+test('view notification reports is registered', function () {
+    $registered = registeredPermissions($this->app);
+
+    expect($registered->get('view notification reports')->label())->toBe('View notification reports');
+    expect($registered->get('view notification reports')->group())->toBe('cp-notifications');
+});
+
+test('bypass notifications is registered', function () {
+    $registered = registeredPermissions($this->app);
+
+    expect($registered->get('bypass notifications')->label())->toBe('Bypass notification enforcement');
+    expect($registered->get('bypass notifications')->group())->toBe('cp-notifications');
+});
+
+test('purge notifications is registered', function () {
+    $registered = registeredPermissions($this->app);
+
+    expect($registered->get('purge notifications')->label())->toBe('Purge expired notifications');
+    expect($registered->get('purge notifications')->group())->toBe('cp-notifications');
+});
+
+function registeredPermissions($app): Permissions
 {
-    public function test_view_notifications_is_registered_and_inbox_access_is_default(): void
-    {
-        $permissions = new Permissions;
-        Permission::swap($permissions);
-        (new ServiceProvider($this->app))->registerPermissions();
+    $permissions = new Permissions;
+    Permission::swap($permissions);
+    (new ServiceProvider($app))->registerPermissions();
 
-        $registered = $permissions->boot();
-
-        $this->assertSame(
-            'View own notification inbox',
-            $registered->get('view notifications')->label(),
-        );
-        $this->assertSame(
-            'cp-notifications',
-            $registered->get('view notifications')->group(),
-        );
-    }
-
-    public function test_manage_notifications_is_registered(): void
-    {
-        $registered = $this->registeredPermissions();
-
-        $this->assertSame(
-            'Manage notifications',
-            $registered->get('manage notifications')->label(),
-        );
-        $this->assertSame(
-            'cp-notifications',
-            $registered->get('manage notifications')->group(),
-        );
-    }
-
-    public function test_view_notification_reports_is_registered(): void
-    {
-        $registered = $this->registeredPermissions();
-
-        $this->assertSame(
-            'View notification reports',
-            $registered->get('view notification reports')->label(),
-        );
-        $this->assertSame(
-            'cp-notifications',
-            $registered->get('view notification reports')->group(),
-        );
-    }
-
-    public function test_bypass_notifications_is_registered(): void
-    {
-        $registered = $this->registeredPermissions();
-
-        $this->assertSame(
-            'Bypass notification enforcement',
-            $registered->get('bypass notifications')->label(),
-        );
-        $this->assertSame(
-            'cp-notifications',
-            $registered->get('bypass notifications')->group(),
-        );
-    }
-
-    public function test_purge_notifications_is_registered(): void
-    {
-        $registered = $this->registeredPermissions();
-
-        $this->assertSame(
-            'Purge expired notifications',
-            $registered->get('purge notifications')->label(),
-        );
-        $this->assertSame(
-            'cp-notifications',
-            $registered->get('purge notifications')->group(),
-        );
-    }
-
-    private function registeredPermissions(): Permissions
-    {
-        $permissions = new Permissions;
-        Permission::swap($permissions);
-        (new ServiceProvider($this->app))->registerPermissions();
-
-        return $permissions->boot();
-    }
+    return $permissions->boot();
 }

@@ -1,37 +1,32 @@
 <?php
 
-namespace Ghijk\CpNotifications\Tests;
+namespace Ghijk\CpNotifications\Tests\Pest\SnoozeTest;
 
 use Carbon\CarbonImmutable;
 use Ghijk\CpNotifications\Data\Snooze;
 
-class SnoozeTest extends TestCase
-{
-    public function test_it_is_an_immutable_round_trippable_data_object(): void
-    {
-        $data = [
-            'notification_id' => 'notice-id',
-            'user_id' => 'user-id',
-            'snoozed_until' => '2026-08-13T16:55:00+12:00',
-        ];
+test('it is an immutable round trippable data object', function () {
+    $data = [
+        'notification_id' => 'notice-id',
+        'user_id' => 'user-id',
+        'snoozed_until' => '2026-08-13T16:55:00+12:00',
+    ];
 
-        $snooze = Snooze::fromArray($data);
+    $snooze = Snooze::fromArray($data);
 
-        $this->assertSame('notice-id', $snooze->notificationId);
-        $this->assertSame('user-id', $snooze->userId);
-        $this->assertInstanceOf(CarbonImmutable::class, $snooze->snoozedUntil);
-        $this->assertSame($data, $snooze->toArray());
-        $this->assertSame($data, $snooze->jsonSerialize());
-        $this->assertTrue((new \ReflectionClass($snooze))->isReadOnly());
-    }
+    expect($snooze->notificationId)->toBe('notice-id');
+    expect($snooze->userId)->toBe('user-id');
+    expect($snooze->snoozedUntil)->toBeInstanceOf(CarbonImmutable::class);
+    expect($snooze->toArray())->toBe($data);
+    expect($snooze->jsonSerialize())->toBe($data);
+    expect((new \ReflectionClass($snooze))->isReadOnly())->toBeTrue();
+});
 
-    public function test_it_is_inactive_at_the_exact_expiry_boundary(): void
-    {
-        $until = CarbonImmutable::parse('2026-08-13T16:55:00+12:00');
-        $snooze = new Snooze('notice-id', 'user-id', $until);
+test('it is inactive at the exact expiry boundary', function () {
+    $until = CarbonImmutable::parse('2026-08-13T16:55:00+12:00');
+    $snooze = new Snooze('notice-id', 'user-id', $until);
 
-        $this->assertTrue($snooze->isActiveAt($until->subMicrosecond()));
-        $this->assertFalse($snooze->isActiveAt($until));
-        $this->assertFalse($snooze->isActiveAt($until->addMicrosecond()));
-    }
-}
+    expect($snooze->isActiveAt($until->subMicrosecond()))->toBeTrue();
+    expect($snooze->isActiveAt($until))->toBeFalse();
+    expect($snooze->isActiveAt($until->addMicrosecond()))->toBeFalse();
+});

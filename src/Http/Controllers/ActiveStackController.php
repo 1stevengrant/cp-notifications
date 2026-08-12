@@ -26,17 +26,22 @@ final class ActiveStackController
         $stack = $resolver->resolve($notifications, $user);
 
         return response()->json([
-            'data' => $stack->map(fn ($notification): array => [
-                'id' => $notification->id(),
-                'title' => $notification->get('title'),
-                'body_html' => $this->bodyHtml($notification),
-                'severity' => $notification->get('severity', 'info'),
-                'blocking' => (bool) $notification->get('blocking', false),
-                'snoozeable' => (bool) $notification->get('snoozeable', false),
-                'priority' => $notification->get('priority'),
-                'start_date' => $notification->get('start_date'),
-                'end_date' => $notification->get('end_date'),
-            ])->values(),
+            'data' => $stack->map(function ($notification): array {
+                $bodyHtml = $this->bodyHtml($notification);
+
+                return [
+                    'id' => $notification->id(),
+                    'title' => $notification->get('title'),
+                    'body' => trim(strip_tags($bodyHtml)),
+                    'body_html' => $bodyHtml,
+                    'severity' => $notification->get('severity', 'info'),
+                    'blocking' => (bool) $notification->get('blocking', false),
+                    'snoozeable' => (bool) $notification->get('snoozeable', false),
+                    'priority' => $notification->get('priority'),
+                    'start_date' => $notification->get('start_date'),
+                    'end_date' => $notification->get('end_date'),
+                ];
+            })->values(),
         ]);
     }
 

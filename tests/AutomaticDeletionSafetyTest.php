@@ -1,34 +1,29 @@
 <?php
 
-namespace Ghijk\CpNotifications\Tests;
+namespace Ghijk\CpNotifications\Tests\Pest\AutomaticDeletionSafetyTest;
 
 use Ghijk\CpNotifications\Contracts\AcknowledgementRepository;
 use Illuminate\Console\Scheduling\Schedule;
-use ReflectionClass;
 
-class AutomaticDeletionSafetyTest extends TestCase
-{
-    public function test_no_automatic_workflow_can_hard_delete_notices_or_acknowledgements(): void
-    {
-        $repositoryMethods = collect((new ReflectionClass(AcknowledgementRepository::class))->getMethods())
-            ->pluck('name');
-        $automaticSources = collect([
-            __DIR__.'/../src/Console/Commands/NudgeCommand.php',
-            __DIR__.'/../src/Jobs/SendNotificationNudges.php',
-            __DIR__.'/../src/Nudges/NotificationNudgeService.php',
-        ])->map(fn (string $path): string => file_get_contents($path))->implode("\n");
-        $scheduledCommands = collect($this->app->make(Schedule::class)->events())
-            ->pluck('command')
-            ->filter();
+test('no automatic workflow can hard delete notices or acknowledgements', function () {
+    $repositoryMethods = collect((new \ReflectionClass(AcknowledgementRepository::class))->getMethods())
+        ->pluck('name');
+    $automaticSources = collect([
+        __DIR__.'/../src/Console/Commands/NudgeCommand.php',
+        __DIR__.'/../src/Jobs/SendNotificationNudges.php',
+        __DIR__.'/../src/Nudges/NotificationNudgeService.php',
+    ])->map(fn (string $path): string => file_get_contents($path))->implode("\n");
+    $scheduledCommands = collect($this->app->make(Schedule::class)->events())
+        ->pluck('command')
+        ->filter();
 
-        $this->assertEmpty($repositoryMethods->intersect(['delete', 'remove', 'revoke', 'purge']));
-        $this->assertStringNotContainsString('->delete(', $automaticSources);
-        $this->assertStringNotContainsString('AcknowledgementRepository::', $automaticSources);
-        $this->assertTrue($scheduledCommands->every(
-            fn (string $command): bool => ! str_contains($command, 'purge'),
-        ));
-        $documentation = file_get_contents(__DIR__.'/../README.md');
-        $this->assertStringContainsString('permanently removes', $documentation);
-        $this->assertStringContainsString('rather than archiving', $documentation);
-    }
-}
+    expect($repositoryMethods->intersect(['delete', 'remove', 'revoke', 'purge']))->toBeEmpty();
+    $this->assertStringNotContainsString('->delete(', $automaticSources);
+    $this->assertStringNotContainsString('AcknowledgementRepository::', $automaticSources);
+    expect($scheduledCommands->every(
+        fn (string $command): bool => ! str_contains($command, 'purge'),
+    ))->toBeTrue();
+    $documentation = file_get_contents(__DIR__.'/../README.md');
+    $this->assertStringContainsString('permanently removes', $documentation);
+    $this->assertStringContainsString('rather than archiving', $documentation);
+});

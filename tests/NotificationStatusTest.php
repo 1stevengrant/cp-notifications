@@ -1,45 +1,40 @@
 <?php
 
-namespace Ghijk\CpNotifications\Tests;
+namespace Ghijk\CpNotifications\Tests\Pest\NotificationStatusTest;
 
 use Ghijk\CpNotifications\Contracts\AcknowledgementRepository;
 use Ghijk\CpNotifications\Notifications\NotificationLock;
 use Ghijk\CpNotifications\Notifications\NotificationStatus;
-use Mockery;
 use Statamic\Entries\Collection;
 use Statamic\Entries\Entry;
 
-class NotificationStatusTest extends TestCase
+test('it distinguishes each management status', function () {
+    config()->set('app.timezone', 'Pacific/Auckland');
+    $acknowledgements = \Mockery::mock(AcknowledgementRepository::class);
+    $acknowledgements->allows('forNotification')->andReturnUsing(
+        fn (string $id) => $id === 'locked' ? collect(['acknowledgement']) : collect(),
+    );
+    $status = new NotificationStatus(new NotificationLock($acknowledgements));
+    $now = '2026-08-12 12:00:00 Pacific/Auckland';
+
+    expect($status->for(notice('draft', false), $now))->toBe('draft');
+    expect($status->for(
+        notice('scheduled')->set('start_date', '2026-08-12 12:00:01'),
+        $now,
+    ))->toBe('scheduled');
+    expect($status->for(notice('active'), $now))->toBe('active');
+    expect($status->for(
+        notice('expired')->set('end_date', '2026-08-12 12:00:00'),
+        $now,
+    ))->toBe('expired');
+    expect($status->for(notice('locked'), $now))->toBe('locked');
+});
+
+function notice(string $id, bool $published = true): Entry
 {
-    public function test_it_distinguishes_each_management_status(): void
-    {
-        config()->set('app.timezone', 'Pacific/Auckland');
-        $acknowledgements = Mockery::mock(AcknowledgementRepository::class);
-        $acknowledgements->allows('forNotification')->andReturnUsing(
-            fn (string $id) => $id === 'locked' ? collect(['acknowledgement']) : collect(),
-        );
-        $status = new NotificationStatus(new NotificationLock($acknowledgements));
-        $now = '2026-08-12 12:00:00 Pacific/Auckland';
-
-        $this->assertSame('draft', $status->for($this->notice('draft', false), $now));
-        $this->assertSame('scheduled', $status->for(
-            $this->notice('scheduled')->set('start_date', '2026-08-12 12:00:01'),
-            $now,
-        ));
-        $this->assertSame('active', $status->for($this->notice('active'), $now));
-        $this->assertSame('expired', $status->for(
-            $this->notice('expired')->set('end_date', '2026-08-12 12:00:00'),
-            $now,
-        ));
-        $this->assertSame('locked', $status->for($this->notice('locked'), $now));
-    }
-
-    private function notice(string $id, bool $published = true): Entry
-    {
-        return (new Entry)
-            ->id($id)
-            ->collection(Collection::make('notifications'))
-            ->published($published)
-            ->set('start_date', '2026-08-12 11:00:00');
-    }
+    return (new Entry)
+        ->id($id)
+        ->collection(Collection::make('notifications'))
+        ->published($published)
+        ->set('start_date', '2026-08-12 11:00:00');
 }

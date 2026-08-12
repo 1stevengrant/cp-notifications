@@ -1,44 +1,33 @@
 <?php
 
-namespace Ghijk\CpNotifications\Tests;
+namespace Ghijk\CpNotifications\Tests\Pest\RepositoryDriverResolverTest;
 
 use Composer\InstalledVersions;
 use Ghijk\CpNotifications\Repositories\RepositoryDriverResolver;
-use InvalidArgumentException;
 
-class RepositoryDriverResolverTest extends TestCase
-{
-    public function test_explicit_supported_drivers_are_preserved(): void
-    {
-        $resolver = new RepositoryDriverResolver;
+test('explicit supported drivers are preserved', function () {
+    $resolver = new RepositoryDriverResolver;
 
-        $this->assertSame('file', $resolver->resolve('file', true));
-        $this->assertSame('eloquent', $resolver->resolve('eloquent', false));
-    }
+    expect($resolver->resolve('file', true))->toBe('file');
+    expect($resolver->resolve('eloquent', false))->toBe('eloquent');
+});
 
-    public function test_auto_uses_the_eloquent_driver_when_installed(): void
-    {
-        $resolver = new RepositoryDriverResolver;
+test('auto uses the eloquent driver when installed', function () {
+    $resolver = new RepositoryDriverResolver;
 
-        $this->assertSame('eloquent', $resolver->resolve('auto', true));
-        $this->assertSame('file', $resolver->resolve('auto', false));
-    }
+    expect($resolver->resolve('auto', true))->toBe('eloquent');
+    expect($resolver->resolve('auto', false))->toBe('file');
+});
 
-    public function test_auto_inspects_composer_when_no_detection_override_is_given(): void
-    {
-        $resolver = new RepositoryDriverResolver;
+test('auto inspects composer when no detection override is given', function () {
+    $resolver = new RepositoryDriverResolver;
 
-        $this->assertSame(
-            InstalledVersions::isInstalled('statamic/eloquent-driver') ? 'eloquent' : 'file',
-            $resolver->resolve('auto'),
-        );
-    }
+    expect($resolver->resolve('auto'))->toBe(InstalledVersions::isInstalled('statamic/eloquent-driver') ? 'eloquent' : 'file');
+});
 
-    public function test_unknown_drivers_are_rejected(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Unsupported CP Notifications repository driver [memory].');
+test('unknown drivers are rejected', function () {
+    $this->expectException(\InvalidArgumentException::class);
+    $this->expectExceptionMessage('Unsupported CP Notifications repository driver [memory].');
 
-        (new RepositoryDriverResolver)->resolve('memory');
-    }
-}
+    (new RepositoryDriverResolver)->resolve('memory');
+});

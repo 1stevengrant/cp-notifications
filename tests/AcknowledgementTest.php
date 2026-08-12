@@ -1,32 +1,28 @@
 <?php
 
-namespace Ghijk\CpNotifications\Tests;
+namespace Ghijk\CpNotifications\Tests\Pest\AcknowledgementTest;
 
 use Carbon\CarbonImmutable;
 use Ghijk\CpNotifications\Data\Acknowledgement;
 
-class AcknowledgementTest extends TestCase
-{
-    public function test_it_is_an_immutable_round_trippable_data_object(): void
-    {
-        $data = [
-            'id' => 'ack-id',
-            'notification_id' => 'notice-id',
-            'user_id' => 'user-id',
-            'acknowledged_at' => '2026-08-12T16:55:00+12:00',
-        ];
+test('it is an immutable round trippable data object', function () {
+    $data = [
+        'id' => 'ack-id',
+        'notification_id' => 'notice-id',
+        'user_id' => 'user-id',
+        'acknowledged_at' => '2026-08-12T16:55:00+12:00',
+    ];
 
-        $acknowledgement = Acknowledgement::fromArray($data);
+    $acknowledgement = Acknowledgement::fromArray($data);
 
-        $this->assertSame('ack-id', $acknowledgement->id);
-        $this->assertSame('notice-id', $acknowledgement->notificationId);
-        $this->assertSame('user-id', $acknowledgement->userId);
-        $this->assertInstanceOf(CarbonImmutable::class, $acknowledgement->acknowledgedAt);
-        $this->assertSame($data, $acknowledgement->toArray());
-        $this->assertSame($data, $acknowledgement->jsonSerialize());
+    expect($acknowledgement->id)->toBe('ack-id');
+    expect($acknowledgement->notificationId)->toBe('notice-id');
+    expect($acknowledgement->userId)->toBe('user-id');
+    expect($acknowledgement->acknowledgedAt)->toBeInstanceOf(CarbonImmutable::class);
+    expect($acknowledgement->toArray())->toBe($data);
+    expect($acknowledgement->jsonSerialize())->toBe($data);
 
-        $reflection = new \ReflectionClass($acknowledgement);
-        $this->assertTrue($reflection->isFinal());
-        $this->assertTrue($reflection->isReadOnly());
-    }
-}
+    $reflection = new \ReflectionClass($acknowledgement);
+    expect($reflection->isFinal())->toBeTrue();
+    expect($reflection->isReadOnly())->toBeTrue();
+});

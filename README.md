@@ -51,6 +51,25 @@ npm run build
 Use `npm run dev` while developing the CP UI. Production installations do not
 need Node.js when using the compiled assets shipped with the package.
 
+### Tests
+
+The suite uses Pest 5, with Playwright-backed browser coverage for the control
+panel UI. Install the Chromium runtime once after installing dependencies:
+
+```bash
+npm ci
+npx playwright install chromium
+```
+
+Run the application suite, the real-browser checks, or both in sequence with
+Composer:
+
+```bash
+composer test
+composer test:browser
+composer test:all
+```
+
 ## Compatibility
 
 The release suite is verified against Statamic 6.27, Laravel 13.25, PHP 8.4,

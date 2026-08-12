@@ -14,7 +14,8 @@
                 <span>{{ position }} of {{ notices.length }}</span>
             </div>
             <h1 id="cp-notification-title">{{ current.title }}</h1>
-            <div class="cp-notification-overlay__body" v-html="current.body_html" />
+            <div v-if="current.body_html" class="cp-notification-overlay__body" v-html="current.body_html" />
+            <div v-else class="cp-notification-overlay__body">{{ legacyBody }}</div>
             <p v-if="error" class="cp-notification-overlay__error" role="alert">{{ error }}</p>
             <div class="cp-notification-overlay__actions">
                 <label class="cp-notification-overlay__confirmation">
@@ -72,6 +73,21 @@ export default {
                 warning: 'yellow',
                 info: 'blue',
             }[this.current?.severity] ?? 'blue';
+        },
+
+        legacyBody() {
+            if (typeof this.current?.body === 'string') return this.current.body;
+
+            const text = (node) => {
+                if (typeof node?.text === 'string') return node.text;
+                if (!Array.isArray(node?.content)) return '';
+
+                return node.content.map(text).join('');
+            };
+
+            return Array.isArray(this.current?.body)
+                ? this.current.body.map(text).filter(Boolean).join('\n\n')
+                : '';
         },
 
     },

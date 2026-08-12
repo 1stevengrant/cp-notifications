@@ -684,3 +684,9 @@ Todo: Defer dedicated compliance/attestation product framing beyond the existing
 Done: Framed reports and CSV exports as operational acknowledgement records, explicitly excluded compliance certification and regulated evidence workflows, and guarded the blueprint against compliance-specific fields.
 Tests: vendor/bin/phpunit --filter 'DocumentationTest::test_compliance_product' --testdox; git diff --check
 Notes: Dedicated compliance and attestation product behavior remains intentionally outside v1.
+
+2026-08-12 19:03:17 NZST
+Todo: Improve notification rendering and testing after the completed v1 checklist.
+Done: Rendered Bard bodies as HTML with a safe legacy text fallback, converted the PHPUnit suite to Pest 5 syntax, added a Playwright-backed Chromium modal test, and restyled the Inbox as a responsive Statamic content card with severity and lifecycle badges.
+Tests: composer test -- --compact; composer test:browser -- --compact; vendor/bin/pint --test; composer validate --strict; composer audit; npm audit; npm run build; git diff --check
+Notes: Application and browser tests run sequentially through composer test:all so browser workers do not interfere with the application suite; 161 application tests and one browser test pass.
