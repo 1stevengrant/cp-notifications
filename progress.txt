@@ -354,3 +354,9 @@ Todo: Show active notices and retained history, including previously read notice
 Done: Enriched Inbox rows with acknowledgement and snooze state, separated actionable active notices from history, and displayed recorded read timestamps while retaining acknowledged entries.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Active rows sort first; published targeted notices remain in history after acknowledgement, expiry, or while an active snooze temporarily removes them from the action stack.
+
+2026-08-12 17:17:08 NZST
+Todo: Apply retention.inbox_days; treat null as indefinite retention.
+Done: Filtered expired Inbox history against the configured retention window with an inclusive cutoff, while preserving notices without an end date and treating null retention as unlimited.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Retention is evaluated in the application timezone and affects Inbox visibility only; the active window and acknowledgement records remain unchanged.

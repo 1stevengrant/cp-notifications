@@ -97,6 +97,44 @@ class InboxNoticeResolverTest extends TestCase
         $this->assertNotNull($items->last()['acknowledgement']);
     }
 
+    public function test_expired_history_obeys_retention_days_and_null_is_indefinite(): void
+    {
+        config()->set('app.timezone', 'Pacific/Auckland');
+        config()->set('cp-notifications.retention.inbox_days', 30);
+        CarbonImmutable::setTestNow('2026-08-12 12:00:00 Pacific/Auckland');
+        Collection::make('notifications')->sites([Site::default()->handle()])->save();
+        $this->notice('boundary', true, ['all' => true])
+            ->set('end_date', '2026-07-13 12:00')->save();
+        $this->notice('too-old', true, ['all' => true])
+            ->set('end_date', '2026-07-13 11:59:59')->save();
+        $user = Mockery::mock(User::class);
+        $user->allows('id')->andReturn('user-1');
+        $user->allows('hasRole')->andReturnFalse();
+        $user->allows('isInGroup')->andReturnFalse();
+        $acknowledgements = Mockery::mock(AcknowledgementRepository::class);
+        $acknowledgements->allows('find')->andReturnNull();
+        $snoozes = Mockery::mock(SnoozeRepository::class);
+        $snoozes->allows('find')->andReturnNull();
+        $resolver = new InboxNoticeResolver(
+            new AudienceMatcher,
+            new ActiveWindow,
+            $acknowledgements,
+            $snoozes,
+        );
+
+        $this->assertSame(
+            ['boundary'],
+            $resolver->resolve($user)->pluck('notification')->map->id()->all(),
+        );
+
+        config()->set('cp-notifications.retention.inbox_days', null);
+
+        $this->assertEqualsCanonicalizing(
+            ['boundary', 'too-old'],
+            $resolver->resolve($user)->pluck('notification')->map->id()->all(),
+        );
+    }
+
     private function notice(string $id, bool $published, array $audience)
     {
         return Entry::make()

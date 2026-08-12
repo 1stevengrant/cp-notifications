@@ -83,7 +83,7 @@
 
 - [x] Build the user's Inbox showing only notices targeted at that user.
 - [x] Show active notices and retained history, including previously read notices.
-- [ ] Apply `retention.inbox_days`; treat `null` as indefinite retention.
+- [x] Apply `retention.inbox_days`; treat `null` as indefinite retention.
 - [ ] Ensure expired, unacknowledged advisories stop appearing as active but remain reportable.
 - [ ] Configure the collection listing and publish form for notice management.
 - [ ] Display appropriate status indicators for draft, scheduled, active, expired, and locked notices.

@@ -6,6 +6,7 @@ use Ghijk\CpNotifications\Audience\AudienceMatcher;
 use Ghijk\CpNotifications\Contracts\AcknowledgementRepository;
 use Ghijk\CpNotifications\Contracts\SnoozeRepository;
 use Carbon\CarbonImmutable;
+use DateTimeInterface;
 use Illuminate\Support\Collection as SupportCollection;
 use Statamic\Contracts\Auth\User;
 use Statamic\Facades\Collection;
@@ -35,6 +36,7 @@ final class InboxNoticeResolver
             ->get()
             ->filter(fn ($notification): bool => $notification->published())
             ->filter(fn ($notification): bool => $this->audience->matches($notification, $user))
+            ->filter(fn ($notification): bool => $this->retained($notification, $instant))
             ->map(function ($notification) use ($user, $instant): array {
                 $acknowledgement = $this->acknowledgements->find(
                     (string) $notification->id(),
@@ -56,5 +58,22 @@ final class InboxNoticeResolver
             })
             ->sortByDesc(fn (array $item): bool => $item['active'])
             ->values();
+    }
+
+    private function retained($notification, CarbonImmutable $instant): bool
+    {
+        $days = config('cp-notifications.retention.inbox_days');
+        $end = $notification->get('end_date');
+
+        if ($days === null || $days === '' || $end === null || $end === '') {
+            return true;
+        }
+
+        $timezone = (string) config('app.timezone', 'UTC');
+        $expiredAt = $end instanceof DateTimeInterface
+            ? CarbonImmutable::instance($end)->setTimezone($timezone)
+            : CarbonImmutable::parse($end, $timezone);
+
+        return $expiredAt->greaterThanOrEqualTo($instant->subDays((int) $days));
     }
 }
