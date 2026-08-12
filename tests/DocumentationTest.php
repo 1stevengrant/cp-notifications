@@ -110,4 +110,15 @@ class DocumentationTest extends TestCase
         $this->assertStringNotContainsString("'handle' => 'recurrence'", $installer);
         $this->assertStringNotContainsString("'handle' => 'repeat_rule'", $installer);
     }
+
+    public function test_per_user_timezone_scheduling_is_explicitly_out_of_v1_scope(): void
+    {
+        $readme = file_get_contents(__DIR__.'/../README.md');
+        $installer = file_get_contents(__DIR__.'/../src/Content/NotificationCollectionInstaller.php');
+
+        $this->assertStringContainsString("application's configured timezone", $readme);
+        $this->assertStringContainsString('does not offer per-user timezone scheduling', $readme);
+        $this->assertStringNotContainsString("'handle' => 'user_timezone'", $installer);
+        $this->assertStringNotContainsString("'handle' => 'timezone'", $installer);
+    }
 }

@@ -672,3 +672,9 @@ Todo: Do not add recurring notices; use start/end windows in v1.
 Done: Documented the single-window v1 model and the create-a-new-notice workflow for repeated messages; added a regression check that recurrence fields are absent from the blueprint.
 Tests: vendor/bin/phpunit --filter 'DocumentationTest::test_recurring_notices' --testdox; git diff --check
 Notes: Recurring notice behavior remains intentionally outside v1.
+
+2026-08-12 18:05:13 NZST
+Todo: Do not add per-user timezone scheduling; use the site timezone in v1.
+Done: Documented that every recipient shares the application's configured scheduling timezone and added regression checks that no per-user timezone fields enter the notice blueprint.
+Tests: vendor/bin/phpunit --filter 'DocumentationTest::test_per_user_timezone' --testdox; git diff --check
+Notes: Per-user scheduling conversions remain intentionally outside v1.

@@ -70,6 +70,10 @@ runtime dependency of this addon.
 Notices do not recur. Each notice has one `start_date`/`end_date` publication
 window; create a new notice when the same message must be published again.
 
+Scheduling uses the application's configured timezone for every recipient.
+V1 does not offer per-user timezone scheduling or convert a notice window for
+individual users.
+
 ## Persistence drivers
 
 `CP_NOTIFICATIONS_DRIVER` controls acknowledgement, snooze, and nudge-delivery
