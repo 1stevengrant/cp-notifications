@@ -66,3 +66,9 @@ Todo: Create the notification blueprint with content, severity, behavior, audien
 Done: Added an installer-owned Notification blueprint with required title/Bard content, independent severity and blocking controls, optional priority, structured audience selectors, time-aware start/end scheduling, and structured nudge settings.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Audience and nudge values are stored as grouped objects matching the PRD data shape; their behavioral validation is implemented in subsequent todos.
+
+2026-08-12 16:38:00 NZST
+Todo: Add validation requiring at least one effective audience target before publishing.
+Done: Added server-side EntrySaving validation that permits incomplete drafts but requires all-users targeting or at least one non-empty role, group, or explicit-user selector for published notifications.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The rule validates configured targets at publication; live membership expansion and de-duplication are handled by the audience resolver todos.
