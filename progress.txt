@@ -630,3 +630,9 @@ Todo: Document installation, config publishing, migrations, CP asset build, and 
 Done: Expanded the README with Composer/install command, config and migration publication, migration execution, contributor asset build/dev, production compiled assets, scheduler, and queue-worker steps.
 Tests: vendor/bin/phpunit --filter DocumentationTest; composer validate --no-check-publish; npm run build; git diff --check
 Notes: Documentation assertions lock every required command, and the production Vite build completed successfully without changing compiled artifacts.
+
+2026-08-12 17:57:36 NZST
+Todo: Document file versus Eloquent drivers and auto selection behavior.
+Done: Documented shared persistence scope, flat-file paths/atomicity, Eloquent migrations, Composer-based auto detection, explicit environment selection, and the no-automatic-migration caveat.
+Tests: vendor/bin/phpunit --filter 'DocumentationTest|RepositoryDriverResolverTest|ServiceProviderTest::test_it_binds' --testdox; composer validate --no-check-publish; git diff --check
+Notes: Eight focused tests with 27 assertions align the documented choices with actual resolver and container-binding behavior.

@@ -51,6 +51,31 @@ npm run build
 Use `npm run dev` while developing the CP UI. Production installations do not
 need Node.js when using the compiled assets shipped with the package.
 
+## Persistence drivers
+
+`CP_NOTIFICATIONS_DRIVER` controls acknowledgement, snooze, and nudge-delivery
+state. Supported values are:
+
+- `file` — YAML records beneath
+  `storage/statamic/cp-notifications` (or the configured `file_path`). This is
+  the natural choice for standard flat-file Statamic installations. Atomic
+  record creation preserves once-only acknowledgements across concurrent PHP
+  processes.
+- `eloquent` — database tables created by the published addon migrations. Use
+  this with database-backed Statamic installations, including
+  `statamic/eloquent-driver`.
+- `auto` — the default. It selects `eloquent` when Composer reports
+  `statamic/eloquent-driver` installed and otherwise selects `file`.
+
+Set the driver in `.env` after publishing configuration:
+
+```dotenv
+CP_NOTIFICATIONS_DRIVER=file
+```
+
+Changing drivers does not migrate existing records. Move the stored data as a
+separate deployment operation before switching a live installation.
+
 ## Scheduled reminders
 
 The addon registers `cp-notifications:nudge` with Laravel's scheduler to run

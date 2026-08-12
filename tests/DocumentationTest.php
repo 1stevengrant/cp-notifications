@@ -22,4 +22,15 @@ class DocumentationTest extends TestCase
             $this->assertStringContainsString($command, $readme);
         }
     }
+
+    public function test_file_eloquent_and_auto_driver_behavior_is_documented(): void
+    {
+        $readme = file_get_contents(__DIR__.'/../README.md');
+
+        $this->assertStringContainsString('CP_NOTIFICATIONS_DRIVER', $readme);
+        $this->assertStringContainsString('storage/statamic/cp-notifications', $readme);
+        $this->assertStringContainsString('statamic/eloquent-driver', $readme);
+        $this->assertStringContainsString('auto` — the default', $readme);
+        $this->assertStringContainsString('does not migrate existing records', $readme);
+    }
 }
