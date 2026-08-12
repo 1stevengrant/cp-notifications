@@ -133,4 +133,40 @@ class EnforceBlockingNotificationsTest extends TestCase
         $this->assertNotFalse($resolution);
         $this->assertLessThan($resolution, $bypass);
     }
+
+    public function test_modal_mode_disables_route_gating_but_keeps_overlay_registration(): void
+    {
+        config()->set('cp-notifications.enforcement', 'modal');
+        $originalUsers = User::getFacadeRoot();
+        $users = Mockery::mock(UserRepository::class);
+        $users->shouldNotReceive('current');
+        User::swap($users);
+        $acknowledgements = Mockery::mock(AcknowledgementRepository::class);
+        $snoozes = Mockery::mock(SnoozeRepository::class);
+        $active = new ActiveStackResolver(
+            new AudienceMatcher,
+            new ActiveWindow,
+            $acknowledgements,
+            $snoozes,
+            new NotificationOrder,
+        );
+        $middleware = new EnforceBlockingNotifications(
+            new BlockingNoticeResolver($active, new GatingStack),
+        );
+
+        try {
+            $response = $middleware->handle(
+                Request::create('/cp/dashboard'),
+                fn () => new Response('allowed'),
+            );
+        } finally {
+            User::swap($originalUsers);
+        }
+
+        $this->assertSame('allowed', $response->getContent());
+        $this->assertStringContainsString(
+            "append('cp-notification-overlay'",
+            file_get_contents(__DIR__.'/../resources/js/addon.js'),
+        );
+    }
 }

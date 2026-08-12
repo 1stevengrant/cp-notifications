@@ -336,3 +336,9 @@ Todo: Short-circuit route gating for users with `bypass notifications`.
 Done: Moved the bypass-permission check ahead of blocking-stack resolution so permission holders immediately continue through the CP middleware.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: This avoids collection and persistence-driver reads for bypass users while leaving their separate visible active stack unchanged for overlay and Inbox access.
+
+2026-08-12 17:13:39 NZST
+Todo: In `modal` mode, disable route guarding while retaining the overlay.
+Done: Added a behavioral test proving modal enforcement returns before user/stack resolution and confirmed the global overlay remains appended independently of middleware mode.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Strict and modal share the same overlay and action APIs; only strict mode activates route redirection.

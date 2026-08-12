@@ -77,7 +77,7 @@
 - [x] Redirect users with an active blocking notice to the interstitial.
 - [x] Avoid redirect loops and permit required assets, acknowledgement routes, and logout.
 - [x] Short-circuit route gating for users with `bypass notifications`.
-- [ ] In `modal` mode, disable route guarding while retaining the overlay.
+- [x] In `modal` mode, disable route guarding while retaining the overlay.
 
 ## 8. Inbox and management surfaces
 
