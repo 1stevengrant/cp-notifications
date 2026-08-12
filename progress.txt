@@ -252,3 +252,9 @@ Todo: Add an authenticated endpoint returning the current user's ordered active 
 Done: Added a CP-authenticated JSON endpoint that queries the canonical notification collection, resolves the current user's live ordered stack, and returns the overlay-facing notice fields.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: The route inherits Statamic's authenticated CP middleware and always queries the default-site notification set, preserving global multisite behavior.
+
+2026-08-12 17:01:06 NZST
+Todo: Add idempotent acknowledgement/confirm endpoint(s).
+Done: Added an authenticated acknowledgement endpoint that validates live activity and audience eligibility, records through the once-only repository, and returns the original record on repeat requests.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Already-acknowledged retries remain successful even after the notice leaves its active window, supporting safe client retries without creating duplicate records.
