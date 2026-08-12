@@ -3,6 +3,7 @@
 namespace Ghijk\CpNotifications;
 
 use Ghijk\CpNotifications\Console\Commands\InstallCommand;
+use Ghijk\CpNotifications\Console\Commands\NudgeCommand;
 use Ghijk\CpNotifications\Contracts\AcknowledgementRepository;
 use Ghijk\CpNotifications\Contracts\SnoozeRepository;
 use Ghijk\CpNotifications\Contracts\NudgeDeliveryRepository;
@@ -49,6 +50,7 @@ class ServiceProvider extends AddonServiceProvider
 
     protected $commands = [
         InstallCommand::class,
+        NudgeCommand::class,
     ];
 
     protected $routes = [

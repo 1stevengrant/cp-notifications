@@ -104,7 +104,7 @@
 - [x] Track enough delivery state to enforce one-shot and repeating cadence without duplicate sends.
 - [x] Create the nudge mailable using the configured sender or the app mail fallback.
 - [x] Create a shared job/service for scheduled and manual reminders.
-- [ ] Add the `cp-notifications:nudge` command.
+- [x] Add the `cp-notifications:nudge` command.
 - [ ] Register/document the command's Laravel scheduler integration.
 - [ ] Email only currently targeted users who have not acknowledged the notice.
 - [ ] Ensure notices themselves remain available only inside the CP.
