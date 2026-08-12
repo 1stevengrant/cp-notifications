@@ -143,7 +143,7 @@
 
 ## 13. Documentation and release readiness
 
-- [ ] Document installation, config publishing, migrations, CP asset build, and scheduler setup.
+- [x] Document installation, config publishing, migrations, CP asset build, and scheduler setup.
 - [ ] Document file versus Eloquent drivers and `auto` selection behavior.
 - [ ] Document `strict` versus `modal` enforcement and bypass permission implications.
 - [ ] Document notice creation, targeting, scheduling, reporting, export, nudges, and purge workflows.

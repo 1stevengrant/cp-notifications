@@ -624,3 +624,9 @@ Todo: Test global notice behavior in multisite installations.
 Done: Added a multisite consumer test proving Inbox reads only the canonical default-site notice and excludes a secondary-site copy, alongside collection site/propagation installation coverage.
 Tests: vendor/bin/phpunit --filter 'InboxNoticeResolverTest::test_multisite|NotificationCollectionInstallerTest::test_notifications_use_one_canonical' --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Global means one shared canonical notice record for all CP users, not localized duplicates; both storage configuration and runtime query behavior enforce that model.
+
+2026-08-12 17:57:01 NZST
+Todo: Document installation, config publishing, migrations, CP asset build, and scheduler setup.
+Done: Expanded the README with Composer/install command, config and migration publication, migration execution, contributor asset build/dev, production compiled assets, scheduler, and queue-worker steps.
+Tests: vendor/bin/phpunit --filter DocumentationTest; composer validate --no-check-publish; npm run build; git diff --check
+Notes: Documentation assertions lock every required command, and the production Vite build completed successfully without changing compiled artifacts.

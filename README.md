@@ -20,6 +20,37 @@ You can install this addon via Composer:
 composer require ghijk/cp-notifications
 ```
 
+Create the routeless Notifications collection and its publish blueprint:
+
+```bash
+php artisan cp-notifications:install
+```
+
+Publish the configuration when defaults need customization:
+
+```bash
+php artisan vendor:publish --tag=cp-notifications-config
+```
+
+For the Eloquent persistence driver, publish and run the addon migrations:
+
+```bash
+php artisan vendor:publish --tag=cp-notifications-migrations
+php artisan migrate
+```
+
+The package includes compiled CP assets. Contributors changing Vue or CSS
+sources should install JavaScript dependencies and rebuild the checked-in
+bundle:
+
+```bash
+npm ci
+npm run build
+```
+
+Use `npm run dev` while developing the CP UI. Production installations do not
+need Node.js when using the compiled assets shipped with the package.
+
 ## Scheduled reminders
 
 The addon registers `cp-notifications:nudge` with Laravel's scheduler to run
