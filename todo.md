@@ -93,7 +93,7 @@
 - [x] Build a per-notice report authorized by `view notification reports`.
 - [x] Expand the notice audience live into the current targeted-user set.
 - [x] Display each targeted user's acknowledgement status and `acknowledged_at` value.
-- [ ] Display current/used snooze state.
+- [x] Display current/used snooze state.
 - [ ] Preserve recorded acknowledgements in reporting even if a user later leaves the targeted role/group.
 - [ ] Add an authorized CSV export matching the report grid.
 - [ ] Add a “Remind non-ackers” action that dispatches the shared nudge job.

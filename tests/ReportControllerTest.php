@@ -5,7 +5,9 @@ namespace Ghijk\CpNotifications\Tests;
 use Ghijk\CpNotifications\Audience\AudienceMatcher;
 use Ghijk\CpNotifications\Audience\AudienceResolver;
 use Ghijk\CpNotifications\Contracts\AcknowledgementRepository;
+use Ghijk\CpNotifications\Contracts\SnoozeRepository;
 use Ghijk\CpNotifications\Data\Acknowledgement;
+use Ghijk\CpNotifications\Data\Snooze;
 use Ghijk\CpNotifications\Http\Controllers\ReportController;
 use Ghijk\CpNotifications\Reports\NotificationReportResolver;
 use Carbon\CarbonImmutable;
@@ -23,6 +25,7 @@ class ReportControllerTest extends TestCase
 {
     protected function tearDown(): void
     {
+        CarbonImmutable::setTestNow();
         Entry::query()->where('collection', 'notifications')->get()->each->delete();
         Collection::find('notifications')?->delete();
 
@@ -50,7 +53,12 @@ class ReportControllerTest extends TestCase
         $acknowledgements->allows('find')->with('notice-1', 'targeted-user')->andReturn(
             new Acknowledgement('ack-1', 'notice-1', 'targeted-user', CarbonImmutable::parse('2026-08-12 12:00')),
         );
-        $reportResolver = new NotificationReportResolver($audience, $acknowledgements);
+        CarbonImmutable::setTestNow('2026-08-12 12:00:00 Pacific/Auckland');
+        $snoozes = Mockery::mock(SnoozeRepository::class);
+        $snoozes->allows('find')->with('notice-1', 'targeted-user')->andReturn(
+            new Snooze('notice-1', 'targeted-user', CarbonImmutable::parse('2026-08-13 12:00 Pacific/Auckland')),
+        );
+        $reportResolver = new NotificationReportResolver($audience, $acknowledgements, $snoozes);
 
         $index = $controller->index($request);
         $report = $controller->show($request, 'notice-1', $reportResolver);
@@ -59,6 +67,7 @@ class ReportControllerTest extends TestCase
         $this->assertSame('notice-1', $report->getData()['notification']->id());
         $this->assertSame(['targeted-user'], $report->getData()['rows']->pluck('user')->map->id()->all());
         $this->assertSame('2026-08-12 12:00:00', $report->getData()['rows']->first()['acknowledgement']->acknowledgedAt->format('Y-m-d H:i:s'));
+        $this->assertTrue($report->getData()['rows']->first()['snooze_active']);
         $this->assertTrue($this->app['router']->has('statamic.cp.cp-notifications.reports.show'));
     }
 

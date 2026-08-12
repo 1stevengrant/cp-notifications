@@ -16,6 +16,7 @@
                     <th>{{ __('Email') }}</th>
                     <th>{{ __('Status') }}</th>
                     <th>{{ __('Acknowledged at') }}</th>
+                    <th>{{ __('Snooze') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -25,6 +26,15 @@
                         <td>{{ $row['user']->email() }}</td>
                         <td>{{ $row['acknowledgement'] ? __('Acknowledged') : __('Pending') }}</td>
                         <td>{{ $row['acknowledgement']?->acknowledgedAt->format('Y-m-d H:i:s') ?? '—' }}</td>
+                        <td>
+                            @if (! $row['snooze'])
+                                {{ __('Not used') }}
+                            @elseif ($row['snooze_active'])
+                                {{ __('Active until :time', ['time' => $row['snooze']->snoozedUntil->format('Y-m-d H:i:s')]) }}
+                            @else
+                                {{ __('Used (ended :time)', ['time' => $row['snooze']->snoozedUntil->format('Y-m-d H:i:s')]) }}
+                            @endif
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

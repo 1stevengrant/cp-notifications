@@ -396,3 +396,9 @@ Todo: Display each targeted user's acknowledgement status and acknowledged_at va
 Done: Added report-row resolution that joins current recipients to acknowledgement records and displays pending/acknowledged state with the exact recorded timestamp.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Reporting reads the repository abstraction, so file and Eloquent drivers produce the same grid without duplicating persistence logic in the controller or view.
+
+2026-08-12 17:24:32 NZST
+Todo: Display current/used snooze state.
+Done: Joined snooze records into report rows and displayed never-used, currently active, or previously used state with the recorded expiry timestamp.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Current state uses the same exact expiry-boundary rule as active-stack snooze filtering, while expired records remain visible as one-shot usage history.
