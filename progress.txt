@@ -480,3 +480,9 @@ Todo: Build a confirmed manual clear-out action authorized by purge notification
 Done: Added a management-page candidate preview and POST-only clear-out action enforcing the purge permission and an accepted confirmation before invoking the centralized purge service.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Direct route access is authorized server-side and invalid or missing confirmation fails validation; the form is disabled when no eligible notices exist.
+
+2026-08-12 17:39:35 NZST
+Todo: Restrict purge candidates to appropriate old, expired notices.
+Done: Verified candidates are published, ended notices at or beyond the Inbox retention age, with an inclusive cutoff and exclusions for drafts, active, open-ended, and recently expired notices.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: When Inbox retention is indefinite, manual clear-out may consider any already-expired published notice; it remains permissioned, confirmed, acknowledgement-safe, and logged.
