@@ -14,7 +14,15 @@ class AtomicFileWriter
     public function create(string $path, string $contents): bool
     {
         $directory = dirname($path);
-        $this->files->ensureDirectoryExists($directory);
+
+        if (! $this->files->isDirectory($directory)) {
+            $this->files->makeDirectory($directory, 0755, true, true);
+        }
+
+        if (! $this->files->isDirectory($directory)) {
+            throw new RuntimeException("Unable to create record directory [{$directory}].");
+        }
+
         $temporaryPath = tempnam($directory, '.pending-');
 
         if ($temporaryPath === false) {
