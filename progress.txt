@@ -594,3 +594,9 @@ Todo: Test strict middleware enforcement and modal-only mode.
 Done: Audited and ran authenticated middleware registration, live strict blocking redirect, route exemptions, bypass short-circuit, and modal gating-disable/overlay-retention coverage.
 Tests: vendor/bin/phpunit --filter EnforceBlockingNotificationsTest --testdox
 Notes: Six behavioral tests with 19 assertions include a real published blocking entry and verify mode branching before resolver work, not merely configuration strings.
+
+2026-08-12 17:53:18 NZST
+Todo: Test bypass users are not gated but can still see notices in their inbox.
+Done: Added a composed bypass-user test proving the same targeted notice remains in Inbox resolution while its gating stack is empty, alongside middleware early-return coverage.
+Tests: vendor/bin/phpunit --filter 'InboxNoticeResolverTest::test_bypass|GatingStackTest|EnforceBlockingNotificationsTest::test_bypass' --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Bypass is strictly an enforcement permission; it does not alter audience targeting, active/history visibility, or acknowledgement access.
