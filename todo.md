@@ -28,7 +28,7 @@
 - [x] Define the transient, single-use `Snooze` data object.
 - [x] Create `AcknowledgementRepository` with `find`, idempotent `record`, `forNotification`, and `forUser` methods.
 - [x] Create the equivalent `SnoozeRepository` contract.
-- [ ] Implement the Eloquent acknowledgement and snooze repositories.
+- [x] Implement the Eloquent acknowledgement and snooze repositories.
 - [ ] Add migrations and indexes for acknowledgement and snooze tables.
 - [ ] Enforce uniqueness per `(notification, user)` at the database level.
 - [ ] Implement file repositories using one YAML file per notice/user record under the configured storage path.
