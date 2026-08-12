@@ -36,3 +36,9 @@ Todo: Register `manage notifications`.
 Done: Registered the management ability in the CP Notifications permission group; the Manage navigation item already requires this exact ability.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Collection policies and management endpoints will consume this ability as those features are implemented.
+
+2026-08-12 16:20:00 NZST
+Todo: Register `view notification reports`.
+Done: Registered the reporting ability in the CP Notifications permission group; the Reports navigation item requires the same ability.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Report views, CSV export, and manual reminder authorization will share this ability.

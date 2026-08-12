@@ -68,6 +68,8 @@ class ServiceProvider extends AddonServiceProvider
                     ->label('View own notification inbox');
                 Permission::register('manage notifications')
                     ->label('Manage notifications');
+                Permission::register('view notification reports')
+                    ->label('View notification reports');
             });
         });
     }

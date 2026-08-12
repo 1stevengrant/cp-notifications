@@ -40,6 +40,20 @@ class PermissionTest extends TestCase
         );
     }
 
+    public function test_view_notification_reports_is_registered(): void
+    {
+        $registered = $this->registeredPermissions();
+
+        $this->assertSame(
+            'View notification reports',
+            $registered->get('view notification reports')->label(),
+        );
+        $this->assertSame(
+            'cp-notifications',
+            $registered->get('view notification reports')->group(),
+        );
+    }
+
     private function registeredPermissions(): Permissions
     {
         $permissions = new Permissions;

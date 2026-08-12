@@ -9,7 +9,7 @@
 - [ ] Register Statamic permissions:
   - [x] `view notifications` (available to all users by default).
   - [x] `manage notifications`.
-  - [ ] `view notification reports`.
+  - [x] `view notification reports`.
   - [ ] `bypass notifications` (granted to the creator by default).
   - [ ] `purge notifications`.
 
