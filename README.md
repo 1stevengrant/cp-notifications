@@ -74,6 +74,10 @@ Scheduling uses the application's configured timezone for every recipient.
 V1 does not offer per-user timezone scheduling or convert a notice window for
 individual users.
 
+Reports and CSV exports provide an operational record of acknowledgements.
+They are not presented as a dedicated compliance or attestation product; any
+certification, policy mapping, or regulated evidence workflow is outside v1.
+
 ## Persistence drivers
 
 `CP_NOTIFICATIONS_DRIVER` controls acknowledgement, snooze, and nudge-delivery

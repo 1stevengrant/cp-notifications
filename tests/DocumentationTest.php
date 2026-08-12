@@ -121,4 +121,16 @@ class DocumentationTest extends TestCase
         $this->assertStringNotContainsString("'handle' => 'user_timezone'", $installer);
         $this->assertStringNotContainsString("'handle' => 'timezone'", $installer);
     }
+
+    public function test_compliance_product_framing_is_explicitly_out_of_v1_scope(): void
+    {
+        $readme = file_get_contents(__DIR__.'/../README.md');
+        $installer = file_get_contents(__DIR__.'/../src/Content/NotificationCollectionInstaller.php');
+
+        $this->assertStringContainsString('operational record of acknowledgements', $readme);
+        $this->assertStringContainsString('not presented as a dedicated compliance or attestation product', $readme);
+        $this->assertStringContainsString('regulated evidence workflow is outside v1', $readme);
+        $this->assertStringNotContainsString("'handle' => 'compliance_framework'", $installer);
+        $this->assertStringNotContainsString("'handle' => 'attestation'", $installer);
+    }
 }

@@ -678,3 +678,9 @@ Todo: Do not add per-user timezone scheduling; use the site timezone in v1.
 Done: Documented that every recipient shares the application's configured scheduling timezone and added regression checks that no per-user timezone fields enter the notice blueprint.
 Tests: vendor/bin/phpunit --filter 'DocumentationTest::test_per_user_timezone' --testdox; git diff --check
 Notes: Per-user scheduling conversions remain intentionally outside v1.
+
+2026-08-12 18:05:35 NZST
+Todo: Defer dedicated compliance/attestation product framing beyond the existing report and CSV record.
+Done: Framed reports and CSV exports as operational acknowledgement records, explicitly excluded compliance certification and regulated evidence workflows, and guarded the blueprint against compliance-specific fields.
+Tests: vendor/bin/phpunit --filter 'DocumentationTest::test_compliance_product' --testdox; git diff --check
+Notes: Dedicated compliance and attestation product behavior remains intentionally outside v1.
