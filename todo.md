@@ -62,7 +62,7 @@
 - [x] Add an authenticated endpoint returning the current user's ordered active stack.
 - [x] Add idempotent acknowledgement/confirm endpoint(s).
 - [x] Require the explicit “I have read and understand” confirmation value server-side.
-- [ ] Add the single-use 24-hour snooze endpoint for eligible advisory notices.
+- [x] Add the single-use 24-hour snooze endpoint for eligible advisory notices.
 - [ ] Build and register a global Vue 3 overlay using Statamic UI components.
 - [ ] Render the top notice and enforce top-down clearing.
 - [ ] Make blocking notices confirm-only and impossible to dismiss or snooze.

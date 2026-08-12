@@ -264,3 +264,9 @@ Todo: Require the explicit “I have read and understand” confirmation value s
 Done: Required the literal JSON boolean `confirmed: true` before any acknowledgement lookup or write and added an actionable validation response for missing, false, or string values.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Strict boolean comparison prevents generic truthy payloads from being treated as the user's explicit attestation.
+
+2026-08-12 17:02:52 NZST
+Todo: Add the single-use 24-hour snooze endpoint for eligible advisory notices.
+Done: Added an authenticated snooze endpoint restricted to active, targeted, non-blocking, snoozeable advisories, returning the repository's exact 24-hour expiry.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Any existing snooze record causes a conflict even after expiry, enforcing the one-time allowance independently of current snooze activity.

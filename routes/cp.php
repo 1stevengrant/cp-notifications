@@ -2,6 +2,7 @@
 
 use Ghijk\CpNotifications\Http\Controllers\ActiveStackController;
 use Ghijk\CpNotifications\Http\Controllers\AcknowledgeNotificationController;
+use Ghijk\CpNotifications\Http\Controllers\SnoozeNotificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('cp-notifications')->name('cp-notifications.')->group(function (): void {
@@ -11,4 +12,6 @@ Route::prefix('cp-notifications')->name('cp-notifications.')->group(function ():
     Route::get('api/stack', ActiveStackController::class)->name('api.stack');
     Route::post('api/notifications/{notification}/acknowledge', AcknowledgeNotificationController::class)
         ->name('api.notifications.acknowledge');
+    Route::post('api/notifications/{notification}/snooze', SnoozeNotificationController::class)
+        ->name('api.notifications.snooze');
 });
