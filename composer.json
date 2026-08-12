@@ -1,0 +1,37 @@
+{
+    "name": "ghijk/cp-notifications",
+    "autoload": {
+        "psr-4": {
+            "Ghijk\\CpNotifications\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ghijk\\CpNotifications\\Tests\\": "tests"
+        }
+    },
+    "require": {
+        "statamic/cms": "^6.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^10.8"
+    },
+    "config": {
+        "allow-plugins": {
+            "pixelfear/composer-dist-plugin": true
+        }
+    },
+    "extra": {
+        "statamic": {
+            "name": "Cp Notifications",
+            "description": "Cp Notifications addon"
+        },
+        "laravel": {
+            "providers": [
+                "Ghijk\\CpNotifications\\ServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
