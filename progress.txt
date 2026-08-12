@@ -348,3 +348,9 @@ Todo: Build the user's Inbox showing only notices targeted at that user.
 Done: Replaced the placeholder Inbox with a user-specific controller, canonical live resolver, and CP listing view restricted to published notices matching the current user's audience.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Audience membership is evaluated on every Inbox request, so role/group changes immediately affect visibility and draft notices never leak to recipients.
+
+2026-08-12 17:15:46 NZST
+Todo: Show active notices and retained history, including previously read notices.
+Done: Enriched Inbox rows with acknowledgement and snooze state, separated actionable active notices from history, and displayed recorded read timestamps while retaining acknowledged entries.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Active rows sort first; published targeted notices remain in history after acknowledgement, expiry, or while an active snooze temporarily removes them from the action stack.
