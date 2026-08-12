@@ -127,7 +127,7 @@
 - [x] Test parallel file-driver acknowledgements for race safety and valid YAML output.
 - [x] Test idempotent, once-only acknowledgements under concurrent requests.
 - [x] Test database uniqueness under concurrent acknowledgement attempts.
-- [ ] Test single-use snoozing and the exact 24-hour expiry boundary.
+- [x] Test single-use snoozing and the exact 24-hour expiry boundary.
 - [ ] Test audience expansion for all users, roles, groups, explicit users, and overlaps.
 - [ ] Test that role/group removal changes current targeting but preserves an existing acknowledgement.
 - [ ] Test scheduling boundaries, open-ended notices, expiration, and future blocking notices.

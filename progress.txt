@@ -546,3 +546,9 @@ Todo: Test database uniqueness under concurrent acknowledgement attempts.
 Done: Added a six-process SQLite WAL race using separate connections and the production-equivalent unique notice/user key, proving exactly one correct acknowledgement row survives.
 Tests: vendor/bin/phpunit --filter 'MigrationsTest::test_database_uniqueness_survives'; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Each child uses insert-or-ignore as the Eloquent repository does, validating database arbitration under simultaneous attempts rather than a sequential duplicate exception.
+
+2026-08-12 17:47:56 NZST
+Todo: Test single-use snoozing and the exact 24-hour expiry boundary.
+Done: Audited and ran endpoint, file/Eloquent repository, and immutable value-object coverage for eligibility, one-shot reuse prevention, exact 24-hour creation, and boundary expiration.
+Tests: vendor/bin/phpunit --filter 'SnoozeTest|SnoozeNotificationEndpointTest|FileRepositoriesTest|EloquentRepositoriesTest' --testdox
+Notes: Twelve tests with 75 assertions prove a snooze is active one microsecond before expiry and inactive exactly at and after the stored boundary.
