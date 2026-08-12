@@ -138,7 +138,7 @@
 - [x] Test bypass users are not gated but can still see notices in their inbox.
 - [x] Test report authorization, live status, and CSV contents.
 - [x] Test scheduled and manual nudge eligibility, one-shot delivery, cadence, and duplicate prevention.
-- [ ] Test retention visibility and purge authorization, confirmation, safety, and audit logging.
+- [x] Test retention visibility and purge authorization, confirmation, safety, and audit logging.
 - [ ] Test global notice behavior in multisite installations.
 
 ## 13. Documentation and release readiness

@@ -94,6 +94,29 @@ class NotificationPurgeServiceTest extends TestCase
         $this->assertNull(Entry::find('notice-1'));
     }
 
+    public function test_failed_purge_attempt_is_logged_before_the_error_is_rethrown(): void
+    {
+        config()->set('app.timezone', 'Pacific/Auckland');
+        CarbonImmutable::setTestNow('2026-08-12 12:00 Pacific/Auckland');
+        Collection::make('notifications')->sites([Site::default()->handle()])->save();
+        $this->notice('notice-1', true, '2026-08-01 12:00')->save();
+        $acknowledgements = Mockery::mock(AcknowledgementRepository::class);
+        $acknowledgements->allows('forNotification')->andThrow(new \RuntimeException('storage unavailable'));
+        $logger = Mockery::mock(LoggerInterface::class);
+        $logger->expects('error')->once()->with(
+            'CP notification manual purge failed.',
+            Mockery::on(fn (array $context): bool =>
+                $context['actor_id'] === 'admin-1'
+                && $context['affected_count'] === 0
+                && $context['result'] === 'failure'
+                && $context['exception'] === \RuntimeException::class
+            ),
+        );
+
+        $this->expectException(\RuntimeException::class);
+        (new NotificationPurgeService($acknowledgements, $logger))->purge('admin-1');
+    }
+
     private function notice(string $id, bool $published, ?string $end)
     {
         return Entry::make()

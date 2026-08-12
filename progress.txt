@@ -612,3 +612,9 @@ Todo: Test scheduled and manual nudge eligibility, one-shot delivery, cadence, a
 Done: Added an end-to-end repeating send test proving suppression one second before cadence and delivery exactly at cadence, then audited scheduled/manual, threshold, one-shot, recipient, and unique-job coverage.
 Tests: vendor/bin/phpunit --filter 'NudgeEligibilityTest|NotificationNudgeServiceTest|NudgeCommandTest|SharedNudgeWorkflowTest|ReportControllerTest::test_authorized_manual' --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Thirteen focused tests cover both policy boundaries and actual mail counts, with per-recipient delivery state preventing duplicates without suppressing other targets.
+
+2026-08-12 17:55:20 NZST
+Todo: Test retention visibility and purge authorization, confirmation, safety, and audit logging.
+Done: Added failure-attempt audit coverage and ran the complete visibility, authorization, confirmation, cutoff, acknowledgement-race, no-automation, success-log, and failure-log matrix.
+Tests: vendor/bin/phpunit --filter 'InboxNoticeResolverTest::test_expired_history|ManageNotificationsControllerTest|NotificationPurgeServiceTest|PreventAcknowledgedNotificationDeletionTest|AutomaticDeletionSafetyTest' --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Nine focused tests prove both destructive-action safeguards and structured audit evidence, including logging before exceptional failure is rethrown.
