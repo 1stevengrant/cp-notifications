@@ -132,3 +132,9 @@ Todo: Enforce uniqueness per `(notification, user)` at the database level.
 Done: Added composite unique constraints for notification/user pairs to both acknowledgement and snooze tables, making once-only records enforceable independently of application code.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Migration tests verify both unique-index definitions and real duplicate-insert failures for each record type.
+
+2026-08-12 17:34:00 NZST
+Todo: Implement file repositories using one YAML file per notice/user record under the configured storage path.
+Done: Added YAML-backed acknowledgement and snooze repositories with one safely addressed file per notification/user pair, typed hydration, idempotent sequential recording, and notification/user collection queries.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: URL-safe base64 path segments prevent record IDs containing separators from escaping their storage tree; concurrent create-if-absent hardening is handled by the next todo.

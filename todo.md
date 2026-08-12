@@ -31,7 +31,7 @@
 - [x] Implement the Eloquent acknowledgement and snooze repositories.
 - [x] Add migrations and indexes for acknowledgement and snooze tables.
 - [x] Enforce uniqueness per `(notification, user)` at the database level.
-- [ ] Implement file repositories using one YAML file per notice/user record under the configured storage path.
+- [x] Implement file repositories using one YAML file per notice/user record under the configured storage path.
 - [ ] Make file writes atomic and safe under concurrent requests.
 - [ ] Implement `auto`, `eloquent`, and `file` driver resolution; auto-detect `statamic/eloquent-driver`.
 - [ ] Bind the selected repositories into Laravel's container.
