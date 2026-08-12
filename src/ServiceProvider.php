@@ -72,6 +72,8 @@ class ServiceProvider extends AddonServiceProvider
                     ->label('View notification reports');
                 Permission::register('bypass notifications')
                     ->label('Bypass notification enforcement');
+                Permission::register('purge notifications')
+                    ->label('Purge expired notifications');
             });
         });
     }

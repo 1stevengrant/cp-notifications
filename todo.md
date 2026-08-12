@@ -6,12 +6,12 @@
 - [x] Register the addon service provider, publishable config, routes, migrations, commands, and CP assets.
 - [x] Add `config/cp-notifications.php` with acknowledgement driver, enforcement, retention, and nudge settings.
 - [x] Register the Inbox CP navigation item and links to management/reporting surfaces.
-- [ ] Register Statamic permissions:
+- [x] Register Statamic permissions:
   - [x] `view notifications` (available to all users by default).
   - [x] `manage notifications`.
   - [x] `view notification reports`.
   - [x] `bypass notifications` (granted to the creator by default).
-  - [ ] `purge notifications`.
+  - [x] `purge notifications`.
 
 ## 2. Notice content model
 

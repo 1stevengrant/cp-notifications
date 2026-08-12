@@ -68,6 +68,20 @@ class PermissionTest extends TestCase
         );
     }
 
+    public function test_purge_notifications_is_registered(): void
+    {
+        $registered = $this->registeredPermissions();
+
+        $this->assertSame(
+            'Purge expired notifications',
+            $registered->get('purge notifications')->label(),
+        );
+        $this->assertSame(
+            'cp-notifications',
+            $registered->get('purge notifications')->group(),
+        );
+    }
+
     private function registeredPermissions(): Permissions
     {
         $permissions = new Permissions;

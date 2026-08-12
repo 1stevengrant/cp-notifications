@@ -48,3 +48,9 @@ Todo: Register `bypass notifications` (granted to the creator by default).
 Done: Registered the global enforcement-bypass ability in the CP Notifications permission group.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Per the agreed policy, explicit holders bypass all gating; notice authors bypass only their own notice without receiving a persistent global permission grant. Author resolution is implemented with active-stack gating.
+
+2026-08-12 16:24:00 NZST
+Todo: Register `purge notifications`.
+Done: Registered the expired-notification purge ability and completed the five-permission CP Notifications group.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The eventual clear-out action will require this ability in addition to explicit confirmation and eligibility checks.
