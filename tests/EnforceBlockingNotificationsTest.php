@@ -122,4 +122,15 @@ class EnforceBlockingNotificationsTest extends TestCase
             $this->assertStringContainsString("'{$route}'", $source);
         }
     }
+
+    public function test_bypass_permission_short_circuits_before_blocking_resolution(): void
+    {
+        $source = file_get_contents(__DIR__.'/../src/Http/Middleware/EnforceBlockingNotifications.php');
+        $bypass = strpos($source, '$user->can(\'bypass notifications\')');
+        $resolution = strpos($source, '$this->blocking->resolve($user)');
+
+        $this->assertNotFalse($bypass);
+        $this->assertNotFalse($resolution);
+        $this->assertLessThan($resolution, $bypass);
+    }
 }

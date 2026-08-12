@@ -76,7 +76,7 @@
 - [x] Add CP middleware that guards routes when enforcement is `strict`.
 - [x] Redirect users with an active blocking notice to the interstitial.
 - [x] Avoid redirect loops and permit required assets, acknowledgement routes, and logout.
-- [ ] Short-circuit route gating for users with `bypass notifications`.
+- [x] Short-circuit route gating for users with `bypass notifications`.
 - [ ] In `modal` mode, disable route guarding while retaining the overlay.
 
 ## 8. Inbox and management surfaces

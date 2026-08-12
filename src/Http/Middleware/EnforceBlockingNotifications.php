@@ -22,7 +22,7 @@ final class EnforceBlockingNotifications
 
         $user = User::current();
 
-        if (! $user || $this->isExempt($request)) {
+        if (! $user || $user->can('bypass notifications') || $this->isExempt($request)) {
             return $next($request);
         }
 
