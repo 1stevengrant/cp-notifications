@@ -9,6 +9,7 @@ use Illuminate\Support\Collection as SupportCollection;
 use Psr\Log\LoggerInterface;
 use Statamic\Facades\Collection;
 use Statamic\Facades\Site;
+use Throwable;
 
 final class NotificationPurgeService
 {
@@ -56,28 +57,44 @@ final class NotificationPurgeService
 
     public function purge(string $actorId): SupportCollection
     {
-        $candidates = $this->candidates();
-        $ids = $candidates
-            ->filter(function ($notification): bool {
-                if ($this->acknowledgements->forNotification((string) $notification->id())->isNotEmpty()) {
-                    return false;
-                }
+        $occurredAt = CarbonImmutable::now(config('app.timezone', 'UTC'))->toIso8601String();
 
-                $notification->delete();
+        try {
+            $candidates = $this->candidates();
+            $ids = $candidates
+                ->filter(function ($notification): bool {
+                    if ($this->acknowledgements->forNotification((string) $notification->id())->isNotEmpty()) {
+                        return false;
+                    }
 
-                return true;
-            })
-            ->map->id()
-            ->map(fn ($id): string => (string) $id)
-            ->values();
+                    $notification->delete();
 
-        $this->logger->info('CP notification manual purge completed.', [
-            'actor_id' => $actorId,
-            'notification_ids' => $ids->all(),
-            'affected_count' => $ids->count(),
-            'result' => 'success',
-        ]);
+                    return true;
+                })
+                ->map->id()
+                ->map(fn ($id): string => (string) $id)
+                ->values();
 
-        return $ids;
+            $this->logger->info('CP notification manual purge completed.', [
+                'actor_id' => $actorId,
+                'notification_ids' => $ids->all(),
+                'affected_count' => $ids->count(),
+                'occurred_at' => $occurredAt,
+                'result' => 'success',
+            ]);
+
+            return $ids;
+        } catch (Throwable $exception) {
+            $this->logger->error('CP notification manual purge failed.', [
+                'actor_id' => $actorId,
+                'notification_ids' => [],
+                'affected_count' => 0,
+                'occurred_at' => $occurredAt,
+                'result' => 'failure',
+                'exception' => $exception::class,
+            ]);
+
+            throw $exception;
+        }
     }
 }

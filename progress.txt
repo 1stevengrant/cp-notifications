@@ -498,3 +498,9 @@ Todo: Define whether manual purge archives or removes eligible notices and docum
 Done: Documented that confirmed clear-out permanently removes eligible notification entries rather than archiving them, together with retention, expiry, and acknowledgement safeguards.
 Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Acknowledgement records are never part of clear-out; indefinite Inbox retention still allows a deliberate admin to remove already-expired, unacknowledged notices.
+
+2026-08-12 17:42:41 NZST
+Todo: Log the acting admin, affected notices, timestamp, and result of every purge.
+Done: Added structured success and failure audit records containing actor ID, affected notification IDs/count, application-timezone timestamp, and result for every confirmed purge attempt.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Failure records include the exception class and are emitted before rethrowing; successful zero-candidate attempts are still logged as deliberate administrative actions.

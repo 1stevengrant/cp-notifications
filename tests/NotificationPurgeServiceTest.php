@@ -69,6 +69,31 @@ class NotificationPurgeServiceTest extends TestCase
         $this->assertNotNull(Entry::find('notice-1'));
     }
 
+    public function test_every_successful_purge_logs_actor_ids_timestamp_and_result(): void
+    {
+        config()->set('app.timezone', 'Pacific/Auckland');
+        CarbonImmutable::setTestNow('2026-08-12 12:00 Pacific/Auckland');
+        Collection::make('notifications')->sites([Site::default()->handle()])->save();
+        $this->notice('notice-1', true, '2026-08-01 12:00')->save();
+        $acknowledgements = Mockery::mock(AcknowledgementRepository::class);
+        $acknowledgements->allows('forNotification')->with('notice-1')->andReturn(collect());
+        $logger = Mockery::mock(LoggerInterface::class);
+        $logger->expects('info')->once()->with(
+            'CP notification manual purge completed.',
+            Mockery::on(fn (array $context): bool =>
+                $context['actor_id'] === 'admin-1'
+                && $context['notification_ids'] === ['notice-1']
+                && $context['affected_count'] === 1
+                && $context['occurred_at'] === '2026-08-12T12:00:00+12:00'
+                && $context['result'] === 'success'
+            ),
+        );
+        $service = new NotificationPurgeService($acknowledgements, $logger);
+
+        $this->assertSame(['notice-1'], $service->purge('admin-1')->all());
+        $this->assertNull(Entry::find('notice-1'));
+    }
+
     private function notice(string $id, bool $published, ?string $end)
     {
         return Entry::make()
