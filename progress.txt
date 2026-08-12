@@ -90,3 +90,9 @@ Todo: Preserve Statamic's native author, revisions, and draft/published lifecycl
 Done: Enabled native collection revisions, configured new notifications as drafts by default, and retained Statamic's native entry author and publication properties without a parallel custom lifecycle.
 Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
 Notes: Statamic's entry controller assigns the authenticated creator to the native author value; publishing continues through Statamic's normal working-copy and publish APIs.
+
+2026-08-12 16:55:00 NZST
+Todo: Define the immutable `Acknowledgement` data object.
+Done: Added a final readonly acknowledgement value object with stable record, notification, user, and immutable timestamp fields plus array/JSON hydration and serialization.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Storage drivers will use snake_case serialized keys while application code receives typed camelCase properties and CarbonImmutable timestamps.
