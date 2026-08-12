@@ -120,6 +120,40 @@ class NotificationNudgeServiceTest extends TestCase
         );
     }
 
+    public function test_repeating_delivery_waits_for_the_exact_cadence_boundary(): void
+    {
+        Mail::fake();
+        config()->set('app.timezone', 'Pacific/Auckland');
+        CarbonImmutable::setTestNow('2026-08-12 12:00 Pacific/Auckland');
+        Collection::make('notifications')->sites([Site::default()->handle()])->save();
+        Entry::make()->id('notice-1')->collection('notifications')->locale(Site::default()->handle())
+            ->data([
+                'title' => 'Required reading',
+                'audience' => ['all' => true],
+                'start_date' => '2026-08-11 12:00',
+                'nudge' => ['enabled' => true, 'threshold_hours' => 24, 'cadence_hours' => 6],
+            ])->save();
+        $user = $this->user('user-1', 'user@example.com');
+        $users = Mockery::mock(UserRepository::class);
+        $users->allows('all')->andReturn(new UserCollection([$user]));
+        $acknowledgements = Mockery::mock(AcknowledgementRepository::class);
+        $acknowledgements->allows('find')->andReturnNull();
+        $service = new NotificationNudgeService(
+            new AudienceResolver($users, new AudienceMatcher),
+            $acknowledgements,
+            new FileNudgeDeliveryRepository(new Filesystem, $this->deliveryPath),
+            new NudgeEligibility(new ActiveWindow),
+            $this->app->make(\Illuminate\Contracts\Mail\Factory::class),
+        );
+
+        $this->assertSame(1, $service->send('notice-1'));
+        CarbonImmutable::setTestNow('2026-08-12 17:59:59 Pacific/Auckland');
+        $this->assertSame(0, $service->send('notice-1'));
+        CarbonImmutable::setTestNow('2026-08-12 18:00:00 Pacific/Auckland');
+        $this->assertSame(1, $service->send('notice-1'));
+        Mail::assertSent(NotificationNudge::class, 2);
+    }
+
     private function user(string $id, string $email): User
     {
         $user = Mockery::mock(User::class);

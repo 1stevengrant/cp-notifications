@@ -606,3 +606,9 @@ Todo: Test report authorization, live status, and CSV contents.
 Done: Added a live Pending-to-Acknowledged report transition and audited permission denial, canonical notice scope, former recipients, download metadata, and all six CSV grid columns/row values.
 Tests: vendor/bin/phpunit --filter 'ReportControllerTest|NotificationReportResolverTest' --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
 Notes: Report rows are rebuilt from repositories on every request; HTML and CSV share the same resolver, preventing stale or divergent status calculations.
+
+2026-08-12 17:54:41 NZST
+Todo: Test scheduled and manual nudge eligibility, one-shot delivery, cadence, and duplicate prevention.
+Done: Added an end-to-end repeating send test proving suppression one second before cadence and delivery exactly at cadence, then audited scheduled/manual, threshold, one-shot, recipient, and unique-job coverage.
+Tests: vendor/bin/phpunit --filter 'NudgeEligibilityTest|NotificationNudgeServiceTest|NudgeCommandTest|SharedNudgeWorkflowTest|ReportControllerTest::test_authorized_manual' --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Thirteen focused tests cover both policy boundaries and actual mail counts, with per-recipient delivery state preventing duplicates without suppressing other targets.

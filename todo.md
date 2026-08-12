@@ -137,7 +137,7 @@
 - [x] Test strict middleware enforcement and modal-only mode.
 - [x] Test bypass users are not gated but can still see notices in their inbox.
 - [x] Test report authorization, live status, and CSV contents.
-- [ ] Test scheduled and manual nudge eligibility, one-shot delivery, cadence, and duplicate prevention.
+- [x] Test scheduled and manual nudge eligibility, one-shot delivery, cadence, and duplicate prevention.
 - [ ] Test retention visibility and purge authorization, confirmation, safety, and audit logging.
 - [ ] Test global notice behavior in multisite installations.
 
