@@ -1,0 +1,710 @@
+CP Notifications implementation progress
+========================================
+
+2026-08-12 15:58:08 NZST
+Todo: Scaffold the Statamic 6 / Laravel 13 addon package as `ghijk/cp-notifications`.
+Done: Completed publishable Composer metadata, declared supported PHP and Statamic versions, replaced the placeholder README copy, and added package/provider scaffold tests.
+Tests: composer validate --strict; vendor/bin/phpunit --testdox
+Notes: Statamic 6 supports Laravel 12 and 13, so the addon keeps Statamic's compatible range while documenting Laravel 13 as the recommended target.
+
+2026-08-12 16:02:00 NZST
+Todo: Register the addon service provider, publishable config, routes, migrations, commands, and CP assets.
+Done: Registered the addon config and CP route sources, migration loading/publishing, an install command, and the Statamic Vite entrypoints; added the standard frontend build manifest and configuration.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Feature routes, migrations, and Vue components will be added to these registered extension points with their corresponding todos.
+
+2026-08-12 16:06:00 NZST
+Todo: Add `config/cp-notifications.php` with acknowledgement driver, enforcement, retention, and nudge settings.
+Done: Added environment-aware acknowledgement driver and file path, strict/modal enforcement, Inbox retention, and nudge sender configuration with the PRD defaults.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Null Inbox retention means indefinite history; a null nudge sender delegates to the host application's mail configuration.
+
+2026-08-12 16:10:00 NZST
+Todo: Register the Inbox CP navigation item and links to management/reporting surfaces.
+Done: Added a Notifications navigation section with Inbox, Manage, and Reports links, registered their CP routes, and provided initial surface views for progressive enhancement by later todos.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Each navigation item declares its final permission ability; permission definitions and endpoint authorization are completed by their dedicated todos.
+
+2026-08-12 16:14:00 NZST
+Todo: Register `view notifications` (available to all users by default).
+Done: Registered the Inbox permission in a dedicated CP Notifications permission group and made the Inbox navigation available by default to authenticated CP users instead of requiring role assignment.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The permission remains registered for discoverability and future policy integration, while default Inbox availability is expressed by the absence of an additional navigation authorization gate.
+
+2026-08-12 16:18:00 NZST
+Todo: Register `manage notifications`.
+Done: Registered the management ability in the CP Notifications permission group; the Manage navigation item already requires this exact ability.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Collection policies and management endpoints will consume this ability as those features are implemented.
+
+2026-08-12 16:20:00 NZST
+Todo: Register `view notification reports`.
+Done: Registered the reporting ability in the CP Notifications permission group; the Reports navigation item requires the same ability.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Report views, CSV export, and manual reminder authorization will share this ability.
+
+2026-08-12 16:22:00 NZST
+Todo: Register `bypass notifications` (granted to the creator by default).
+Done: Registered the global enforcement-bypass ability in the CP Notifications permission group.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Per the agreed policy, explicit holders bypass all gating; notice authors bypass only their own notice without receiving a persistent global permission grant. Author resolution is implemented with active-stack gating.
+
+2026-08-12 16:24:00 NZST
+Todo: Register `purge notifications`.
+Done: Registered the expired-notification purge ability and completed the five-permission CP Notifications group.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The eventual clear-out action will require this ability in addition to explicit confirmation and eligibility checks.
+
+2026-08-12 16:28:00 NZST
+Todo: Create a routeless, CP-only `notifications` collection.
+Done: Expanded the install command with an idempotent collection installer that creates the notifications collection without routes or required slugs and refuses to overwrite a conflicting routed collection.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: With no collection route, notification entries have no public content URL and are managed exclusively through control-panel surfaces.
+
+2026-08-12 16:34:00 NZST
+Todo: Create the notification blueprint with content, severity, behavior, audience, scheduling, and nudge fields.
+Done: Added an installer-owned Notification blueprint with required title/Bard content, independent severity and blocking controls, optional priority, structured audience selectors, time-aware start/end scheduling, and structured nudge settings.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Audience and nudge values are stored as grouped objects matching the PRD data shape; their behavioral validation is implemented in subsequent todos.
+
+2026-08-12 16:38:00 NZST
+Todo: Add validation requiring at least one effective audience target before publishing.
+Done: Added server-side EntrySaving validation that permits incomplete drafts but requires all-users targeting or at least one non-empty role, group, or explicit-user selector for published notifications.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The rule validates configured targets at publication; live membership expansion and de-duplication are handled by the audience resolver todos.
+
+2026-08-12 16:42:00 NZST
+Todo: Force or treat `snoozeable` as false whenever `blocking` is true.
+Done: Added an EntrySaving normalizer ahead of validation that forcibly stores blocking notifications as non-snoozeable while preserving advisory snooze settings.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Server-side normalization protects every save path, including custom clients that bypass control-panel field visibility.
+
+2026-08-12 16:46:00 NZST
+Todo: Ensure notices are global across multisite installations.
+Done: Made the notifications collection explicitly canonical to the default site with localization propagation disabled, so a single entry set drives every control-panel site.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Notification resolvers will query this default-site collection regardless of the currently selected control-panel site.
+
+2026-08-12 16:50:00 NZST
+Todo: Preserve Statamic's native author, revisions, and draft/published lifecycle.
+Done: Enabled native collection revisions, configured new notifications as drafts by default, and retained Statamic's native entry author and publication properties without a parallel custom lifecycle.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Statamic's entry controller assigns the authenticated creator to the native author value; publishing continues through Statamic's normal working-copy and publish APIs.
+
+2026-08-12 16:55:00 NZST
+Todo: Define the immutable `Acknowledgement` data object.
+Done: Added a final readonly acknowledgement value object with stable record, notification, user, and immutable timestamp fields plus array/JSON hydration and serialization.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Storage drivers will use snake_case serialized keys while application code receives typed camelCase properties and CarbonImmutable timestamps.
+
+2026-08-12 16:58:00 NZST
+Todo: Define the transient, single-use `Snooze` data object.
+Done: Added a final readonly snooze value object with notification/user identity, immutable expiry, array/JSON serialization, and shared active-at-time behavior.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: A snooze is active strictly before snoozed_until and inactive at the exact expiry boundary.
+
+2026-08-12 17:02:00 NZST
+Todo: Create `AcknowledgementRepository` with find, idempotent record, forNotification, and forUser methods.
+Done: Defined the typed acknowledgement persistence boundary with lookup, once-only recording, and notification/user collection queries.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: record accepts an optional CarbonImmutable timestamp for deterministic driver contract tests; implementations must return the original record on duplicate calls.
+
+2026-08-12 17:06:00 NZST
+Todo: Create the equivalent `SnoozeRepository` contract.
+Done: Defined the typed snooze persistence boundary with lookup, idempotent once-only recording, and notification/user collection queries.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: record accepts an optional CarbonImmutable expiry for deterministic driver and 24-hour boundary tests; implementations must return the original snooze when a user attempts to spend it again.
+
+2026-08-12 17:14:00 NZST
+Todo: Implement the Eloquent acknowledgement and snooze repositories.
+Done: Added database-backed acknowledgement and snooze repositories with typed hydration, idempotent insert-and-read recording, deterministic collection queries, UUID acknowledgement IDs, and a default 24-hour snooze duration.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The repositories rely on a unique notification/user key to make insertOrIgnore concurrency-safe; the package migrations and production indexes are added by the following dedicated todos.
+
+2026-08-12 17:20:00 NZST
+Todo: Add migrations and indexes for acknowledgement and snooze tables.
+Done: Added a reversible production migration for acknowledgement and snooze storage, including primary acknowledgement IDs and indexes for notification, user, acknowledgement time, and snooze expiry lookups.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Composite notification/user uniqueness is intentionally added and verified by its immediately following dedicated todo.
+
+2026-08-12 17:25:00 NZST
+Todo: Enforce uniqueness per `(notification, user)` at the database level.
+Done: Added composite unique constraints for notification/user pairs to both acknowledgement and snooze tables, making once-only records enforceable independently of application code.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Migration tests verify both unique-index definitions and real duplicate-insert failures for each record type.
+
+2026-08-12 17:34:00 NZST
+Todo: Implement file repositories using one YAML file per notice/user record under the configured storage path.
+Done: Added YAML-backed acknowledgement and snooze repositories with one safely addressed file per notification/user pair, typed hydration, idempotent sequential recording, and notification/user collection queries.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: URL-safe base64 path segments prevent record IDs containing separators from escaping their storage tree; concurrent create-if-absent hardening is handled by the next todo.
+
+2026-08-12 17:43:00 NZST
+Todo: Make file writes atomic and safe under concurrent requests.
+Done: Added a shared atomic create-if-absent writer that fully writes a same-directory temporary file before publishing it with an exclusive hard link; losing requests read and return the winning immutable record.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: A six-process contention test verifies that concurrent acknowledgement attempts leave exactly one complete, parseable YAML record with no temporary-file residue.
+
+2026-08-12 17:49:00 NZST
+Todo: Implement `auto`, `eloquent`, and `file` driver resolution; auto-detect `statamic/eloquent-driver`.
+Done: Added a validated repository driver resolver that preserves explicit file/eloquent configuration and resolves auto through Composer's installed-package registry.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Detection can be overridden explicitly in focused tests; unsupported driver names fail early with a configuration-specific exception.
+
+2026-08-12 17:56:00 NZST
+Todo: Bind the selected repositories into Laravel's container.
+Done: Registered lazy singleton bindings for both repository contracts, resolving the shared configured driver and constructing database- or file-backed implementations with their required Laravel dependencies.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Lazy resolution ensures Statamic's addon config has booted before the driver and configured file storage path are read.
+
+2026-08-12 18:02:00 NZST
+Todo: Ensure acknowledgements cannot be updated, revoked, or deleted through application APIs.
+Done: Hardened the append-only acknowledgement boundary by making both concrete drivers final and verifying their only public persistence operations are find, record, forNotification, and forUser.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Application services receive the mutation-free contract from the container, while the acknowledgement value itself remains final and readonly.
+
+2026-08-12 18:08:00 NZST
+Todo: Ensure a snooze lasts 24 hours and cannot be used a second time for the same notice/user.
+Done: Finalized both snooze drivers around create-once behavior and verified database and file defaults expire exactly 24 hours after creation while repeat attempts retain the original expiry and single record.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Snooze activity remains strict-before expiry, so the snooze is inactive at the exact 24-hour boundary while its retained record prevents reuse.
+
+2026-08-12 16:48:19 NZST
+Todo: Resolve audience membership from `all`, roles, groups, and explicit user IDs.
+Done: Added an audience matcher that evaluates notification entries or audience arrays against Statamic users using all-user, effective-role, group, and explicit-user rules.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Role matching uses Statamic's effective `hasRole` behavior, so roles inherited through groups are included in membership resolution.
+
+2026-08-12 16:49:07 NZST
+Todo: De-duplicate users targeted through multiple audience rules.
+Done: Added an audience resolver that scans the current Statamic user repository once, filters through the shared matcher, and returns one user per stable user ID even when rules or repository results overlap.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The resolver preserves repository order while returning Statamic's native UserCollection type for downstream inbox and reporting use.
+
+2026-08-12 16:49:42 NZST
+Todo: Resolve the targeted user set at query/view time.
+Done: Kept audience expansion deliberately uncached and verified that every resolution reads the current user repository and current role/group membership.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: A user moving into or out of a targeted role is reflected on the next inbox/report query without modifying or republishing the notice.
+
+2026-08-12 16:50:30 NZST
+Todo: Implement active-window checks using published status, `start_date`, optional `end_date`, and the site timezone.
+Done: Added a published-notice active-window evaluator using the application/site timezone, inclusive start boundaries, exclusive end boundaries, and indefinite open-ended windows.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Drafts, future notices, expired notices, and malformed notices without the required start date are inactive; timezone-aware instants are normalized before comparison.
+
+2026-08-12 16:51:43 NZST
+Todo: Filter acknowledged notices from the active stack.
+Done: Added the active-stack resolver, filtering notices by live audience, active window, and the absence of a persisted acknowledgement for the current notification/user pair.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Audience and scheduling filters run before repository lookups, avoiding acknowledgement reads for notices that cannot enter the user's active stack.
+
+2026-08-12 16:52:33 NZST
+Todo: Filter notices with a currently active snooze from the active stack.
+Done: Extended active-stack resolution to exclude notices whose retained one-time snooze is active for the current user.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: At the exact `snoozed_until` instant the notice returns to the stack; expired snooze records remain stored to prevent reuse.
+
+2026-08-12 16:53:13 NZST
+Todo: Keep bypass users in audience/inbox results while excluding them only from gating.
+Done: Added a dedicated gating-stack projection that empties enforcement results for users with the bypass permission without mutating or filtering their visible active notices.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Audience, Inbox, and reporting services remain permission-agnostic; bypass is applied only at the enforcement boundary.
+
+2026-08-12 16:54:17 NZST
+Todo: Order notices by explicit priority override, then severity (`critical`, `warning`, `info`), then oldest `start_date`.
+Done: Added deterministic active-stack ordering with explicit lower-number priorities first, followed by critical, warning, and info severity, then oldest start time. Also hardened an existing parent-directory creation race exposed by repeated concurrency tests.
+Tests: vendor/bin/phpunit (three consecutive runs); composer validate --strict; git diff --check
+Notes: Any explicit numeric priority sorts ahead of the unprioritized severity queue. Exact null and full-tie precedence is verified by the following dedicated todo.
+
+2026-08-12 16:54:52 NZST
+Todo: Define and test the exact precedence/direction for nullable and tied priorities.
+Done: Defined and verified the complete sort key: explicit priorities before null/blank, lower numbers first, then critical/warning/info, oldest start time, and notification ID as the deterministic final tie-breaker.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Equal-priority notices still use severity and start time; unprioritized notices never outrank an explicitly prioritized notice regardless of severity.
+
+2026-08-12 16:55:32 NZST
+Todo: Compute `locked` as true once the first acknowledgement exists.
+Done: Added a notification lock service that derives lock state directly from the immutable acknowledgement repository and becomes true with the first record.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Lock state is derived rather than copied into entry content, preventing stale flags and keeping both persistence drivers authoritative.
+
+2026-08-12 16:56:18 NZST
+Todo: Prevent edits to locked notice content and settings on the server.
+Done: Registered an early EntrySaving listener that rejects every save path for locked notification entries while leaving unlocked notifications and unrelated collections untouched.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Enforcement runs before behavior normalization and audience validation, so rejected requests cannot mutate locked notice data in memory before failure.
+
+2026-08-12 16:57:36 NZST
+Todo: Render locked notices as read-only in the publish form.
+Done: Added an EntryBlueprintFound listener that projects every field in a locked notification blueprint with Statamic's native read-only visibility while leaving unlocked forms editable.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The stored blueprint remains unchanged; read-only visibility is applied only to the locked entry's runtime publish-form blueprint.
+
+2026-08-12 16:58:03 NZST
+Todo: Provide a clear validation/error message directing admins to create a superseding notice.
+Done: Expanded locked-save validation to explain that acknowledgements caused the lock and instruct administrators to create a superseding notification for corrections.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The message is returned as a normal validation error, so CP and custom save clients receive the same actionable response.
+
+2026-08-12 17:00:07 NZST
+Todo: Add an authenticated endpoint returning the current user's ordered active stack.
+Done: Added a CP-authenticated JSON endpoint that queries the canonical notification collection, resolves the current user's live ordered stack, and returns the overlay-facing notice fields.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The route inherits Statamic's authenticated CP middleware and always queries the default-site notification set, preserving global multisite behavior.
+
+2026-08-12 17:01:06 NZST
+Todo: Add idempotent acknowledgement/confirm endpoint(s).
+Done: Added an authenticated acknowledgement endpoint that validates live activity and audience eligibility, records through the once-only repository, and returns the original record on repeat requests.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Already-acknowledged retries remain successful even after the notice leaves its active window, supporting safe client retries without creating duplicate records.
+
+2026-08-12 17:01:40 NZST
+Todo: Require the explicit “I have read and understand” confirmation value server-side.
+Done: Required the literal JSON boolean `confirmed: true` before any acknowledgement lookup or write and added an actionable validation response for missing, false, or string values.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Strict boolean comparison prevents generic truthy payloads from being treated as the user's explicit attestation.
+
+2026-08-12 17:02:52 NZST
+Todo: Add the single-use 24-hour snooze endpoint for eligible advisory notices.
+Done: Added an authenticated snooze endpoint restricted to active, targeted, non-blocking, snoozeable advisories, returning the repository's exact 24-hour expiry.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Any existing snooze record causes a conflict even after expiry, enforcing the one-time allowance independently of current snooze activity.
+
+2026-08-12 17:04:46 NZST
+Todo: Build and register a global Vue 3 overlay using Statamic UI components.
+Done: Added a globally appended Vue 3 overlay using Statamic UI card and badge components, accessible dialog semantics, severity styling, and authenticated stack loading; added the Tailwind 4 build dependency and compiled distributable assets.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; npm run build; git diff --check
+Notes: The overlay is appended through Statamic's global component manager, so it mounts across CP views rather than requiring each page template to include it.
+
+2026-08-12 17:05:32 NZST
+Todo: Render the top notice and enforce top-down clearing.
+Done: Made the ordered stack's index-zero notice the overlay's sole renderable current item and verified that no iteration or navigation exposes later notices before it clears.
+Tests: vendor/bin/phpunit --testdox; npm run build; composer validate --strict; git diff --check
+Notes: Later notices remain in component state for the progress count but have no render path or action surface until the server refresh promotes the next item.
+
+2026-08-12 17:06:32 NZST
+Todo: Make blocking notices confirm-only and impossible to dismiss or snooze.
+Done: Added an explicit attestation checkbox and Statamic UI confirmation button to the overlay, wired to the strict acknowledgement endpoint with CSRF protection and no dismiss or snooze control for blocking notices.
+Tests: vendor/bin/phpunit --testdox; npm run build; composer validate --strict; git diff --check
+Notes: Confirmation stays disabled until the user actively checks the attestation; the server independently requires the literal boolean confirmation value.
+
+2026-08-12 17:07:08 NZST
+Todo: Allow eligible advisory notices to be confirmed or snoozed.
+Done: Added a 24-hour Snooze action for notices that are both advisory and snoozeable while retaining the explicit confirmation path for every advisory.
+Tests: vendor/bin/phpunit --testdox; npm run build; composer validate --strict; git diff --check
+Notes: The UI condition mirrors server eligibility: blocking notices never render Snooze even if malformed stored data claims they are snoozeable.
+
+2026-08-12 17:07:47 NZST
+Todo: Refresh/advance the stack after each successful action.
+Done: Made successful confirmation and snooze actions reset attestation and re-fetch the authoritative ordered stack, allowing the server-selected next notice to advance into view.
+Tests: vendor/bin/phpunit --testdox; npm run build; composer validate --strict; git diff --check
+Notes: The client does not optimistically shift its local array, so concurrent audience, scheduling, acknowledgement, and priority changes are reflected during every advance.
+
+2026-08-12 17:08:29 NZST
+Todo: Handle expired, already-acknowledged, and concurrently updated notices gracefully.
+Done: Added centralized action reconciliation that refreshes on successful idempotent responses and stale 404/409 states, while surfacing retryable validation and network errors in an accessible alert.
+Tests: vendor/bin/phpunit --testdox; npm run build; composer validate --strict; git diff --check
+Notes: Expired, deleted, concurrently snoozed, and otherwise stale notices disappear through authoritative refresh; transport failures leave the current notice and controls available for retry.
+
+2026-08-12 17:09:24 NZST
+Todo: Build the acknowledgement interstitial for unresolved blocking notices.
+Done: Added a dedicated authenticated CP interstitial route and view plus a reusable resolver that derives ordered blocking notices from the live active and permission-aware gating stacks.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The interstitial renders only when an unresolved blocking notice exists and otherwise returns users to the CP; the global confirmation overlay remains the action surface.
+
+2026-08-12 17:10:27 NZST
+Todo: Add CP middleware that guards routes when enforcement is `strict`.
+Done: Added and registered authenticated-CP middleware that evaluates the live blocking stack only in strict mode and redirects gated requests to the acknowledgement interstitial.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The middleware lives after Statamic authentication and exempts the addon's interstitial/API action routes so users can fetch and clear the notice that caused gating.
+
+2026-08-12 17:11:32 NZST
+Todo: Redirect users with an active blocking notice to the interstitial.
+Done: Added a behavioral middleware test using a real published blocking entry, live audience/window filtering, empty acknowledgement/snooze state, and a non-bypass user to prove CP requests redirect to the interstitial.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The test exercises the composed production resolver rather than stubbing the redirect decision, covering canonical collection querying and gating-stack behavior together.
+
+2026-08-12 17:12:20 NZST
+Todo: Avoid redirect loops and permit required assets, acknowledgement routes, and logout.
+Done: Centralized strict-gate exemptions for the interstitial, notification APIs, logout/session maintenance, and CP thumbnail/SVG/PDF delivery routes.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: The interstitial and action wildcard prevent self-redirect loops; static compiled addon assets are served outside the authenticated CP route group and therefore never enter this middleware.
+
+2026-08-12 17:13:01 NZST
+Todo: Short-circuit route gating for users with `bypass notifications`.
+Done: Moved the bypass-permission check ahead of blocking-stack resolution so permission holders immediately continue through the CP middleware.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: This avoids collection and persistence-driver reads for bypass users while leaving their separate visible active stack unchanged for overlay and Inbox access.
+
+2026-08-12 17:13:39 NZST
+Todo: In `modal` mode, disable route guarding while retaining the overlay.
+Done: Added a behavioral test proving modal enforcement returns before user/stack resolution and confirmed the global overlay remains appended independently of middleware mode.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Strict and modal share the same overlay and action APIs; only strict mode activates route redirection.
+
+2026-08-12 17:14:35 NZST
+Todo: Build the user's Inbox showing only notices targeted at that user.
+Done: Replaced the placeholder Inbox with a user-specific controller, canonical live resolver, and CP listing view restricted to published notices matching the current user's audience.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Audience membership is evaluated on every Inbox request, so role/group changes immediately affect visibility and draft notices never leak to recipients.
+
+2026-08-12 17:15:46 NZST
+Todo: Show active notices and retained history, including previously read notices.
+Done: Enriched Inbox rows with acknowledgement and snooze state, separated actionable active notices from history, and displayed recorded read timestamps while retaining acknowledged entries.
+Tests: vendor/bin/phpunit --testdox; composer validate --strict; git diff --check
+Notes: Active rows sort first; published targeted notices remain in history after acknowledgement, expiry, or while an active snooze temporarily removes them from the action stack.
+
+2026-08-12 17:17:08 NZST
+Todo: Apply retention.inbox_days; treat null as indefinite retention.
+Done: Filtered expired Inbox history against the configured retention window with an inclusive cutoff, while preserving notices without an end date and treating null retention as unlimited.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Retention is evaluated in the application timezone and affects Inbox visibility only; the active window and acknowledgement records remain unchanged.
+
+2026-08-12 17:17:51 NZST
+Todo: Ensure expired, unacknowledged advisories stop appearing as active but remain reportable.
+Done: Verified with an end-to-end Inbox resolver test that an unacknowledged advisory immediately becomes inactive at expiry while remaining in retained history.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Active state derives from the exclusive end boundary, while reportable history is governed separately by Inbox retention and does not require an acknowledgement.
+
+2026-08-12 17:19:05 NZST
+Todo: Configure the collection listing and publish form for notice management.
+Done: Configured notifications to sort by descending start date and exposed concise title, severity, blocking, start, and end columns while retaining the complete tabbed publish blueprint.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Idempotent installs also repair the collection sort settings; body and nested group fields remain edit-form-only, while optional snooze and priority fields stay available through column customization.
+
+2026-08-12 17:20:18 NZST
+Todo: Display appropriate status indicators for draft, scheduled, active, expired, and locked notices.
+Done: Added a computed management status column and lifecycle classifier covering all five states with application-timezone scheduling and acknowledgement-backed locking.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Locked takes precedence because acknowledged notices are immutable; expiration uses the same exclusive end boundary as active-stack resolution.
+
+2026-08-12 17:22:01 NZST
+Todo: Build a per-notice report authorized by view notification reports.
+Done: Replaced the report placeholder with a canonical notification index and per-notice report route, both enforcing the reporting permission server-side.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Per-notice lookup rejects entries outside the notifications collection or canonical site; the computed management callback was also made capture-free so entries remain queue-serializable.
+
+2026-08-12 17:22:51 NZST
+Todo: Expand the notice audience live into the current targeted-user set.
+Done: Wired per-notice reports to the shared audience resolver and rendered the deduplicated current recipient names and email addresses.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Audience expansion runs on every report request, so role, group, explicit-user, and all-user targeting reflects current membership rather than a stored snapshot.
+
+2026-08-12 17:23:42 NZST
+Todo: Display each targeted user's acknowledgement status and acknowledged_at value.
+Done: Added report-row resolution that joins current recipients to acknowledgement records and displays pending/acknowledged state with the exact recorded timestamp.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Reporting reads the repository abstraction, so file and Eloquent drivers produce the same grid without duplicating persistence logic in the controller or view.
+
+2026-08-12 17:24:32 NZST
+Todo: Display current/used snooze state.
+Done: Joined snooze records into report rows and displayed never-used, currently active, or previously used state with the recorded expiry timestamp.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Current state uses the same exact expiry-boundary rule as active-stack snooze filtering, while expired records remain visible as one-shot usage history.
+
+2026-08-12 17:25:37 NZST
+Todo: Preserve recorded acknowledgements in reporting even if a user later leaves the targeted role/group.
+Done: Merged acknowledgement history missing from the live audience back into report rows and labeled those recipients as former while preserving their recorded timestamp.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Current audience membership remains live, but historical acknowledgement evidence is repository-backed and is also retained by user ID if the user record was deleted.
+
+2026-08-12 17:26:58 NZST
+Todo: Add an authorized CSV export matching the report grid.
+Done: Added a permission-protected per-notice CSV download using the canonical report rows and the same user, email, audience, acknowledgement, timestamp, and snooze columns as the grid.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: The export includes former acknowledged recipients, uses deterministic timestamps, and neutralizes spreadsheet formula prefixes in user-controlled cells.
+
+2026-08-12 17:28:28 NZST
+Todo: Add a Remind non-ackers action that dispatches the shared nudge job.
+Done: Added a permission-protected report form that dispatches the queueable shared notification nudge job in manual mode for the canonical notice.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: The queued job delegates recipient delivery to a shared service, and reminder email links back to the CP Inbox without exposing notice content outside the control panel.
+
+2026-08-12 17:29:27 NZST
+Todo: Implement nudge eligibility from enabled, threshold_hours, and optional cadence_hours.
+Done: Added an application-timezone eligibility policy covering active-window enforcement, inclusive threshold and cadence boundaries, one-shot behavior, and manual timing bypass.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Manual reminders may bypass per-notice enablement and timing but cannot send for draft, future, or expired notices; non-positive cadence is normalized to a minimum one-hour repeat interval.
+
+2026-08-12 17:31:51 NZST
+Todo: Track enough delivery state to enforce one-shot and repeating cadence without duplicate sends.
+Done: Added per-notice/per-user delivery timestamp and count repositories for file and Eloquent storage, integrated them into eligibility and sending, and made queued notice jobs unique.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: File updates use an exclusive lock and atomic rename; database updates use a unique recipient key and transactional increment, so one recipient's delivery never suppresses a newly targeted user.
+
+2026-08-12 17:32:29 NZST
+Todo: Create the nudge mailable using the configured sender or the app mail fallback.
+Done: Verified the reminder mailable uses the optional addon sender override, otherwise defers to Laravel mail configuration, and links recipients directly to the CP Inbox.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Email contains the notice title as context but never the notice body, keeping the actual notification available only inside the authenticated control panel.
+
+2026-08-12 17:33:10 NZST
+Todo: Create a shared job/service for scheduled and manual reminders.
+Done: Verified manual and scheduled modes share the same unique queue job, which delegates all audience, acknowledgement, eligibility, delivery-state, and mail behavior to one service.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: The mode flag changes timing eligibility only; recipient selection and delivery recording cannot diverge between report-triggered and scheduler-triggered reminders.
+
+2026-08-12 17:34:01 NZST
+Todo: Add the cp-notifications:nudge command.
+Done: Registered an Artisan command that scans canonical notifications, filters by active scheduled eligibility, and queues the shared nudge job for each eligible notice.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Notice-level filtering avoids needless queue work, while the job service performs the authoritative per-recipient acknowledgement, cadence, and delivery-state checks.
+
+2026-08-12 17:34:52 NZST
+Todo: Register/document the command's Laravel scheduler integration.
+Done: Registered the nudge command hourly with overlap prevention and documented production cron, local scheduler work, and queue worker requirements.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: The scheduler registration ships with the addon; host applications only need Laravel's standard scheduler runner and an asynchronous worker when not using the sync queue.
+
+2026-08-12 17:35:45 NZST
+Todo: Email only currently targeted users who have not acknowledged the notice.
+Done: Added delivery-level coverage proving the shared service emails a pending live target while excluding both acknowledged current targets and users outside the current audience.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Audience membership is resolved immediately before each job sends, so role or group changes made after queue dispatch are honored at execution time.
+
+2026-08-12 17:36:26 NZST
+Todo: Ensure notices themselves remain available only inside the CP.
+Done: Verified notifications retain no frontend route and reminder rendering excludes stored notice body content while linking only to the authenticated CP Inbox.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Email provides the notice title for identification but never reproduces the authored Bard body, so reading and acknowledgement remain control-panel actions.
+
+2026-08-12 17:37:11 NZST
+Todo: Never automatically hard-delete notices or acknowledgement records.
+Done: Added an architectural safety test proving automatic commands, queued jobs, and nudge services contain no deletion path, no purge is scheduled, and acknowledgement storage exposes no delete API.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Any later notice removal must therefore enter through the separate permissioned and confirmed manual workflow; acknowledgement records remain immutable by contract.
+
+2026-08-12 17:38:52 NZST
+Todo: Build a confirmed manual clear-out action authorized by purge notifications.
+Done: Added a management-page candidate preview and POST-only clear-out action enforcing the purge permission and an accepted confirmation before invoking the centralized purge service.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Direct route access is authorized server-side and invalid or missing confirmation fails validation; the form is disabled when no eligible notices exist.
+
+2026-08-12 17:39:35 NZST
+Todo: Restrict purge candidates to appropriate old, expired notices.
+Done: Verified candidates are published, ended notices at or beyond the Inbox retention age, with an inclusive cutoff and exclusions for drafts, active, open-ended, and recently expired notices.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: When Inbox retention is indefinite, manual clear-out may consider any already-expired published notice; it remains permissioned, confirmed, acknowledgement-safe, and logged.
+
+2026-08-12 17:41:08 NZST
+Todo: Prevent system deletion of notices that have acknowledgements.
+Done: Added a global Statamic deletion guard for acknowledged notifications and a second repository check immediately before each purge deletion to close preview-time races.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Native collection deletion and addon purge now share the immutable-acknowledgement rule; a newly recorded acknowledgement wins even after a notice appeared in the purge preview.
+
+2026-08-12 17:41:42 NZST
+Todo: Define whether manual purge archives or removes eligible notices and document the behavior.
+Done: Documented that confirmed clear-out permanently removes eligible notification entries rather than archiving them, together with retention, expiry, and acknowledgement safeguards.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Acknowledgement records are never part of clear-out; indefinite Inbox retention still allows a deliberate admin to remove already-expired, unacknowledged notices.
+
+2026-08-12 17:42:41 NZST
+Todo: Log the acting admin, affected notices, timestamp, and result of every purge.
+Done: Added structured success and failure audit records containing actor ID, affected notification IDs/count, application-timezone timestamp, and result for every confirmed purge attempt.
+Tests: vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Failure records include the exception class and are emitted before rethrowing; successful zero-candidate attempts are still logged as deliberate administrative actions.
+
+2026-08-12 17:43:07 NZST
+Todo: Test addon registration, config defaults, navigation, and permissions.
+Done: Audited and ran the provider discovery, package metadata, config publication/defaults, CP navigation/route, and complete permission registration coverage.
+Tests: vendor/bin/phpunit --filter 'PackageScaffoldTest|ServiceProviderTest|NavigationTest|PermissionTest' --testdox
+Notes: Fifteen focused tests with 45 assertions directly cover the checklist scope; no indirect inference or implementation-only claim was needed.
+
+2026-08-12 17:43:32 NZST
+Todo: Test blueprint validation, including empty audiences and blocking/snoozeable rules.
+Done: Audited and ran complete blueprint construction, audience publication validation, and blocking/advisory snooze normalization coverage.
+Tests: vendor/bin/phpunit --filter 'ValidateNotificationAudienceTest|NormalizeNotificationBehaviorTest|NotificationCollectionInstallerTest' --testdox
+Notes: Fourteen focused tests with 46 assertions cover empty published audiences, incomplete drafts, all four audience selectors, and both behavior-normalization branches.
+
+2026-08-12 17:43:56 NZST
+Todo: Contract-test both acknowledgement repository drivers.
+Done: Audited and ran immutable interface/concrete API checks plus direct file and Eloquent record, idempotence, lookup, and query behavior coverage.
+Tests: vendor/bin/phpunit --filter 'AcknowledgementRepositoryContractTest|FileRepositoriesTest|EloquentRepositoriesTest' --testdox
+Notes: Ten combined repository tests with 68 assertions also exercise the file driver's competing-process behavior; dedicated concurrency checklist items remain separately audited.
+
+2026-08-12 17:44:20 NZST
+Todo: Contract-test both snooze repository drivers.
+Done: Audited and ran the single-use repository contract plus direct file and Eloquent persistence, lookup, query, reuse prevention, and default-expiry coverage.
+Tests: vendor/bin/phpunit --filter 'SnoozeRepositoryContractTest|FileRepositoriesTest|EloquentRepositoriesTest' --testdox
+Notes: Ten combined tests with 64 assertions verify both drivers through the same externally observable semantics while retaining driver-specific storage checks.
+
+2026-08-12 17:44:56 NZST
+Todo: Test parallel file-driver acknowledgements for race safety and valid YAML output.
+Done: Strengthened the six-process race test to prove exactly one complete YAML record with the exact schema, nonempty ID, correct notice/user pair, and parseable acknowledgement timestamp.
+Tests: vendor/bin/phpunit --filter 'FileRepositoriesTest::test_competing_processes'; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: The test exercises separate repository and filesystem instances in forked processes, so it validates the hard-link publication boundary rather than in-process object state.
+
+2026-08-12 17:46:40 NZST
+Todo: Test idempotent, once-only acknowledgements under concurrent requests.
+Done: Added the racing HTTP interleaving where both requests miss lookup and invoke atomic record, proving both responses return the same winning immutable acknowledgement.
+Tests: vendor/bin/phpunit --filter 'AcknowledgeNotificationEndpointTest|FileRepositoriesTest::test_competing_processes'; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Request-level behavior is composed with the real six-process storage race, covering both controller semantics and the atomic winner selection it relies upon.
+
+2026-08-12 17:47:31 NZST
+Todo: Test database uniqueness under concurrent acknowledgement attempts.
+Done: Added a six-process SQLite WAL race using separate connections and the production-equivalent unique notice/user key, proving exactly one correct acknowledgement row survives.
+Tests: vendor/bin/phpunit --filter 'MigrationsTest::test_database_uniqueness_survives'; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Each child uses insert-or-ignore as the Eloquent repository does, validating database arbitration under simultaneous attempts rather than a sequential duplicate exception.
+
+2026-08-12 17:47:56 NZST
+Todo: Test single-use snoozing and the exact 24-hour expiry boundary.
+Done: Audited and ran endpoint, file/Eloquent repository, and immutable value-object coverage for eligibility, one-shot reuse prevention, exact 24-hour creation, and boundary expiration.
+Tests: vendor/bin/phpunit --filter 'SnoozeTest|SnoozeNotificationEndpointTest|FileRepositoriesTest|EloquentRepositoriesTest' --testdox
+Notes: Twelve tests with 75 assertions prove a snooze is active one microsecond before expiry and inactive exactly at and after the stored boundary.
+
+2026-08-12 17:48:44 NZST
+Todo: Test audience expansion for all users, roles, groups, explicit users, and overlaps.
+Done: Added resolver-level role-only, group-only, and explicit-user cases alongside existing all-user, overlap-deduplication, matcher, and live-membership tests.
+Tests: vendor/bin/phpunit --filter 'AudienceMatcherTest|AudienceResolverTest' --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Thirteen focused tests now prove both rule matching and the final deduplicated user collection returned to reports, nudges, stacks, and Inbox consumers.
+
+2026-08-12 17:49:47 NZST
+Todo: Test that role/group removal changes current targeting but preserves an existing acknowledgement.
+Done: Added a state-transition report test that removes a user's targeted role between resolutions and proves Current becomes Former while the same acknowledgement remains attached.
+Tests: vendor/bin/phpunit --filter NotificationReportResolverTest; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Audience resolution remains live while acknowledgement history is merged independently, directly exercising the compliance-history invariant rather than composing separate static cases.
+
+2026-08-12 17:50:37 NZST
+Todo: Test scheduling boundaries, open-ended notices, expiration, and future blocking notices.
+Done: Added explicit future-blocking boundary coverage and audited inclusive start, exclusive expiry, open-ended, draft, missing-start, and configured-timezone cases.
+Tests: vendor/bin/phpunit --filter ActiveWindowTest --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Blocking is behavioral metadata only; it cannot make a future notice active before its scheduled start or extend it past an end date.
+
+2026-08-12 17:50:59 NZST
+Todo: Test priority, severity, and start-date ordering plus ties/null values.
+Done: Audited and ran complete-sequence ordering tests spanning explicit priorities, all severities, oldest starts, zero/null/blank priorities, exact ties, and deterministic ID fallback.
+Tests: vendor/bin/phpunit --filter NotificationOrderTest --testdox
+Notes: Assertions compare the entire sorted ID sequence, making every precedence tier observable rather than checking isolated pairwise outcomes.
+
+2026-08-12 17:51:15 NZST
+Todo: Test locked notices reject edits after the first acknowledgement.
+Done: Audited and ran first-ack lock detection, server-side save rejection, listener ordering, superseding-notice guidance, and complete publish-form read-only coverage.
+Tests: vendor/bin/phpunit --filter 'NotificationLockTest|PreventLockedNotificationEditsTest|RenderLockedNotificationReadOnlyTest' --testdox
+Notes: Eight focused tests prove the lock is enforced independently in both persistence and UI layers while unrelated collections and unacknowledged notices remain editable.
+
+2026-08-12 17:52:00 NZST
+Todo: Test overlay top-down behavior for mixed blocking/advisory stacks.
+Done: Added a mixed blocking/advisory active-stack case and composed its server order with the overlay's index-zero-only render path and no iteration escape.
+Tests: vendor/bin/phpunit --filter 'ActiveStackResolverTest|OverlayAssetTest' --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Explicit priority can place an advisory ahead of a blocking notice; whichever server ordering selects first is the only actionable notice until refresh advances the stack.
+
+2026-08-12 17:52:20 NZST
+Todo: Test strict middleware enforcement and modal-only mode.
+Done: Audited and ran authenticated middleware registration, live strict blocking redirect, route exemptions, bypass short-circuit, and modal gating-disable/overlay-retention coverage.
+Tests: vendor/bin/phpunit --filter EnforceBlockingNotificationsTest --testdox
+Notes: Six behavioral tests with 19 assertions include a real published blocking entry and verify mode branching before resolver work, not merely configuration strings.
+
+2026-08-12 17:53:18 NZST
+Todo: Test bypass users are not gated but can still see notices in their inbox.
+Done: Added a composed bypass-user test proving the same targeted notice remains in Inbox resolution while its gating stack is empty, alongside middleware early-return coverage.
+Tests: vendor/bin/phpunit --filter 'InboxNoticeResolverTest::test_bypass|GatingStackTest|EnforceBlockingNotificationsTest::test_bypass' --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Bypass is strictly an enforcement permission; it does not alter audience targeting, active/history visibility, or acknowledgement access.
+
+2026-08-12 17:53:58 NZST
+Todo: Test report authorization, live status, and CSV contents.
+Done: Added a live Pending-to-Acknowledged report transition and audited permission denial, canonical notice scope, former recipients, download metadata, and all six CSV grid columns/row values.
+Tests: vendor/bin/phpunit --filter 'ReportControllerTest|NotificationReportResolverTest' --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Report rows are rebuilt from repositories on every request; HTML and CSV share the same resolver, preventing stale or divergent status calculations.
+
+2026-08-12 17:54:41 NZST
+Todo: Test scheduled and manual nudge eligibility, one-shot delivery, cadence, and duplicate prevention.
+Done: Added an end-to-end repeating send test proving suppression one second before cadence and delivery exactly at cadence, then audited scheduled/manual, threshold, one-shot, recipient, and unique-job coverage.
+Tests: vendor/bin/phpunit --filter 'NudgeEligibilityTest|NotificationNudgeServiceTest|NudgeCommandTest|SharedNudgeWorkflowTest|ReportControllerTest::test_authorized_manual' --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Thirteen focused tests cover both policy boundaries and actual mail counts, with per-recipient delivery state preventing duplicates without suppressing other targets.
+
+2026-08-12 17:55:20 NZST
+Todo: Test retention visibility and purge authorization, confirmation, safety, and audit logging.
+Done: Added failure-attempt audit coverage and ran the complete visibility, authorization, confirmation, cutoff, acknowledgement-race, no-automation, success-log, and failure-log matrix.
+Tests: vendor/bin/phpunit --filter 'InboxNoticeResolverTest::test_expired_history|ManageNotificationsControllerTest|NotificationPurgeServiceTest|PreventAcknowledgedNotificationDeletionTest|AutomaticDeletionSafetyTest' --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Nine focused tests prove both destructive-action safeguards and structured audit evidence, including logging before exceptional failure is rethrown.
+
+2026-08-12 17:56:13 NZST
+Todo: Test global notice behavior in multisite installations.
+Done: Added a multisite consumer test proving Inbox reads only the canonical default-site notice and excludes a secondary-site copy, alongside collection site/propagation installation coverage.
+Tests: vendor/bin/phpunit --filter 'InboxNoticeResolverTest::test_multisite|NotificationCollectionInstallerTest::test_notifications_use_one_canonical' --testdox; vendor/bin/phpunit; composer validate --no-check-publish; git diff --check
+Notes: Global means one shared canonical notice record for all CP users, not localized duplicates; both storage configuration and runtime query behavior enforce that model.
+
+2026-08-12 17:57:01 NZST
+Todo: Document installation, config publishing, migrations, CP asset build, and scheduler setup.
+Done: Expanded the README with Composer/install command, config and migration publication, migration execution, contributor asset build/dev, production compiled assets, scheduler, and queue-worker steps.
+Tests: vendor/bin/phpunit --filter DocumentationTest; composer validate --no-check-publish; npm run build; git diff --check
+Notes: Documentation assertions lock every required command, and the production Vite build completed successfully without changing compiled artifacts.
+
+2026-08-12 17:57:36 NZST
+Todo: Document file versus Eloquent drivers and auto selection behavior.
+Done: Documented shared persistence scope, flat-file paths/atomicity, Eloquent migrations, Composer-based auto detection, explicit environment selection, and the no-automatic-migration caveat.
+Tests: vendor/bin/phpunit --filter 'DocumentationTest|RepositoryDriverResolverTest|ServiceProviderTest::test_it_binds' --testdox; composer validate --no-check-publish; git diff --check
+Notes: Eight focused tests with 27 assertions align the documented choices with actual resolver and container-binding behavior.
+
+2026-08-12 17:58:17 NZST
+Todo: Document strict versus modal enforcement and bypass permission implications.
+Done: Documented overlay and route-guard behavior for both modes, strict-mode bypass recovery use, and the fact that bypass never hides, reads, or retargets notices.
+Tests: vendor/bin/phpunit --filter 'DocumentationTest|EnforceBlockingNotificationsTest|GatingStackTest' --testdox; composer validate --no-check-publish; git diff --check
+Notes: Eleven focused tests with 44 assertions tie operational guidance to real redirect, exemption, modal, and visible-but-ungated behavior.
+
+2026-08-12 17:59:14 NZST
+Todo: Document notice creation, targeting, scheduling, reporting, export, nudges, and purge workflows.
+Done: Added a complete notice workflow guide covering blueprint fields, publication windows, live audiences, ordering, Inbox/modal actions, reports/former recipients, CSV, manual/scheduled reminders, and confirmed clear-out.
+Tests: vendor/bin/phpunit --filter DocumentationTest --testdox; composer validate --no-check-publish; git diff --check
+Notes: Twenty-eight documentation assertions now guard required setup, storage, enforcement, and administrator/user workflow details.
+
+2026-08-12 17:59:57 NZST
+Todo: Warn that blocking notices with an end_date are unusual and can expire without acknowledgement.
+Done: Added a prominent blocking-expiry warning explaining exact-time gating removal without acknowledgement and recommending no end date when confirmation must remain mandatory.
+Tests: vendor/bin/phpunit --filter 'DocumentationTest::test_blocking|ActiveWindowTest::test_published' --testdox; composer validate --no-check-publish; git diff --check
+Notes: Documentation language matches the inclusive-start/exclusive-end implementation rather than implying blocking status overrides scheduling.
+
+2026-08-12 18:00:31 NZST
+Todo: Document locked notices and the superseding-notice correction workflow.
+Done: Documented first-ack immutability across read-only form, save rejection, and deletion protection, plus creating a corrected superseding notice while retaining original evidence/reports.
+Tests: vendor/bin/phpunit --filter 'DocumentationTest::test_locked|PreventLockedNotificationEditsTest|RenderLockedNotificationReadOnlyTest|PreventAcknowledgedNotificationDeletionTest' --testdox; composer validate --no-check-publish; git diff --check
+Notes: Eight focused tests align the documented correction path with actual UI and server enforcement.
+
+2026-08-12 18:04:02 NZST
+Todo: Verify compatibility with Statamic 6, Laravel 13, Vue 3, the Statamic UI kit, flat-file installs, and statamic/eloquent-driver installs.
+Done: Expanded the Testbench matrix to Laravel 13, verified Statamic 6.27.1/Laravel 13.25.0/PHP 8.4.23/Vue 3.5.41, confirmed Statamic UI component usage, exercised both persistence implementations and migrations, and confirmed Composer resolves statamic/eloquent-driver 5.11 without making it a runtime dependency.
+Tests: composer require --dev 'statamic/eloquent-driver:^5.11' --dry-run --no-interaction; vendor/bin/phpunit; composer validate --strict; npm run build; git diff --check
+Notes: The Laravel 13 suite passed 153 tests with 529 assertions; focused persistence and compatibility coverage passed 28 tests with 137 assertions.
+
+2026-08-12 18:05:00 NZST
+Todo: Do not add recurring notices; use start/end windows in v1.
+Done: Documented the single-window v1 model and the create-a-new-notice workflow for repeated messages; added a regression check that recurrence fields are absent from the blueprint.
+Tests: vendor/bin/phpunit --filter 'DocumentationTest::test_recurring_notices' --testdox; git diff --check
+Notes: Recurring notice behavior remains intentionally outside v1.
+
+2026-08-12 18:05:13 NZST
+Todo: Do not add per-user timezone scheduling; use the site timezone in v1.
+Done: Documented that every recipient shares the application's configured scheduling timezone and added regression checks that no per-user timezone fields enter the notice blueprint.
+Tests: vendor/bin/phpunit --filter 'DocumentationTest::test_per_user_timezone' --testdox; git diff --check
+Notes: Per-user scheduling conversions remain intentionally outside v1.
+
+2026-08-12 18:05:35 NZST
+Todo: Defer dedicated compliance/attestation product framing beyond the existing report and CSV record.
+Done: Framed reports and CSV exports as operational acknowledgement records, explicitly excluded compliance certification and regulated evidence workflows, and guarded the blueprint against compliance-specific fields.
+Tests: vendor/bin/phpunit --filter 'DocumentationTest::test_compliance_product' --testdox; git diff --check
+Notes: Dedicated compliance and attestation product behavior remains intentionally outside v1.
+
+2026-08-12 19:03:17 NZST
+Todo: Improve notification rendering and testing after the completed v1 checklist.
+Done: Rendered Bard bodies as HTML with a safe legacy text fallback, converted the PHPUnit suite to Pest 5 syntax, added a Playwright-backed Chromium modal test, and restyled the Inbox as a responsive Statamic content card with severity and lifecycle badges.
+Tests: composer test -- --compact; composer test:browser -- --compact; vendor/bin/pint --test; composer validate --strict; composer audit; npm audit; npm run build; git diff --check
+Notes: Application and browser tests run sequentially through composer test:all so browser workers do not interfere with the application suite; 161 application tests and one browser test pass.
+
+2026-08-12 19:17:42 NZST
+Todo: Correct the unformatted Inbox, Manage, and Reports pages in the Statamic sandbox.
+Done: Replaced legacy Statamic 5 card, button, badge, and table selectors with addon-owned responsive components using Statamic 6 theme tokens, rebuilt the production bundle, published it into statamic-sandbox.test, and cleared the host caches.
+Tests: composer test -- --compact; composer test:browser -- --compact; vendor/bin/pint --test; npm run build; git diff --check
+Notes: The browser test now checks computed card layout, grid layout, and critical badge background so a present-but-unloaded stylesheet fails the suite; 161 application tests and one browser test pass with 598 total assertions.
+
+2026-08-13 09:05:05 NZST
+Todo: Add icons to the Inbox, Manage, and Reports notification menu items.
+Done: Replaced invalid navigation icon handles with native Statamic 6 icons: mail-inbox-content for Inbox, collections for Manage, and charts-donut-graph for Reports; cleared the statamic-sandbox.test caches.
+Tests: vendor/bin/pest tests/NavigationTest.php --compact; composer test -- --compact; vendor/bin/pint --test; git diff --check
+Notes: Navigation tests assert both the configured handles and the presence of every SVG in Statamic's installed icon set; 162 application tests pass with 595 assertions.
+
+2026-08-13 09:15:46 NZST
+Todo: Add clear publishing instructions for every notification field.
+Done: Added inline guidance to all 11 top-level fields and all 7 nested audience/nudge fields, covering display locations, status locking, severity ordering, blocking and snoozing, priority, live targeting, scheduling and expiry, and automatic reminder timing; reinstalled the blueprint in statamic-sandbox.test without changing entries.
+Tests: vendor/bin/pest tests/NotificationCollectionInstallerTest.php --compact; composer test -- --compact; vendor/bin/pint --test; git diff --check
+Notes: A regression test requires non-empty instructions on every field and checks the highest-risk behavioral warnings; 163 application tests pass with 636 assertions.
