@@ -22,6 +22,18 @@ test('overlay renders only the first ordered notice', function () {
     expect(substr_count($component, 'data-testid="cp-notification-current"'))->toBe(1);
 });
 
+test('overlay waits for other control panel modals', function () {
+    $component = file_get_contents(__DIR__.'/../resources/js/components/NotificationOverlay.vue');
+
+    $this->assertStringContainsString('<Teleport to="body">', $component);
+    $this->assertStringContainsString('v-if="overlayVisible"', $component);
+    $this->assertStringContainsString("document.querySelectorAll('[role=\"dialog\"][aria-modal=\"true\"]')", $component);
+    $this->assertStringContainsString('new MutationObserver(this.updateModalState)', $component);
+    $this->assertStringContainsString("attributeFilter: ['aria-modal', 'role']", $component);
+    $this->assertStringContainsString("!dialog.closest('.cp-notification-overlay')", $component);
+    $this->assertStringContainsString('this.modalObserver?.disconnect()', $component);
+});
+
 test('overlay renders augmented bard html', function () {
     $component = file_get_contents(__DIR__.'/../resources/js/components/NotificationOverlay.vue');
 
