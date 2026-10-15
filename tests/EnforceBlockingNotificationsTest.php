@@ -91,6 +91,57 @@ test('user with active blocking notice is redirected to interstitial', function 
     expect($response->isRedirect(route('statamic.cp.cp-notifications.acknowledge')))->toBeTrue();
 });
 
+test('users who must finish two factor setup are not gated until they have', function (bool $confirmed, bool $redirected) {
+    config()->set('cp-notifications.enforcement', 'strict');
+    config()->set('statamic.users.two_factor_enabled', true);
+    config()->set('statamic.users.two_factor_enforced_roles', ['*']);
+    Collection::make('notifications')->sites([Site::default()->handle()])->save();
+    Entry::make()
+        ->id('blocking-notice')
+        ->collection('notifications')
+        ->locale(Site::default()->handle())
+        ->published(true)
+        ->data([
+            'audience' => ['all' => true],
+            'blocking' => true,
+            'start_date' => '2020-01-01 00:00',
+        ])->save();
+    $user = User::make()->id('user-1')->email('editor@example.com');
+    $user->set('two_factor_secret', 'secret');
+    $user->set('two_factor_confirmed_at', $confirmed ? now()->timestamp : null);
+    $originalUsers = User::getFacadeRoot();
+    $users = \Mockery::mock($originalUsers);
+    $users->allows('current')->andReturn($user);
+    User::swap($users);
+    $acknowledgements = \Mockery::mock(AcknowledgementRepository::class);
+    $acknowledgements->allows('find')->andReturnNull();
+    $snoozes = \Mockery::mock(SnoozeRepository::class);
+    $snoozes->allows('find')->andReturnNull();
+    $middleware = new EnforceBlockingNotifications(
+        new BlockingNoticeResolver(new ActiveStackResolver(
+            new AudienceMatcher,
+            new ActiveWindow,
+            $acknowledgements,
+            $snoozes,
+            new NotificationOrder,
+        ), new GatingStack),
+    );
+    $request = Request::create('/cp/auth/two-factor-setup');
+    $request->setRouteResolver(fn () => (new Route('GET', '/cp/auth/two-factor-setup', fn () => null))
+        ->name('statamic.cp.two-factor-setup'));
+
+    try {
+        $response = $middleware->handle($request, fn () => new Response('allowed'));
+    } finally {
+        User::swap($originalUsers);
+    }
+
+    expect($response->isRedirect(route('statamic.cp.cp-notifications.acknowledge')))->toBe($redirected);
+})->with([
+    'setup unfinished' => [false, false],
+    'setup finished' => [true, true],
+]);
+
 test('interstitial actions logout session and required asset routes are exempt', function () {
     $source = file_get_contents(__DIR__.'/../src/Http/Middleware/EnforceBlockingNotifications.php');
 
