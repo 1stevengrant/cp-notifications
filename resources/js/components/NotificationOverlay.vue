@@ -1,44 +1,46 @@
 <template>
-    <div
-        v-if="current"
-        class="cp-notification-overlay"
-        data-testid="cp-notification-current"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="cp-notification-title"
-    >
-        <div class="cp-notification-overlay__backdrop" />
-        <ui-card class="cp-notification-overlay__panel">
-            <div class="cp-notification-overlay__heading">
-                <ui-badge :color="badgeColor">{{ current.severity }}</ui-badge>
-                <span>{{ position }} of {{ notices.length }}</span>
-            </div>
-            <h1 id="cp-notification-title">{{ current.title }}</h1>
-            <div v-if="current.body_html" class="cp-notification-overlay__body" v-html="current.body_html" />
-            <div v-else class="cp-notification-overlay__body">{{ legacyBody }}</div>
-            <p v-if="error" class="cp-notification-overlay__error" role="alert">{{ error }}</p>
-            <div class="cp-notification-overlay__actions">
-                <label class="cp-notification-overlay__confirmation">
-                    <input v-model="confirmed" type="checkbox" :disabled="submitting">
-                    <span>I have read and understand</span>
-                </label>
-                <div class="cp-notification-overlay__buttons">
-                    <ui-button
-                        v-if="canSnooze"
-                        text="Snooze for 24 hours"
-                        :disabled="submitting"
-                        @click="snooze"
-                    />
-                    <ui-button
-                        text="Confirm"
-                        variant="primary"
-                        :disabled="!confirmed || submitting"
-                        @click="confirm"
-                    />
+    <Teleport to="body">
+        <div
+            v-if="overlayVisible"
+            class="cp-notification-overlay"
+            data-testid="cp-notification-current"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cp-notification-title"
+        >
+            <div class="cp-notification-overlay__backdrop" />
+            <ui-card class="cp-notification-overlay__panel">
+                <div class="cp-notification-overlay__heading">
+                    <ui-badge :color="badgeColor">{{ current.severity }}</ui-badge>
+                    <span>{{ position }} of {{ notices.length }}</span>
                 </div>
-            </div>
-        </ui-card>
-    </div>
+                <h1 id="cp-notification-title">{{ current.title }}</h1>
+                <div v-if="current.body_html" class="cp-notification-overlay__body" v-html="current.body_html" />
+                <div v-else class="cp-notification-overlay__body">{{ legacyBody }}</div>
+                <p v-if="error" class="cp-notification-overlay__error" role="alert">{{ error }}</p>
+                <div class="cp-notification-overlay__actions">
+                    <label class="cp-notification-overlay__confirmation">
+                        <input v-model="confirmed" type="checkbox" :disabled="submitting">
+                        <span>I have read and understand</span>
+                    </label>
+                    <div class="cp-notification-overlay__buttons">
+                        <ui-button
+                            v-if="canSnooze"
+                            text="Snooze for 24 hours"
+                            :disabled="submitting"
+                            @click="snooze"
+                        />
+                        <ui-button
+                            text="Confirm"
+                            variant="primary"
+                            :disabled="!confirmed || submitting"
+                            @click="confirm"
+                        />
+                    </div>
+                </div>
+            </ui-card>
+        </div>
+    </Teleport>
 </template>
 
 <script>
@@ -50,6 +52,8 @@ export default {
             submitting: false,
             confirmed: false,
             error: null,
+            anotherModalIsOpen: false,
+            modalObserver: null,
         };
     },
 
@@ -57,6 +61,10 @@ export default {
         current() {
             // Later notices intentionally remain inaccessible until index zero clears.
             return this.notices[0] ?? null;
+        },
+
+        overlayVisible() {
+            return Boolean(this.current && !this.anotherModalIsOpen);
         },
 
         position() {
@@ -93,10 +101,27 @@ export default {
     },
 
     mounted() {
+        this.updateModalState();
+        this.modalObserver = new MutationObserver(this.updateModalState);
+        this.modalObserver.observe(document.body, {
+            attributes: true,
+            childList: true,
+            subtree: true,
+            attributeFilter: ['aria-modal', 'role'],
+        });
         this.refresh();
     },
 
+    beforeUnmount() {
+        this.modalObserver?.disconnect();
+    },
+
     methods: {
+        updateModalState() {
+            this.anotherModalIsOpen = [...document.querySelectorAll('[role="dialog"][aria-modal="true"]')]
+                .some((dialog) => !dialog.closest('.cp-notification-overlay'));
+        },
+
         async snooze() {
             if (!this.canSnooze || this.submitting) return;
 
@@ -197,6 +222,7 @@ export default {
 
 .cp-notification-overlay__panel {
     position: relative;
+    pointer-events: auto;
     width: min(42rem, 100%);
     max-height: calc(100vh - 3rem);
     overflow: auto;

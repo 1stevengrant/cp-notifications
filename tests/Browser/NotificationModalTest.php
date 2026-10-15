@@ -65,4 +65,23 @@ test('the modal displays rendered Bard content in a real browser', function (): 
     expect($page->script("getComputedStyle(document.querySelector('.cp-notification-inbox')).borderRadius"))->not->toBe('0px');
     expect($page->script("getComputedStyle(document.querySelector('.cp-notification-inbox__content')).display"))->toBe('grid');
     expect($page->script("getComputedStyle(document.querySelector('.cp-notification-badge--critical')).backgroundColor"))->not->toBe('rgba(0, 0, 0, 0)');
+
+    $page->script(<<<'JS'
+        (() => {
+            const licensingAlert = document.createElement('div');
+            licensingAlert.id = 'licensing-alert';
+            licensingAlert.setAttribute('role', 'dialog');
+            licensingAlert.setAttribute('aria-modal', 'true');
+            licensingAlert.style.cssText = 'position: fixed; inset: 2rem; z-index: 20000; background: white;';
+            licensingAlert.innerHTML = '<button>Snooze licensing alert</button>';
+            licensingAlert.querySelector('button').addEventListener('click', () => licensingAlert.remove());
+            document.body.append(licensingAlert);
+        })()
+        JS);
+
+    $page->assertPresent('#licensing-alert')
+        ->assertMissing('[data-testid="cp-notification-current"]')
+        ->click('#licensing-alert button')
+        ->assertVisible('[data-testid="cp-notification-current"]')
+        ->assertNoJavaScriptErrors();
 })->group('browser');
